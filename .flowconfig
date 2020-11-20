@@ -1,4 +1,6 @@
 [ignore]
+.*/node_modules/.*
+.*/build/.*
 
 [include]
 
@@ -8,5 +10,12 @@ flow-typed
 [lints]
 
 [options]
+all=true
+module.file_ext=.js
+module.file_ext=.jsx
+module.file_ext=.mjs
+module.file_ext=.json
+module.name_mapper.extension='sass' -> '<PROJECT_ROOT>/flow/CSSModuleStub.js'
+module.name_mapper.extension='scss' -> '<PROJECT_ROOT>/flow/CSSModuleStub.js'
 
 [strict]

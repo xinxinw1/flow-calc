@@ -1,9 +1,7 @@
-// @flow
-
 import * as React from 'react';
 
 import logo from './logo.svg';
-import './App.css';
+import './App.scss';
 
 function App(): React.Node {
   return (
