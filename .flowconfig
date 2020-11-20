@@ -1,5 +1,4 @@
 [ignore]
-.*/node_modules/.*
 .*/build/.*
 
 [include]
@@ -8,9 +7,14 @@
 flow-typed
 
 [lints]
+all=warn
+nonstrict-import=error
+unclear-type=error
+unsafe-getters-setters=error
+untyped-import=error
+untyped-type-import=error
 
 [options]
-all=true
 module.file_ext=.js
 module.file_ext=.jsx
 module.file_ext=.mjs
