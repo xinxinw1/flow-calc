@@ -2,6 +2,8 @@
 
 import RealNum from './RealNum';
 
+import { Size, RegularSize, NegInfSize } from './Size';
+
 test('RealNum.zero is correct', () => {
   const n: RealNum = RealNum.zero;
 
@@ -105,27 +107,37 @@ test('cannot change RealNum static values', () => {
   }).toThrow("Cannot assign to read only property 'zero'");
 });
 
-test('equals is correct', () => {
-  const tests: Array<[number, number, boolean]> = [
-    [1, 1, true],
-    [12345, 12345, true],
-    [12345, 123456, false],
-    [12345, 12346, false],
-    [0, 0, true],
-    [0, 1, false],
-    [1, -1, false],
-    [1234, 12340, false],
-    [0.001, 0.0001, false],
-    [0.001, 0.001, true],
-  ];
-
-  for (const [v1, v2, res] of tests) {
-    expect(RealNum.fromNum(v1).equals(RealNum.fromNum(v2))).toBe(res);
+test.each([
+  [1, 1, true],
+  [12345, 12345, true],
+  [12345, 123456, false],
+  [12345, 12346, false],
+  [0, 0, true],
+  [0, 1, false],
+  [1, -1, false],
+  [1234, 12340, false],
+  [0.001, 0.0001, false],
+  [0.001, 0.001, true],
+])('comparing numbers %o == %o should be %p', (v1, v2, res) => {
+  if (res) {
+    expect(RealNum.fromNum(v1)).toObjEqual(RealNum.fromNum(v2));
+  } else {
+    expect(RealNum.fromNum(v1)).not.toObjEqual(RealNum.fromNum(v2));
   }
 });
 
 test('can negate', () => {
-  expect(RealNum.fromNum(1).neg().equals(RealNum.fromNum(-1))).toBe(true);
-  expect(RealNum.zero.neg().equals(RealNum.zero)).toBe(true);
-  expect(RealNum.fromNum(-124).neg().equals(RealNum.fromNum(124))).toBe(true);
+  expect(RealNum.fromNum(1).neg()).toObjEqual(RealNum.fromNum(-1));
+  expect(RealNum.zero.neg()).toObjEqual(RealNum.zero);
+  expect(RealNum.fromNum(-124).neg()).toObjEqual(RealNum.fromNum(124));
+});
+
+test.each([
+  [1, new RegularSize(0)],
+  [0, NegInfSize],
+  [0.1, new RegularSize(-1)],
+  [9.999, new RegularSize(0)],
+  [102, new RegularSize(2)],
+])('size of %p should be %o', (v, size) => {
+  expect(RealNum.fromNum(v).size()).toObjEqual(size);
 });

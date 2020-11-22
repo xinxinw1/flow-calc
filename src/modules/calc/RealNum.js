@@ -2,6 +2,7 @@
 
 import { izip } from '../itertools';
 import FingerTree from '../FingerTree';
+import { Size, RegularSize, NegInfSize } from './Size';
 
 type DigitTree = FingerTree.Tree<number, number>;
 
@@ -75,6 +76,11 @@ export default class RealNum {
   neg(): RealNum {
     if (this.isZero()) return RealNum.zero;
     return new RealNum(this.digits, this.exp, !this.pos);
+  }
+
+  size(): Size {
+    if (this.isZero()) return NegInfSize;
+    return new RegularSize(this.digits.measure() - 1 + this.exp);
   }
 
   static zero: RealNum = new RealNum(FingerTree.empty(digitMeasure), 0, true);

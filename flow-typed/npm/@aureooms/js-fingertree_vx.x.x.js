@@ -21,7 +21,7 @@ declare module '@aureooms/js-fingertree' {
   }
 
   declare type Tree<T, M> = {
-    measure(): Measure<T, M>,
+    measure(): M,
     empty(): boolean,
     head(): T,
     last(): T,

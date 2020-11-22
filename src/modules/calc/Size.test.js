@@ -25,3 +25,16 @@ test('creates size', () => {
     expect(s.size).toEqual(3);
   }
 });
+
+test.each([
+  [new RegularSize(0), new RegularSize(0), true],
+  [new RegularSize(0), new RegularSize(1), false],
+  [new RegularSize(0), NegInfSize, false],
+  [NegInfSize, NegInfSize, true],
+])('compares sizes %o == %o should be %p', (s1, s2, res) => {
+  if (res) {
+    expect(s1).toObjEqual(s2);
+  } else {
+    expect(s1).not.toObjEqual(s2);
+  }
+});

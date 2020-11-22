@@ -10,7 +10,11 @@ test('ensure abstract class cannot be instantiated', () => {
   class Test extends AbstractClass {
     constructor() {
       super();
-      this.assertAbstract(Test);
+      this.abstractClass(Test);
+    }
+
+    test(): boolean {
+      return this.abstractMethod(this.test);
     }
   }
 
@@ -18,23 +22,30 @@ test('ensure abstract class cannot be instantiated', () => {
     const _ = new Test();
   }).toThrow('Test is an abstract class');
 
-  class Test2 extends Test {
-    constructor() {
-      super();
-      this.assertAbstract(Test2);
+  class Test2 extends Test {}
+
+  const t2 = new Test2();
+
+  expect(t2).toBeInstanceOf(Test2);
+  expect(t2).toBeInstanceOf(Test);
+  expect(t2).toBeInstanceOf(AbstractClass);
+
+  expect(() => {
+    t2.test();
+  }).toThrow('test is an abstract method');
+
+  class Test3 extends Test2 {
+    test(): boolean {
+      return true;
     }
   }
 
-  expect(() => {
-    const _ = new Test2();
-  }).toThrow('Test2 is an abstract class');
+  const t3 = new Test3();
 
-  class Test3 extends Test2 {}
+  expect(t3).toBeInstanceOf(Test3);
+  expect(t3).toBeInstanceOf(Test2);
+  expect(t3).toBeInstanceOf(Test);
+  expect(t3).toBeInstanceOf(AbstractClass);
 
-  const a = new Test3();
-
-  expect(a).toBeInstanceOf(Test3);
-  expect(a).toBeInstanceOf(Test2);
-  expect(a).toBeInstanceOf(Test);
-  expect(a).toBeInstanceOf(AbstractClass);
+  expect(t3.test()).toBe(true);
 });
