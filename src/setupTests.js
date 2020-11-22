@@ -29,3 +29,9 @@ expect.extend({
     };
   },
 });
+
+// eslint-disable-next-line no-unused-vars
+type CustomMatchersType = {
+  // $FlowIgnore[unclear-type]
+  toObjEqual(other: any): void,
+};
