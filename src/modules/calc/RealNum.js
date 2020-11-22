@@ -51,6 +51,10 @@ export default class RealNum {
     return new RealNum(digits, exp, pos);
   }
 
+  isZero(): boolean {
+    return this.digits.empty();
+  }
+
   equals(other: RealNum): boolean {
     const trim = this.trim();
     const otherTrim = other.trim();
@@ -66,6 +70,11 @@ export default class RealNum {
     }
 
     return true;
+  }
+
+  neg(): RealNum {
+    if (this.isZero()) return RealNum.zero;
+    return new RealNum(this.digits, this.exp, !this.pos);
   }
 
   static zero: RealNum = new RealNum(FingerTree.empty(digitMeasure), 0, true);
