@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import logo from './logo.svg';
+import logo from '../images/logo.svg';
 import './App.scss';
 
 function App(): React.Node {

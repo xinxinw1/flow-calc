@@ -7,8 +7,8 @@ import nullthrows from 'nullthrows';
 
 import './index.scss';
 
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import App from './components/App';
+import reportWebVitals from './modules/reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
