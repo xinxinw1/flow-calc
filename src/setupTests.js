@@ -14,15 +14,18 @@ expect.extend({
     if (pass) {
       return {
         message: () =>
-          `expected ${util.inspect(received)} to not .equals() ${util.inspect(other)}`,
+          `expected ${util.inspect(received)} to not .equals() ${util.inspect(
+            other,
+          )}`,
         pass: true,
       };
-    } else {
-      return {
-        message: () =>
-          `expected ${util.inspect(received)} to .equals() ${util.inspect(other)}`,
-        pass: false,
-      };
     }
+    return {
+      message: () =>
+        `expected ${util.inspect(received)} to .equals() ${util.inspect(
+          other,
+        )}`,
+      pass: false,
+    };
   },
 });

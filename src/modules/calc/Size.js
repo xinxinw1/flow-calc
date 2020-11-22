@@ -1,5 +1,6 @@
 // @flow
 
+import { downCast } from '../typetools';
 import AbstractClass from '../AbstractClass';
 
 export class Size extends AbstractClass {
@@ -13,7 +14,7 @@ export class Size extends AbstractClass {
     return this.equalsSameClass(other);
   }
 
-  equalsSameClass(other: Size): boolean {
+  equalsSameClass(_other: Size): boolean {
     return this.abstractMethod(this.equalsSameClass);
   }
 }
@@ -28,7 +29,7 @@ export class RegularSize extends Size {
   }
 
   equalsSameClass(other: Size): boolean {
-    const otherRegSize = (other: RegularSize);
+    const otherRegSize = downCast<Size, _>(other, RegularSize);
     return this.size === otherRegSize.size;
   }
 }
@@ -39,7 +40,8 @@ class NegInfSizeType extends Size {
     Object.freeze(this);
   }
 
-  equalsSameClass(other: Size): boolean {
+  // eslint-disable-next-line class-methods-use-this
+  equalsSameClass(_other: Size): boolean {
     return true;
   }
 }

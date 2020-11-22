@@ -1,5 +1,7 @@
 // @flow
 
+/* eslint-disable class-methods-use-this */
+
 export default class AbstractClass {
   constructor() {
     this.abstractClass(AbstractClass);
@@ -15,8 +17,6 @@ export default class AbstractClass {
 
   // $FlowIgnore[unclear-type]
   abstractMethod(f: (...args: Array<any>) => mixed): any {
-    throw new Error(
-      `${f.name} is an abstract method and can't be called`,
-    );
+    throw new Error(`${f.name} is an abstract method and can't be called`);
   }
 }

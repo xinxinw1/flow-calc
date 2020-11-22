@@ -35,6 +35,7 @@ test('ensure abstract class cannot be instantiated', () => {
   }).toThrow('test is an abstract method');
 
   class Test3 extends Test2 {
+    // eslint-disable-next-line class-methods-use-this
     test(): boolean {
       return true;
     }

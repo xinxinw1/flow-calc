@@ -2,7 +2,7 @@
 
 import RealNum from './RealNum';
 
-import { Size, RegularSize, NegInfSize } from './Size';
+import { RegularSize, NegInfSize } from './Size';
 
 test('RealNum.zero is correct', () => {
   const n: RealNum = RealNum.zero;
