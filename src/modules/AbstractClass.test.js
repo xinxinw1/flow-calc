@@ -4,8 +4,8 @@ import AbstractClass from './AbstractClass';
 
 test('ensure abstract class cannot be instantiated', () => {
   expect(() => {
-    const a = new AbstractClass();
-  }).toThrowError('AbstractClass is an abstract class');
+    const _ = new AbstractClass();
+  }).toThrow('AbstractClass is an abstract class');
 
   class Test extends AbstractClass {
     constructor() {
@@ -15,8 +15,8 @@ test('ensure abstract class cannot be instantiated', () => {
   }
 
   expect(() => {
-    const a = new Test();
-  }).toThrowError('Test is an abstract class');
+    const _ = new Test();
+  }).toThrow('Test is an abstract class');
 
   class Test2 extends Test {
     constructor() {
@@ -26,14 +26,10 @@ test('ensure abstract class cannot be instantiated', () => {
   }
 
   expect(() => {
-    const a = new Test2();
-  }).toThrowError('Test2 is an abstract class');
+    const _ = new Test2();
+  }).toThrow('Test2 is an abstract class');
 
-  class Test3 extends Test2 {
-    constructor() {
-      super();
-    }
-  }
+  class Test3 extends Test2 {}
 
   const a = new Test3();
 
@@ -42,4 +38,3 @@ test('ensure abstract class cannot be instantiated', () => {
   expect(a).toBeInstanceOf(Test);
   expect(a).toBeInstanceOf(AbstractClass);
 });
-

@@ -1,11 +1,11 @@
 // @flow
 
-import {Size, RegularSize, NegInfSize} from './Size';
+import { Size, RegularSize, NegInfSize } from './Size';
 
 test('creates size', () => {
   expect(() => {
-    const s = new Size();
-  }).toThrowError('Size is an abstract class');
+    const _ = new Size();
+  }).toThrow('Size is an abstract class');
 
   const r = new RegularSize(3);
 
@@ -14,7 +14,7 @@ test('creates size', () => {
 
   expect(() => {
     r.size = 4;
-  }).toThrowError('Cannot assign to read only property');
+  }).toThrow('Cannot assign to read only property');
 
   expect(NegInfSize).toBeInstanceOf(Size);
 

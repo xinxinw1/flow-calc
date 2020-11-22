@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@aureooms/js-fingertree@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@aureooms/js-fingertree/-/js-fingertree-5.0.0.tgz#133d9bd5d047448f07706e4a83b9a7b96dc493a6"
+  integrity sha512-E+pBH4Ryw/gnL6xpqVlc3SMAPBKh5NPVf12LYP9On4Kx25Rcw5jsFujRsdyrqO11wVM85QVTM/xYnLLATnPSPQ==
+
 "@babel/code-frame@7.10.4", "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.10.4", "@babel/code-frame@^7.5.5":
   version "7.10.4"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.10.4.tgz#168da1a36e90da68ae8d49c0f1b48c7c6249213a"
