@@ -7,7 +7,9 @@ export default class AbstractClass {
 
   assertAbstract(o: Class<AbstractClass>) {
     if (this.constructor.name === o.name) {
-      throw new Error(`${o.name} is an abstract class and can't be instantiated`);
+      throw new Error(
+        `${o.name} is an abstract class and can't be instantiated`,
+      );
     }
   }
 }

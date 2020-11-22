@@ -1,8 +1,5 @@
 module.exports = {
-  ignorePatterns: [
-    'flow-typed/',
-    'build/',
-  ],
+  ignorePatterns: ['flow-typed/', 'build/'],
   env: {
     browser: true,
     es2021: true,
@@ -11,6 +8,9 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:flowtype/recommended',
     'airbnb',
+    'plugin:prettier/recommended',
+    'prettier/flowtype',
+    'prettier/react',
   ],
   parser: 'babel-eslint',
   parserOptions: {
@@ -20,29 +20,28 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: 'module',
   },
-  plugins: [
-    'react',
-    'flowtype',
-  ],
+  plugins: ['react', 'flowtype', 'prettier'],
   rules: {
     'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx'] }],
     'max-classes-per-file': 'off',
-    'no-unused-vars': ['error', { varsIgnorePattern: '_', argsIgnorePattern: '^_' }],
+    'no-unused-vars': [
+      'error',
+      { varsIgnorePattern: '_', argsIgnorePattern: '^_' },
+    ],
+    'lines-between-class-members': [
+      'error',
+      'always',
+      { exceptAfterSingleLine: true },
+    ],
   },
   overrides: [
     {
-      files: [
-        '**/*.test.js',
-      ],
+      files: ['**/*.test.js'],
       env: {
         'jest/globals': true,
       },
-      extends: [
-        'plugin:jest/style',
-      ],
-      plugins: [
-        'jest',
-      ],
+      extends: ['plugin:jest/style'],
+      plugins: ['jest'],
     },
   ],
 };

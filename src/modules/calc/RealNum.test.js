@@ -44,7 +44,35 @@ test('creates RealNum from string', () => {
   expect(n.pos).toBe(true);
 
   n = RealNum.fromStr('123456789123456789123456789');
-  expect([...n.digits]).toStrictEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  expect([...n.digits]).toStrictEqual([
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+  ]);
   expect(n.exp).toBe(0);
   expect(n.pos).toBe(true);
 });
@@ -66,5 +94,5 @@ test('creates RealNum from num', () => {
 test('cannot change RealNum static values', () => {
   expect(() => {
     RealNum.zero = RealNum.fromNum(1);
-  }).toThrow('Cannot assign to read only property \'zero\'');
+  }).toThrow("Cannot assign to read only property 'zero'");
 });

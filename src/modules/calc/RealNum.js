@@ -12,9 +12,7 @@ const digitMeasure: FingerTree.Measure<number, number> = {
 
 export default class RealNum {
   digits: DigitTree;
-
   exp: number;
-
   pos: boolean;
 
   constructor(digits: DigitTree, exp: number, pos: boolean) {
