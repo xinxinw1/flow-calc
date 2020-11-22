@@ -2,7 +2,7 @@
 
 import { izip } from '../itertools';
 import FingerTree from '../FingerTree';
-import { Size, RegularSize, NegInfSize } from './Size';
+import Size, { RegularSize, NegInfSize } from './Size';
 
 type DigitTree = FingerTree.Tree<number, number>;
 

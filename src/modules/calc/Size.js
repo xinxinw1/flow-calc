@@ -3,7 +3,7 @@
 import { downCast } from '../typetools';
 import AbstractClass from '../AbstractClass';
 
-export class Size extends AbstractClass {
+export default class Size extends AbstractClass {
   constructor() {
     super();
     this.abstractClass(Size);
@@ -29,8 +29,8 @@ export class RegularSize extends Size {
   }
 
   equalsSameClass(other: Size): boolean {
-    const otherRegSize = downCast<Size, _>(other, RegularSize);
-    return this.size === otherRegSize.size;
+    const otherCasted = downCast<Size, _>(other, RegularSize);
+    return this.size === otherCasted.size;
   }
 }
 

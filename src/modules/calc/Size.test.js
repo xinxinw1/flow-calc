@@ -1,6 +1,6 @@
 // @flow
 
-import { Size, RegularSize, NegInfSize } from './Size';
+import Size, { RegularSize, NegInfSize } from './Size';
 
 test('creates size', () => {
   expect(() => {
