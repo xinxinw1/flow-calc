@@ -73,14 +73,43 @@ export default class RealNum {
     return true;
   }
 
+  // returns trimmed version if this is trimmed
   neg(): RealNum {
     if (this.isZero()) return RealNum.zero;
     return new RealNum(this.digits, this.exp, !this.pos);
   }
 
+  // assumes this is trimmed
   size(): Size {
     if (this.isZero()) return NegInfSize;
     return new RegularSize(this.digits.measure() - 1 + this.exp);
+  }
+
+  // assumes this is trimmed
+  toString(): string {
+    if (this.isZero()) return '0';
+    let str = this.neg ? '-' : '';
+    if (this.exp >= 0) {
+      str += [...this.digits].join('');
+      for (let i = 1; i <= this.exp; i += 1) {
+        str += '0';
+      }
+      return str;
+    }
+    const numDig = this.digits.measure();
+    if (-this.exp >= numDig) {
+      str += '0.';
+      for (let i = 1; i <= -this.exp - numDig; i += 1) {
+        str += '0';
+      }
+      str += [...this.digits].join('');
+      return str;
+    }
+    const [left, right] = this.digits.split((m) => m > numDig + this.exp);
+    str += [...left].join('');
+    str += '.';
+    str += [...right].join('');
+    return str;
   }
 
   static zero: RealNum = new RealNum(FingerTree.empty(digitMeasure), 0, true);
