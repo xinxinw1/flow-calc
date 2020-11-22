@@ -28,7 +28,7 @@ test('creates RealNum from string', () => {
   expect(n.exp).toBe(0);
   expect(n.pos).toBe(true);
 
-  n = RealNum.fromStr('-0.00');
+  n = RealNum.fromStr('-00.00');
   expect(n.digits.empty()).toBe(true);
   expect(n.exp).toBe(0);
   expect(n.pos).toBe(true);
@@ -88,6 +88,14 @@ test('creates RealNum from num', () => {
   n = RealNum.fromNum(10.5);
   expect([...n.digits]).toStrictEqual([1, 0, 5]);
   expect(n.exp).toBe(-1);
+  expect(n.pos).toBe(true);
+});
+
+test('RealNum.one is correct', () => {
+  const n: RealNum = RealNum.one;
+
+  expect([...n.digits]).toStrictEqual([1]);
+  expect(n.exp).toBe(0);
   expect(n.pos).toBe(true);
 });
 

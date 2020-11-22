@@ -33,6 +33,12 @@ module.exports = {
       'always',
       { exceptAfterSingleLine: true },
     ],
+    'no-restricted-syntax': [
+      'error',
+      'ForInStatement',
+      'LabeledStatement',
+      'WithStatement',
+    ],
   },
   overrides: [
     {
