@@ -9,7 +9,7 @@ import Precision, { RegularPrec, NegInfPrec } from './Precision';
 test('RealNum.zero is correct', () => {
   const n: RealNum = RealNum.zero;
 
-  expect(n.digits.empty()).toBe(true);
+  expect(n.digits.isEmpty()).toBe(true);
   expect(n.exp).toBe(0);
   expect(n.pos).toBe(true);
 });
@@ -28,12 +28,12 @@ test('creates RealNum from string', () => {
   expect(n.pos).toBe(true);
 
   n = RealNum.fromStr('0');
-  expect(n.digits.empty()).toBe(true);
+  expect(n.digits.isEmpty()).toBe(true);
   expect(n.exp).toBe(0);
   expect(n.pos).toBe(true);
 
   n = RealNum.fromStr('-00.00');
-  expect(n.digits.empty()).toBe(true);
+  expect(n.digits.isEmpty()).toBe(true);
   expect(n.exp).toBe(0);
   expect(n.pos).toBe(true);
 

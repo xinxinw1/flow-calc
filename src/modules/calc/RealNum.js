@@ -2,25 +2,16 @@
 
 import { izip } from '../itertools';
 import { downCast } from '../typetools';
-import FingerTree from '../FingerTree';
+import Digits from './Digits';
 import Size, { RegularSize, NegInfSize } from './Size';
 import Precision, { RegularPrec, NegInfPrec } from './Precision';
 
-type DigitTree = FingerTree.Tree<number, number>;
-
-// measures number of digits
-const digitMeasure: FingerTree.Measure<number, number> = {
-  plus: (x: number, y: number): number => x + y,
-  measure: (_: number) => 1,
-  zero: () => 0,
-};
-
 export default class RealNum {
-  digits: DigitTree;
+  digits: Digits;
   exp: number;
   pos: boolean;
 
-  constructor(digits: DigitTree, exp: number, pos: boolean) {
+  constructor(digits: Digits, exp: number, pos: boolean) {
     this.digits = digits;
     this.exp = exp;
     this.pos = pos;
@@ -32,13 +23,13 @@ export default class RealNum {
     let { digits, exp } = this;
     const { pos } = this;
 
-    if (digits.empty()) return RealNum.zero;
+    if (digits.isEmpty()) return RealNum.zero;
 
     // trim left side
     while (digits.head() === 0) {
       changed = true;
       digits = digits.tail();
-      if (digits.empty()) return RealNum.zero;
+      if (digits.isEmpty()) return RealNum.zero;
     }
 
     // trim right side
@@ -55,7 +46,7 @@ export default class RealNum {
   }
 
   isZero(): boolean {
-    return this.digits.empty();
+    return this.digits.isEmpty();
   }
 
   equals(other: RealNum): boolean {
@@ -64,7 +55,7 @@ export default class RealNum {
 
     if (trim.exp !== otherTrim.exp || trim.pos !== otherTrim.pos) return false;
 
-    if (trim.digits.measure() !== otherTrim.digits.measure()) return false;
+    if (trim.digits.size() !== otherTrim.digits.size()) return false;
 
     const zipped = izip(trim.digits, otherTrim.digits);
 
@@ -84,7 +75,7 @@ export default class RealNum {
   // assumes this is trimmed
   size(): Size {
     if (this.isZero()) return NegInfSize;
-    return new RegularSize(this.digits.measure() + this.exp);
+    return new RegularSize(this.digits.size() + this.exp);
   }
 
   // assumes this is trimmed
@@ -104,7 +95,7 @@ export default class RealNum {
       }
       return str;
     }
-    const numDig = this.digits.measure();
+    const numDig = this.digits.size();
     if (-this.exp >= numDig) {
       str += '0.';
       for (let i = 1; i <= -this.exp - numDig; i += 1) {
@@ -153,26 +144,22 @@ export default class RealNum {
     // the deciding digit's position
     // is position after decimal adjusted by prec
     const decidingPos = thisRegSize.size + regPrec.prec;
-    // also equals digits.measure() + this.exp + prec
-    // also equals digits.measure() - this.prec() + prec
-    // since prec < this.prec(), decidingPos < digits.measure()
+    // also equals digits.size() + this.exp + prec
+    // also equals digits.size() - this.prec() + prec
+    // since prec < this.prec(), decidingPos < digits.size()
 
     if (decidingPos < 0) {
       // the deciding number is before start of
       // the number, so is 0
       const roundAway = shouldRoundAwayFromZero(0, this.pos);
       if (roundAway) {
-        return new RealNum(
-          FingerTree.from(digitMeasure, [1]),
-          -regPrec.prec,
-          this.pos,
-        );
+        return new RealNum(Digits.fromIter([1]), -regPrec.prec, this.pos);
       }
       return RealNum.zero;
     }
 
     // now we are guaranteed to have a digit in the digits list to have to decide on
-    // ie. 0 <= decidingPos < digits.measure()
+    // ie. 0 <= decidingPos < digits.size()
     const [left, right] = this.digits.split((m) => m > decidingPos);
     const decidingDig = right.head();
     const roundAway = shouldRoundAwayFromZero(decidingDig, this.pos);
@@ -187,7 +174,7 @@ export default class RealNum {
     return this.roundWithFunc(prec, (d, _pos) => d >= 5);
   }
 
-  static zero: RealNum = new RealNum(FingerTree.empty(digitMeasure), 0, true);
+  static zero: RealNum = new RealNum(Digits.empty, 0, true);
   static one: RealNum = RealNum.fromNum(1);
 
   static fromNum(n: number): RealNum {
@@ -218,7 +205,7 @@ export default class RealNum {
       }
     }
 
-    const tree = FingerTree.from(digitMeasure, arr);
+    const tree = Digits.fromIter(arr);
 
     return new RealNum(tree, exp, pos).trim();
   }
