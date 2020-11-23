@@ -42,6 +42,10 @@ export default class Digits {
     return Digits.fromStr(n.toString());
   }
 
+  toString(): string {
+    return [...this].join('');
+  }
+
   isEmpty(): boolean {
     return this.digits.empty();
   }
@@ -79,6 +83,10 @@ export default class Digits {
     return [new Digits(left), new Digits(right)];
   }
 
+  concat(t: Digits): Digits {
+    return new Digits(this.digits.concat(t.digits));
+  }
+
   // $FlowIgnore[unclear-type]
   /*:: @@iterator(): Iterator<number> { return ({}: any); } */
 
@@ -97,6 +105,23 @@ export default class Digits {
     }
 
     return true;
+  }
+
+  add1(): Digits {
+    let left = this;
+    let right = Digits.empty;
+    while (!left.isEmpty()) {
+      const last = left.last();
+      if (last !== 9) {
+        return left
+          .init()
+          .push(last + 1)
+          .concat(right);
+      }
+      left = left.init();
+      right = right.cons(0);
+    }
+    return right.cons(1);
   }
 }
 

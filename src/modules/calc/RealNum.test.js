@@ -4,7 +4,7 @@ import fc from 'fast-check';
 import RealNum from './RealNum';
 
 import Size, { RegularSize, NegInfSize } from './Size';
-import Precision, { RegularPrec, NegInfPrec } from './Precision';
+import Precision, { RegularPrec, InfPrec, NegInfPrec } from './Precision';
 
 test('RealNum.zero is correct', () => {
   const n: RealNum = RealNum.zero;
@@ -258,4 +258,73 @@ test('all arbitrary equals check', () => {
       }
     }),
   );
+});
+
+test.each([
+  ['0', new RegularPrec(0), '0'],
+  ['0', new RegularPrec(20), '0'],
+  ['0', new RegularPrec(-20), '0'],
+  ['0', InfPrec, '0'],
+  ['0', NegInfPrec, '0'],
+  ['-0.0004352', new RegularPrec(0), '0'],
+  ['-0.0004352', new RegularPrec(-20), '0'],
+  ['-0.0004352', new RegularPrec(4), '-0.0004'],
+  ['-0.0004952', new RegularPrec(5), '-0.0005'],
+  ['-0.0004952', new RegularPrec(7), '-0.0004952'],
+  ['-0.0004952', new RegularPrec(20), '-0.0004952'],
+  ['-0.0004952', InfPrec, '-0.0004952'],
+  ['-0.0004952', NegInfPrec, '0'],
+  ['99956.99499', new RegularPrec(0), '99957'],
+  ['99956.99499', new RegularPrec(-1), '99960'],
+  ['99956.99499', new RegularPrec(-5), '100000'],
+  ['99956.99499', new RegularPrec(-6), '0'],
+  ['99956.99499', new RegularPrec(-7), '0'],
+  ['99956.99499', new RegularPrec(2), '99956.99'],
+  ['99956.99499', new RegularPrec(4), '99956.995'],
+])(
+  'expect rounding %s to %o prec to give %s',
+  (s1: string, p: Precision, s2: string) => {
+    expect(RealNum.fromStr(s1).round(p).toString()).toBe(s2);
+  },
+);
+
+test.each([
+  ['0', new RegularPrec(0), '0'],
+  ['0', new RegularPrec(20), '0'],
+  ['0', new RegularPrec(-20), '0'],
+  ['0', InfPrec, '0'],
+  ['0', NegInfPrec, '0'],
+  ['-0.0004352', new RegularPrec(0), '0'],
+  ['-0.0004352', new RegularPrec(-20), '0'],
+  ['-0.0004352', new RegularPrec(4), '-0.0004'],
+  ['-0.0004952', new RegularPrec(5), '-0.00049'],
+  ['-0.0004952', new RegularPrec(7), '-0.0004952'],
+  ['-0.0004952', new RegularPrec(20), '-0.0004952'],
+  ['-0.0004952', InfPrec, '-0.0004952'],
+  ['-0.0004952', NegInfPrec, '0'],
+  ['0.0004352', new RegularPrec(0), '1'],
+  ['0.0004352', new RegularPrec(-3), '1000'],
+  ['0.0004352', new RegularPrec(4), '0.0005'],
+  ['0.0004952', new RegularPrec(5), '0.0005'],
+  ['0.0004952', new RegularPrec(7), '0.0004952'],
+  ['0.0004952', new RegularPrec(20), '0.0004952'],
+  ['0.0004952', InfPrec, '0.0004952'],
+  ['99956.99499', new RegularPrec(0), '99957'],
+  ['99956.99499', new RegularPrec(-1), '99960'],
+  ['99956.99499', new RegularPrec(-5), '100000'],
+  ['99956.99499', new RegularPrec(-6), '1000000'],
+  ['99956.99499', new RegularPrec(-7), '10000000'],
+  ['99956.99499', new RegularPrec(2), '99957'],
+  ['99956.99499', new RegularPrec(4), '99956.995'],
+])(
+  'expect ceil %s to %o prec to give %s',
+  (s1: string, p: Precision, s2: string) => {
+    expect(RealNum.fromStr(s1).ceil(p).toString()).toBe(s2);
+  },
+);
+
+test('expect ceil with neg inf prec of pos number to give error', () => {
+  expect(() => {
+    RealNum.fromStr('1').ceil(NegInfPrec);
+  }).toThrow('Cannot infinitely round 1 away from zero');
 });

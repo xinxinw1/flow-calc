@@ -1,5 +1,6 @@
 // @flow
 
+import fc from 'fast-check';
 import Digits from './Digits';
 
 test('gets empty Digits', () => {
@@ -30,6 +31,20 @@ test('Digits operations', () => {
   expect([...digits.tail()]).toStrictEqual([2, 3, 4, 5]);
   expect([...digits.push(6)]).toStrictEqual([1, 2, 3, 4, 5, 6]);
   expect([...digits.cons(0)]).toStrictEqual([0, 1, 2, 3, 4, 5]);
+
+  const digits2 = Digits.fromStr('98765');
+  expect([...digits.concat(digits2)]).toStrictEqual([
+    1,
+    2,
+    3,
+    4,
+    5,
+    9,
+    8,
+    7,
+    6,
+    5,
+  ]);
 });
 
 test.each([
@@ -51,3 +66,27 @@ test.each([
     }
   },
 );
+
+test.each([
+  ['0', '1'],
+  ['', '1'],
+  ['1', '2'],
+  ['9', '10'],
+  ['000', '001'],
+  ['999', '1000'],
+  ['59', '60'],
+  ['099', '100'],
+])('expect digits %o + 1 == %o', (s1: string, s2: string) => {
+  expect(Digits.fromStr(s1).add1().toString()).toBe(s2);
+});
+
+test('arbitrary add1 check', () => {
+  fc.assert(
+    fc.property(fc.bigUintN(33220), (n: {}) => {
+      // $FlowIgnore[bigint-unsupported]
+      expect(Digits.fromStr(n.toString()).add1().toString()).toBe(
+        (n + 1n).toString(),
+      );
+    }),
+  );
+});

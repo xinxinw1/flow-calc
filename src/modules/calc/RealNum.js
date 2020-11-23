@@ -167,6 +167,21 @@ export default class RealNum {
     return this.roundWithFunc(prec, (d, _pos) => d >= 5);
   }
 
+  // assumes this is trimmed
+  ceil(prec: Precision): RealNum {
+    return this.roundWithFunc(prec, (_d, pos) => pos);
+  }
+
+  // assumes this is trimmed
+  floor(prec: Precision): RealNum {
+    return this.roundWithFunc(prec, (_d, pos) => !pos);
+  }
+
+  // assumes this is trimmed
+  trunc(prec: Precision): RealNum {
+    return this.roundWithFunc(prec, (_d, _pos) => false);
+  }
+
   static zero: RealNum = new RealNum(Digits.empty, 0, true);
   static one: RealNum = RealNum.fromNum(1);
 

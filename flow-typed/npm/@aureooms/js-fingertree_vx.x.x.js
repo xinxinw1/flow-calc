@@ -30,6 +30,7 @@ declare module '@aureooms/js-fingertree' {
     init(): Tree<T, M>,
     tail(): Tree<T, M>,
     split(pred: (m: M) => boolean): [Tree<T, M>, Tree<T, M>],
+    concat(t: Tree<T, M>): Tree<T, M>,
     @@iterator(): Iterator<T>,
   };
 
