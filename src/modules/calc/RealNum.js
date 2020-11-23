@@ -1,6 +1,5 @@
 // @flow
 
-import { izip } from '../itertools';
 import { downCast } from '../typetools';
 import Digits from './Digits';
 import Size, { RegularSize, NegInfSize } from './Size';
@@ -53,17 +52,11 @@ export default class RealNum {
     const trim = this.trim();
     const otherTrim = other.trim();
 
-    if (trim.exp !== otherTrim.exp || trim.pos !== otherTrim.pos) return false;
-
-    if (trim.digits.size() !== otherTrim.digits.size()) return false;
-
-    const zipped = izip(trim.digits, otherTrim.digits);
-
-    for (const [d, otherD] of zipped) {
-      if (d !== otherD) return false;
-    }
-
-    return true;
+    return (
+      trim.exp === otherTrim.exp &&
+      trim.pos === otherTrim.pos &&
+      trim.digits.equals(otherTrim.digits)
+    );
   }
 
   // returns trimmed version if this is trimmed

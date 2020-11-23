@@ -1,5 +1,6 @@
 // @flow
 
+import { izip } from '../itertools';
 import FingerTree from '../FingerTree';
 
 type DigitTree = FingerTree.Tree<number, number>;
@@ -35,6 +36,10 @@ export default class Digits {
       throw new Error(`Input string ${s} is not a valid number`);
     }
     return Digits.fromIter(s.split('').map(Number));
+  }
+
+  static fromNum(n: number): Digits {
+    return Digits.fromStr(n.toString());
   }
 
   isEmpty(): boolean {
@@ -80,6 +85,18 @@ export default class Digits {
   // $FlowIgnore[unsupported-syntax]
   [Symbol.iterator](): Iterator<number> {
     return this.digits[Symbol.iterator]();
+  }
+
+  equals(other: Digits): boolean {
+    if (this.size() !== other.size()) return false;
+
+    const zipped = izip(this, other);
+
+    for (const [d, otherD] of zipped) {
+      if (d !== otherD) return false;
+    }
+
+    return true;
   }
 }
 
