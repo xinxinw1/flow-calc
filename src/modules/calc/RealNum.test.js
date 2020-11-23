@@ -175,7 +175,8 @@ test('small arbitrary convert to string', () => {
 const stringNumArb = fc
   .tuple(
     fc.boolean(),
-    fc.bigUintN(33219),
+    // log_2(10^10000) = 33219.28
+    fc.bigUintN(33220),
     fc.integer({ min: -10000, max: 10000 }),
   )
   .map(([pos, digitsUint, baseExp]: [boolean, {}, number]) => {
