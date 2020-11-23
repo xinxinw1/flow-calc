@@ -88,7 +88,7 @@ export default class RealNum {
   // assumes this is trimmed
   toString(): string {
     if (this.isZero()) return '0';
-    let str = this.neg ? '-' : '';
+    let str = this.pos ? '' : '-';
     if (this.exp >= 0) {
       str += [...this.digits].join('');
       for (let i = 1; i <= this.exp; i += 1) {

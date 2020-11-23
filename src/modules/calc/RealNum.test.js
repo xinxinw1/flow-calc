@@ -1,8 +1,9 @@
 // @flow
 
+import fc from 'fast-check';
 import RealNum from './RealNum';
 
-import { RegularSize, NegInfSize } from './Size';
+import Size, { RegularSize, NegInfSize } from './Size';
 
 test('RealNum.zero is correct', () => {
   const n: RealNum = RealNum.zero;
@@ -118,13 +119,16 @@ test.each([
   [1234, 12340, false],
   [0.001, 0.0001, false],
   [0.001, 0.001, true],
-])('comparing numbers %o == %o should be %p', (v1, v2, res) => {
-  if (res) {
-    expect(RealNum.fromNum(v1)).toObjEqual(RealNum.fromNum(v2));
-  } else {
-    expect(RealNum.fromNum(v1)).not.toObjEqual(RealNum.fromNum(v2));
-  }
-});
+])(
+  'comparing numbers %o == %o should be %p',
+  (v1: number, v2: number, res: boolean) => {
+    if (res) {
+      expect(RealNum.fromNum(v1)).toObjEqual(RealNum.fromNum(v2));
+    } else {
+      expect(RealNum.fromNum(v1)).not.toObjEqual(RealNum.fromNum(v2));
+    }
+  },
+);
 
 test('can negate', () => {
   expect(RealNum.fromNum(1).neg()).toObjEqual(RealNum.fromNum(-1));
@@ -138,6 +142,79 @@ test.each([
   [0.1, new RegularSize(-1)],
   [9.999, new RegularSize(0)],
   [102, new RegularSize(2)],
-])('size of %p should be %o', (v, size) => {
+])('size of %p should be %o', (v: number, size: Size) => {
   expect(RealNum.fromNum(v).size()).toObjEqual(size);
+});
+
+test.each([
+  ['0'],
+  ['-1'],
+  ['1000'],
+  ['-12345'],
+  ['-0.0001'],
+  ['0.2541'],
+  ['-423.123'],
+])('basic can convert to string', (s: string) => {
+  expect(RealNum.fromStr(s).toString()).toEqual(s);
+});
+
+test('small arbitrary convert to string', () => {
+  // integers and small floats
+  fc.assert(
+    fc.property(
+      fc
+        .oneof(fc.maxSafeInteger(), fc.double({ min: -100, max: 100 }))
+        .map((n) => n.toString()),
+      (s: string) => {
+        expect(RealNum.fromStr(s).toString()).toEqual(s);
+      },
+    ),
+  );
+});
+
+const stringNumArb = fc
+  .tuple(
+    fc.boolean(),
+    fc.bigUintN(33219),
+    fc.integer({ min: -10000, max: 10000 }),
+  )
+  .map(([pos, digitsUint, baseExp]: [boolean, {}, number]) => {
+    let digitsStr = digitsUint.toString();
+    let exp = baseExp;
+    if (digitsStr === '0') return '0';
+    let str = pos ? '' : '-';
+    for (let i = 0; i < digitsStr.length; i += 1) {
+      if (digitsStr[digitsStr.length - 1 - i] !== '0') {
+        digitsStr = digitsStr.substr(0, digitsStr.length - i);
+        exp += i;
+        break;
+      }
+    }
+    if (exp >= 0) {
+      str += digitsStr;
+      for (let i = 0; i < exp; i += 1) {
+        str += '0';
+      }
+      return str;
+    }
+    if (-exp >= digitsStr.length) {
+      str += '0.';
+      for (let i = 0; i < -exp - digitsStr.length; i += 1) {
+        str += '0';
+      }
+      str += digitsStr;
+      return str;
+    }
+    str += digitsStr.substring(0, digitsStr.length + exp);
+    str += '.';
+    str += digitsStr.substring(digitsStr.length + exp);
+    return str;
+  });
+
+test('all arbitrary convert to string', () => {
+  fc.assert(
+    fc.property(stringNumArb, (s: string) => {
+      expect(RealNum.fromStr(s).toString()).toEqual(s);
+    }),
+  );
 });
