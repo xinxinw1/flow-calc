@@ -16,7 +16,7 @@ export default class ConstExpr extends RealExpr {
   }
 
   uniqString(): string {
-    return this.abstractMethod(this.uniqString);
+    return this.v.toString();
   }
 
   makeEvalObj(_env: Environment): RealEvalObj {

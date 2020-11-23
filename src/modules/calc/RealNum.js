@@ -1,8 +1,10 @@
 // @flow
 
 import { izip } from '../itertools';
+import { downCast } from '../typetools';
 import FingerTree from '../FingerTree';
 import Size, { RegularSize, NegInfSize } from './Size';
+import Precision, { RegularPrec, NegInfPrec } from './Precision';
 
 type DigitTree = FingerTree.Tree<number, number>;
 
@@ -82,7 +84,13 @@ export default class RealNum {
   // assumes this is trimmed
   size(): Size {
     if (this.isZero()) return NegInfSize;
-    return new RegularSize(this.digits.measure() - 1 + this.exp);
+    return new RegularSize(this.digits.measure() + this.exp);
+  }
+
+  // assumes this is trimmed
+  prec(): Precision {
+    if (this.isZero()) return NegInfPrec;
+    return new RegularPrec(-this.exp);
   }
 
   // assumes this is trimmed
@@ -110,6 +118,73 @@ export default class RealNum {
     str += '.';
     str += [...right].join('');
     return str;
+  }
+
+  // assumes this is trimmed
+  roundWithFunc(
+    prec: Precision,
+    shouldRoundAwayFromZero: (d: number, pos: boolean) => boolean,
+  ): RealNum {
+    if (this.isZero()) return RealNum.zero;
+    if (prec === NegInfPrec) {
+      // deciding number is certainly 0 here
+      const roundAway = shouldRoundAwayFromZero(0, this.pos);
+      if (roundAway) {
+        throw new Error(
+          `Cannot infinitely round ${this.toString()} away from zero`,
+        );
+      }
+      return RealNum.zero;
+    }
+
+    // since this isn't zero, this.prec() is a RegularPrec
+    const thisRegPrec = downCast(this.prec(), RegularPrec);
+
+    // if this.prec() <= prec, can return this
+    if (thisRegPrec.le(prec)) return this;
+
+    // since prec < this.prec() and prec != -inf
+    // prec is a RegularPrec
+    const regPrec = downCast(prec, RegularPrec);
+
+    // since this != 0, this.size() is a RegularSize
+    const thisRegSize = downCast(this.size(), RegularSize);
+
+    // the deciding digit's position
+    // is position after decimal adjusted by prec
+    const decidingPos = thisRegSize.size + regPrec.prec;
+    // also equals digits.measure() + this.exp + prec
+    // also equals digits.measure() - this.prec() + prec
+    // since prec < this.prec(), decidingPos < digits.measure()
+
+    if (decidingPos < 0) {
+      // the deciding number is before start of
+      // the number, so is 0
+      const roundAway = shouldRoundAwayFromZero(0, this.pos);
+      if (roundAway) {
+        return new RealNum(
+          FingerTree.from(digitMeasure, [1]),
+          -regPrec.prec,
+          this.pos,
+        );
+      }
+      return RealNum.zero;
+    }
+
+    // now we are guaranteed to have a digit in the digits list to have to decide on
+    // ie. 0 <= decidingPos < digits.measure()
+    const [left, right] = this.digits.split((m) => m > decidingPos);
+    const decidingDig = right.head();
+    const roundAway = shouldRoundAwayFromZero(decidingDig, this.pos);
+    if (roundAway) {
+      return new RealNum(left.add1(), -regPrec.prec, this.pos).trim();
+    }
+    return new RealNum(left, -regPrec.prec, this.pos).trim();
+  }
+
+  // assumes this is trimmed
+  round(prec: Precision): RealNum {
+    return this.roundWithFunc(prec, (d, _pos) => d >= 5);
   }
 
   static zero: RealNum = new RealNum(FingerTree.empty(digitMeasure), 0, true);

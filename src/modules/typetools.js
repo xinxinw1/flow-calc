@@ -19,3 +19,11 @@ export function downCast<Base: Object, Child: Base>(
   }
   return v;
 }
+
+// $FlowIgnore[unclear-type]
+export function unknownSubtype<T: Object>(v: T, base: Class<T>): any {
+  throw new Error(`Unknown ${base.name} type ${v.constructor.name}`);
+}
+
+// $FlowIgnore[unclear-type]
+export type ClassType = Class<Object>;

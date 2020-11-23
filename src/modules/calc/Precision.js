@@ -1,6 +1,6 @@
 // @flow
 
-import { downCast } from '../typetools';
+import { downCast, unknownSubtype } from '../typetools';
 import AbstractClass from '../AbstractClass';
 
 export default class Precision extends AbstractClass {
@@ -17,7 +17,52 @@ export default class Precision extends AbstractClass {
   equalsSameClass(_other: Precision): boolean {
     return this.abstractMethod(this.equalsSameClass);
   }
+
+  le(_other: Precision): boolean {
+    return this.abstractMethod(this.equalsSameClass);
+  }
 }
+
+class InfPrecType extends Precision {
+  constructor() {
+    super();
+    Object.freeze(this);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  equalsSameClass(_other: Precision): boolean {
+    return true;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  le(other: Precision): boolean {
+    if (other instanceof InfPrecType) {
+      return true;
+    }
+    return false;
+  }
+}
+
+export const InfPrec: InfPrecType = new InfPrecType();
+
+class NegInfPrecType extends Precision {
+  constructor() {
+    super();
+    Object.freeze(this);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  equalsSameClass(_other: Precision): boolean {
+    return true;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  le(_other: Precision): boolean {
+    return true;
+  }
+}
+
+export const NegInfPrec: NegInfPrecType = new NegInfPrecType();
 
 export class RegularPrec extends Precision {
   prec: number;
@@ -32,18 +77,17 @@ export class RegularPrec extends Precision {
     const otherCasted = downCast<Precision, _>(other, RegularPrec);
     return this.prec === otherCasted.prec;
   }
-}
 
-class InfPrecType extends Precision {
-  constructor() {
-    super();
-    Object.freeze(this);
+  le(other: Precision): boolean {
+    if (other instanceof RegularPrec) {
+      return this.prec <= other.prec;
+    }
+    if (other === InfPrec) {
+      return true;
+    }
+    if (other === NegInfPrec) {
+      return false;
+    }
+    return unknownSubtype(other, Precision);
   }
-
-  // eslint-disable-next-line class-methods-use-this
-  equalsSameClass(_other: Precision): boolean {
-    return true;
-  }
 }
-
-export const InfPrec: InfPrecType = new InfPrecType();

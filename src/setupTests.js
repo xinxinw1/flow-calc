@@ -10,6 +10,16 @@ import util from 'util';
 
 expect.extend({
   toObjEqual(received, other) {
+    if (!received || !received.equals) {
+      return {
+        message: () =>
+          `received object ${util.inspect(
+            received,
+          )} doesn't have a .equals() method`,
+        pass: false,
+      };
+    }
+
     const pass = received.equals(other);
     if (pass) {
       return {

@@ -1,6 +1,6 @@
 // @flow
 
-import { downCast } from './typetools';
+import { downCast, unknownSubtype } from './typetools';
 
 test('down casting works', () => {
   class Base {}
@@ -15,4 +15,15 @@ test('down casting works', () => {
   expect(() => {
     downCast(b, Child2);
   }).toThrow('Cannot cast value of type Child to class Child2');
+});
+
+test('unknown subtype works', () => {
+  class Base {}
+  class Child extends Base {}
+
+  const b: Base = new Child();
+
+  expect(() => {
+    unknownSubtype(b, Base);
+  }).toThrow('Unknown Base type Child');
 });

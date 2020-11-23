@@ -4,6 +4,7 @@ import fc from 'fast-check';
 import RealNum from './RealNum';
 
 import Size, { RegularSize, NegInfSize } from './Size';
+import Precision, { RegularPrec, NegInfPrec } from './Precision';
 
 test('RealNum.zero is correct', () => {
   const n: RealNum = RealNum.zero;
@@ -137,13 +138,25 @@ test('can negate', () => {
 });
 
 test.each([
-  [1, new RegularSize(0)],
+  [1, new RegularSize(1)],
   [0, NegInfSize],
-  [0.1, new RegularSize(-1)],
-  [9.999, new RegularSize(0)],
-  [102, new RegularSize(2)],
+  [0.1, new RegularSize(0)],
+  [9.999, new RegularSize(1)],
+  [102, new RegularSize(3)],
+  [124000, new RegularSize(6)],
 ])('size of %p should be %o', (v: number, size: Size) => {
   expect(RealNum.fromNum(v).size()).toObjEqual(size);
+});
+
+test.each([
+  [1, new RegularPrec(0)],
+  [0, NegInfPrec],
+  [0.1, new RegularPrec(1)],
+  [9.999, new RegularPrec(3)],
+  [102, new RegularPrec(0)],
+  [124000, new RegularPrec(-3)],
+])('prec of %p should be %o', (v: number, prec: Precision) => {
+  expect(RealNum.fromNum(v).prec()).toObjEqual(prec);
 });
 
 test.each([
