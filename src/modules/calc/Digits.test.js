@@ -83,8 +83,8 @@ test.each([
 test('arbitrary add1 check', () => {
   fc.assert(
     fc.property(fc.bigUintN(33220), (n: {}) => {
-      // $FlowIgnore[bigint-unsupported]
       expect(Digits.fromStr(n.toString()).add1().toString()).toBe(
+        // $FlowIgnore[bigint-unsupported]
         (n + 1n).toString(),
       );
     }),
