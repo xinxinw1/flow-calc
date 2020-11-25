@@ -6,7 +6,7 @@ import { RegularPrec, InfPrec, NegInfPrec } from '../Precision';
 import ConstExpr from './ConstExpr';
 
 test('eval works correctly', () => {
-  const env = new Environment();
+  const env = new Environment({ precMargin: 0 });
   const expr = new ConstExpr(RealNum.fromNum(4.3));
   const evalObj = env.getRealEvalObj(expr);
 
