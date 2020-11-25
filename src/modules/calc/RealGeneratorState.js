@@ -11,6 +11,7 @@ export default class RealGeneratorState {
   currNum: RealNum = RealNum.zero;
   currPrec: Precision = NegInfPrec;
 
+  // gen must satisfy the conditions on RealEvalObj.makeOutputGenerator
   constructor(
     gen: Generator<RealNum, RealNum, Precision>,
     sourceClass: ClassType,
