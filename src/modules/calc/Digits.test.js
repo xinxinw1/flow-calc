@@ -21,6 +21,12 @@ test('creates Digits from string', () => {
 test('iterate on Digits', () => {
   const digits = Digits.fromStr('12345');
   expect([...digits]).toStrictEqual([1, 2, 3, 4, 5]);
+  expect([...digits.iter()]).toStrictEqual([1, 2, 3, 4, 5]);
+});
+
+test('reverse iterate on Digits', () => {
+  const digits = Digits.fromStr('12345');
+  expect([...digits.riter()]).toStrictEqual([5, 4, 3, 2, 1]);
 });
 
 test('Digits operations', () => {
@@ -100,3 +106,32 @@ test('arbitrary add1 check', () => {
     }),
   );
 });
+
+test.each([
+  ['0', '0', 0, 0, '0', false],
+  ['', '1', 0, 0, '1', false],
+  ['1', '1', 0, 0, '2', false],
+  ['9', '10', 0, 0, '19', false],
+  ['000', '001', 0, 0, '001', false],
+  ['999', '1000', 0, 0, '1999', false],
+  ['59', '60', 0, 0, '19', true],
+  ['099', '100', 0, 0, '199', false],
+  ['1', '2', 2, 0, '102', false],
+  ['1', '2', 0, 2, '201', false],
+])(
+  'expect addRight(%p, %p, %p, %p) == %p',
+  (
+    a: string,
+    b: string,
+    aRightWait: number,
+    bRightWait: number,
+    ans: string,
+    ansCarry: boolean,
+  ) => {
+    const aDig = Digits.fromStr(a);
+    const bDig = Digits.fromStr(b);
+    const [res, carry] = Digits.addRight(aDig, bDig, aRightWait, bRightWait);
+    expect(res.toString()).toBe(ans);
+    expect(carry).toBe(ansCarry);
+  },
+);

@@ -18,3 +18,9 @@ export function* izip<T>(...iters: Array<Iterable<T>>): Iterator<Array<T>> {
     yield nextVal;
   }
 }
+
+export function* reversed<T>(it: Iterable<T>): Iterator<T> {
+  const items = [...it];
+  items.reverse();
+  yield* items;
+}

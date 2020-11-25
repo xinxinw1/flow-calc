@@ -1,6 +1,6 @@
 // @flow
 
-import { izip } from './itertools';
+import { iter, izip, reversed } from './itertools';
 
 test('izip', () => {
   const first = [1, 2, 3];
@@ -25,6 +25,34 @@ test('izip', () => {
   });
 
   expect(zipped.next()).toStrictEqual({
+    value: undefined,
+    done: true,
+  });
+});
+
+test('reversed', () => {
+  expect([...reversed([1, 2, 3])]).toStrictEqual([3, 2, 1]);
+  expect([...reversed([])]).toStrictEqual([]);
+
+  const it = iter([3, 4, 5]);
+  const revIt = reversed(it);
+
+  expect(revIt.next()).toStrictEqual({
+    value: 5,
+    done: false,
+  });
+
+  expect(revIt.next()).toStrictEqual({
+    value: 4,
+    done: false,
+  });
+
+  expect(revIt.next()).toStrictEqual({
+    value: 3,
+    done: false,
+  });
+
+  expect(revIt.next()).toStrictEqual({
     value: undefined,
     done: true,
   });

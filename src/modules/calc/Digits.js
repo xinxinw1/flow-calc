@@ -1,6 +1,8 @@
 // @flow
 
-import { izip } from '../itertools';
+import nullthrows from 'nullthrows';
+
+import { izip, reversed } from '../itertools';
 import FingerTree from '../FingerTree';
 
 type DigitTree = FingerTree.Tree<number, number>;
@@ -89,13 +91,23 @@ export default class Digits {
     return new Digits(this.digits.concat(t.digits));
   }
 
+  iter(): Iterator<number> {
+    return this.digits[Symbol.iterator]();
+  }
+
+  // will get all digits using left-to-right iterator
+  // and then reverse it, which is pretty wasteful, but
+  // can't really do better without an answer to
+  // https://github.com/aureooms/js-fingertree/issues/107
+  *riter(): Iterator<number> {
+    yield* reversed(this);
+  }
+
   // $FlowIgnore[unclear-type]
   /*:: @@iterator(): Iterator<number> { return ({}: any); } */
 
   // $FlowIgnore[unsupported-syntax]
-  [Symbol.iterator](): Iterator<number> {
-    return this.digits[Symbol.iterator]();
-  }
+  [Symbol.iterator]: Iterator<number> = this.iter;
 
   equals(other: Digits): boolean {
     if (this.size() !== other.size()) return false;
@@ -124,6 +136,89 @@ export default class Digits {
       right = right.cons(0);
     }
     return right.cons(1);
+  }
+
+  // adds digits a and b aligned on the left side
+  // with a shifted to the right by aWait and
+  // b shifted to the right by bWait
+  // returns the sum without the possible final carry
+  // and whether there was a final carry or not
+  static addLeft(
+    a: Digits,
+    b: Digits,
+    aLeftWait: number,
+    bLeftWait: number,
+  ): [Digits, boolean] {
+    const aSize = a.size() + aLeftWait;
+    const bSize = b.size() + bLeftWait;
+    const maxSize = Math.max(aSize, bSize);
+
+    const aRightWait = maxSize - aSize;
+    const bRightWait = maxSize - bSize;
+
+    return Digits.addRight(a, b, aRightWait, bRightWait);
+  }
+
+  // adds digits a and b aligned on the right side
+  // with a shifted to the left by aWait and
+  // b shifted to the left by bWait
+  // returns the sum without the possible final carry
+  // and whether there was a final carry or not
+  static addRight(
+    a: Digits,
+    b: Digits,
+    aRightWait: number,
+    bRightWait: number,
+  ): [Digits, boolean] {
+    const aIter = a.riter();
+    const bIter = b.riter();
+
+    let sum = Digits.empty;
+    let carry = 0;
+
+    let aWait = aRightWait;
+    let bWait = bRightWait;
+
+    let aDone = false;
+    let bDone = false;
+
+    for (;;) {
+      let aDig = 0;
+      let bDig = 0;
+      let value;
+
+      if (aWait > 0) {
+        aWait -= 1;
+      } else if (!aDone) {
+        ({ value, done: aDone } = aIter.next());
+        if (!aDone) {
+          aDig = nullthrows(value);
+        }
+      }
+
+      if (bWait > 0) {
+        bWait -= 1;
+      } else if (!bDone) {
+        ({ value, done: bDone } = bIter.next());
+        if (!bDone) {
+          bDig = nullthrows(value);
+        }
+      }
+
+      if (aDone && bDone) break;
+
+      const digSum = aDig + bDig + carry;
+
+      if (digSum >= 10) {
+        sum = sum.cons(digSum - 10);
+        carry = 1;
+      } else {
+        sum = sum.cons(digSum);
+        carry = 0;
+      }
+    }
+
+    return [sum, carry === 1];
   }
 }
 
