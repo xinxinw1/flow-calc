@@ -78,8 +78,10 @@ export default class Digits {
     return new Digits(this.digits.cons(x));
   }
 
-  split(keepUntil: (count: number) => boolean): [Digits, Digits] {
-    const [left, right] = this.digits.split(keepUntil);
+  // split the digits so that the left side
+  // has numInLeft digits
+  split(numInLeft: number): [Digits, Digits] {
+    const [left, right] = this.digits.split((m) => m > numInLeft);
     return [new Digits(left), new Digits(right)];
   }
 

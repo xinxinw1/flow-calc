@@ -97,7 +97,7 @@ export default class RealNum {
       str += [...this.digits].join('');
       return str;
     }
-    const [left, right] = this.digits.split((m) => m > numDig + this.exp);
+    const [left, right] = this.digits.split(numDig + this.exp);
     str += [...left].join('');
     str += '.';
     str += [...right].join('');
@@ -153,7 +153,7 @@ export default class RealNum {
 
     // now we are guaranteed to have a digit in the digits list to have to decide on
     // ie. 0 <= decidingPos < digits.size()
-    const [left, right] = this.digits.split((m) => m > decidingPos);
+    const [left, right] = this.digits.split(decidingPos);
     const decidingDig = right.head();
     const roundAway = shouldRoundAwayFromZero(decidingDig, this.pos);
     if (roundAway) {

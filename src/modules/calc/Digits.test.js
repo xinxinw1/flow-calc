@@ -25,12 +25,22 @@ test('iterate on Digits', () => {
 
 test('Digits operations', () => {
   const digits = Digits.fromStr('12345');
+
   expect(digits.head()).toBe(1);
   expect(digits.last()).toBe(5);
+
   expect([...digits.init()]).toStrictEqual([1, 2, 3, 4]);
   expect([...digits.tail()]).toStrictEqual([2, 3, 4, 5]);
   expect([...digits.push(6)]).toStrictEqual([1, 2, 3, 4, 5, 6]);
   expect([...digits.cons(0)]).toStrictEqual([0, 1, 2, 3, 4, 5]);
+
+  const [left, right] = digits.split(2);
+  expect([...left]).toStrictEqual([1, 2]);
+  expect([...right]).toStrictEqual([3, 4, 5]);
+
+  const [left2, right2] = digits.split(7);
+  expect([...left2]).toStrictEqual([1, 2, 3, 4, 5]);
+  expect([...right2]).toStrictEqual([]);
 
   const digits2 = Digits.fromStr('98765');
   expect([...digits.concat(digits2)]).toStrictEqual([
