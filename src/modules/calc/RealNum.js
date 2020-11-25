@@ -6,15 +6,55 @@ import Size, { RegularSize, NegInfSize } from './Size';
 import Precision, { RegularPrec, NegInfPrec } from './Precision';
 
 export default class RealNum {
+  pos: boolean;
   digits: Digits;
   exp: number;
-  pos: boolean;
 
-  constructor(digits: Digits, exp: number, pos: boolean) {
+  constructor(pos: boolean, digits: Digits, exp: number) {
+    this.pos = pos;
     this.digits = digits;
     this.exp = exp;
-    this.pos = pos;
     Object.freeze(this);
+  }
+
+  static zero: RealNum = new RealNum(true, Digits.empty, 0);
+  static one: RealNum = RealNum.fromNum(1);
+
+  static fromDigits(pos: boolean, digits: Digits, exp: number): RealNum {
+    return new RealNum(pos, digits, exp).trim();
+  }
+
+  static fromNum(n: number): RealNum {
+    return RealNum.fromStr(n.toString());
+  }
+
+  static validStr(s: string): boolean {
+    const numRegex = /^-?[0-9]+(\.[0-9]+)?$/;
+    return numRegex.test(s);
+  }
+
+  static fromStr(s: string): RealNum {
+    if (!RealNum.validStr(s)) {
+      throw new Error(`Input string ${s} is not a valid number`);
+    }
+
+    const pos = s[0] !== '-';
+    const start = pos ? 0 : 1;
+
+    const arr: Array<number> = [];
+    let exp: number = 0;
+
+    for (let i = start; i < s.length; i += 1) {
+      if (s[i] === '.') {
+        exp = -(s.length - 1 - i);
+      } else {
+        arr.push(parseInt(s[i], 10));
+      }
+    }
+
+    const tree = Digits.fromIter(arr);
+
+    return RealNum.fromDigits(pos, tree, exp);
   }
 
   trim(): RealNum {
@@ -41,7 +81,7 @@ export default class RealNum {
 
     if (!changed) return this;
 
-    return new RealNum(digits, exp, pos);
+    return new RealNum(pos, digits, exp);
   }
 
   isZero(): boolean {
@@ -62,7 +102,7 @@ export default class RealNum {
   // returns trimmed version if this is trimmed
   neg(): RealNum {
     if (this.isZero()) return RealNum.zero;
-    return new RealNum(this.digits, this.exp, !this.pos);
+    return new RealNum(!this.pos, this.digits, this.exp);
   }
 
   // assumes this is trimmed
@@ -157,7 +197,7 @@ export default class RealNum {
       // the number, so is 0
       const roundAway = shouldRoundAwayFromZero(0, this.pos);
       if (roundAway) {
-        return new RealNum(Digits.fromIter([1]), -precNum, this.pos);
+        return new RealNum(this.pos, Digits.fromIter([1]), -precNum);
       }
       return RealNum.zero;
     }
@@ -168,9 +208,9 @@ export default class RealNum {
     const decidingDig = right.head();
     const roundAway = shouldRoundAwayFromZero(decidingDig, this.pos);
     if (roundAway) {
-      return new RealNum(left.add1(), -precNum, this.pos).trim();
+      return RealNum.fromDigits(this.pos, left.add1(), -precNum);
     }
-    return new RealNum(left, -precNum, this.pos).trim();
+    return RealNum.fromDigits(this.pos, left, -precNum);
   }
 
   // assumes this is trimmed
@@ -191,42 +231,6 @@ export default class RealNum {
   // assumes this is trimmed
   trunc(prec: Precision): RealNum {
     return this.roundWithFunc(prec, (_d, _pos) => false);
-  }
-
-  static zero: RealNum = new RealNum(Digits.empty, 0, true);
-  static one: RealNum = RealNum.fromNum(1);
-
-  static fromNum(n: number): RealNum {
-    return RealNum.fromStr(n.toString());
-  }
-
-  static validStr(s: string): boolean {
-    const numRegex = /^-?[0-9]+(\.[0-9]+)?$/;
-    return numRegex.test(s);
-  }
-
-  static fromStr(s: string): RealNum {
-    if (!RealNum.validStr(s)) {
-      throw new Error(`Input string ${s} is not a valid number`);
-    }
-
-    const pos = s[0] !== '-';
-    const start = pos ? 0 : 1;
-
-    const arr: Array<number> = [];
-    let exp: number = 0;
-
-    for (let i = start; i < s.length; i += 1) {
-      if (s[i] === '.') {
-        exp = -(s.length - 1 - i);
-      } else {
-        arr.push(parseInt(s[i], 10));
-      }
-    }
-
-    const tree = Digits.fromIter(arr);
-
-    return new RealNum(tree, exp, pos).trim();
   }
 }
 
