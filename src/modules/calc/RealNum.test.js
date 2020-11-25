@@ -146,6 +146,9 @@ test.each([
   [124000, new RegularSize(6)],
 ])('size of %p should be %o', (v: number, size: Size) => {
   expect(RealNum.fromNum(v).size()).toObjEqual(size);
+  if (v !== 0) {
+    expect(new RegularSize(RealNum.fromNum(v).sizeNonZero())).toObjEqual(size);
+  }
 });
 
 test.each([
@@ -157,6 +160,9 @@ test.each([
   [124000, new RegularPrec(-3)],
 ])('prec of %p should be %o', (v: number, prec: Precision) => {
   expect(RealNum.fromNum(v).prec()).toObjEqual(prec);
+  if (v !== 0) {
+    expect(new RegularPrec(RealNum.fromNum(v).precNonZero())).toObjEqual(prec);
+  }
 });
 
 test.each([

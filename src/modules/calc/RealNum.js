@@ -72,9 +72,28 @@ export default class RealNum {
   }
 
   // assumes this is trimmed
+  // sizeNonZero() + precNonZero() = digits.size()
+  sizeNonZero(): number {
+    if (this.isZero()) {
+      throw new Error('sizeNonZero not defined for 0');
+    }
+    return this.digits.size() + this.exp;
+  }
+
+  // assumes this is trimmed
   prec(): Precision {
     if (this.isZero()) return NegInfPrec;
-    return new RegularPrec(-this.exp);
+    return new RegularPrec(0 - this.exp);
+  }
+
+  // assumes this is trimmed
+  // sizeNonZero() + precNonZero() = digits.size()
+  precNonZero(): number {
+    if (this.isZero()) {
+      throw new Error('precNonZero not defined for 0');
+    }
+    // 0-exp avoids -0
+    return 0 - this.exp;
   }
 
   // assumes this is trimmed
@@ -120,33 +139,25 @@ export default class RealNum {
       }
       return RealNum.zero;
     }
-
-    // since this isn't zero, this.prec() is a RegularPrec
-    const thisRegPrec = downCast(this.prec(), RegularPrec);
-
-    // if this.prec() <= prec, can return this
-    if (thisRegPrec.le(prec)) return this;
+    if (this.prec().le(prec)) return this;
 
     // since prec < this.prec() and prec != -inf
     // prec is a RegularPrec
-    const regPrec = downCast(prec, RegularPrec);
-
-    // since this != 0, this.size() is a RegularSize
-    const thisRegSize = downCast(this.size(), RegularSize);
+    const precNum = downCast(prec, RegularPrec).prec;
 
     // the deciding digit's position
     // is position after decimal adjusted by prec
-    const decidingPos = thisRegSize.size + regPrec.prec;
-    // also equals digits.size() + this.exp + prec
-    // also equals digits.size() - this.prec() + prec
-    // since prec < this.prec(), decidingPos < digits.size()
+    const decidingPos = this.sizeNonZero() + precNum;
+    // since !(this.prec() <= prec),
+    // this.prec() > precNum
+    // so decidingPos < digits.size() = this.size() + this.prec()
 
     if (decidingPos < 0) {
       // the deciding number is before start of
       // the number, so is 0
       const roundAway = shouldRoundAwayFromZero(0, this.pos);
       if (roundAway) {
-        return new RealNum(Digits.fromIter([1]), -regPrec.prec, this.pos);
+        return new RealNum(Digits.fromIter([1]), -precNum, this.pos);
       }
       return RealNum.zero;
     }
@@ -157,9 +168,9 @@ export default class RealNum {
     const decidingDig = right.head();
     const roundAway = shouldRoundAwayFromZero(decidingDig, this.pos);
     if (roundAway) {
-      return new RealNum(left.add1(), -regPrec.prec, this.pos).trim();
+      return new RealNum(left.add1(), -precNum, this.pos).trim();
     }
-    return new RealNum(left, -regPrec.prec, this.pos).trim();
+    return new RealNum(left, -precNum, this.pos).trim();
   }
 
   // assumes this is trimmed
