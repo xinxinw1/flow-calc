@@ -1,10 +1,11 @@
 // @flow
 
 import Precision, { RegularPrec, InfPrec, NegInfPrec } from './Precision';
+import { RegularInt } from './ExtInteger';
 
 test('creates precision', () => {
   expect(() => {
-    const _ = new Precision();
+    const _ = new Precision(new RegularInt(5));
   }).toThrow('Precision is an abstract class');
 
   const r = new RegularPrec(3);
@@ -38,13 +39,16 @@ test.each([
   [InfPrec, NegInfPrec, false],
   [NegInfPrec, InfPrec, false],
   [NegInfPrec, NegInfPrec, true],
-])('compares precisions %o == %o should be %p', (p1, p2, res) => {
-  if (res) {
-    expect(p1).toObjEqual(p2);
-  } else {
-    expect(p1).not.toObjEqual(p2);
-  }
-});
+])(
+  'compares precisions %o == %o should be %p',
+  (p1: Precision, p2: Precision, res: boolean) => {
+    if (res) {
+      expect(p1).toObjEqual(p2);
+    } else {
+      expect(p1).not.toObjEqual(p2);
+    }
+  },
+);
 
 test.each([
   [new RegularPrec(0), new RegularPrec(0), true],
@@ -58,6 +62,38 @@ test.each([
   [InfPrec, NegInfPrec, false],
   [NegInfPrec, InfPrec, true],
   [NegInfPrec, NegInfPrec, true],
-])('compares precisions %o <= %o should be %p', (p1, p2, res) => {
-  expect(p1.le(p2)).toBe(res);
-});
+])(
+  'compares precisions %o <= %o should be %p',
+  (p1: Precision, p2: Precision, res: boolean) => {
+    expect(p1.le(p2)).toBe(res);
+  },
+);
+
+test.each([
+  [new RegularPrec(0), new RegularPrec(0), new RegularPrec(0)],
+  [new RegularPrec(0), new RegularPrec(1), new RegularPrec(1)],
+  [new RegularPrec(1), new RegularPrec(0), new RegularPrec(1)],
+  [new RegularPrec(0), InfPrec, InfPrec],
+  [new RegularPrec(0), NegInfPrec, NegInfPrec],
+  [InfPrec, new RegularPrec(0), InfPrec],
+  [NegInfPrec, new RegularPrec(0), NegInfPrec],
+  [InfPrec, InfPrec, InfPrec],
+  [NegInfPrec, NegInfPrec, NegInfPrec],
+])(
+  'adds precisions %o + %o should be %o',
+  (p1: Precision, p2: Precision, p3: Precision) => {
+    expect(p1.add(p2)).toObjEqual(p3);
+  },
+);
+
+test.each([
+  [InfPrec, NegInfPrec],
+  [NegInfPrec, InfPrec],
+])(
+  'adds precisions %o + %o should be an error',
+  (p1: Precision, p2: Precision) => {
+    expect(() => {
+      p1.add(p2);
+    }).toThrow('cannot add inf integer with neg inf integer');
+  },
+);

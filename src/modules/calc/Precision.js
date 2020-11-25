@@ -1,45 +1,46 @@
 // @flow
 
-import { downCast, unknownSubtype } from '../typetools';
+import { unknownSubtype } from '../typetools';
 import AbstractClass from '../AbstractClass';
+import ExtInteger, { RegularInt, InfInt, NegInfInt } from './ExtInteger';
 
 export default class Precision extends AbstractClass {
-  constructor() {
+  n: ExtInteger;
+
+  constructor(n: ExtInteger) {
     super();
+    this.n = n;
     this.abstractClass(Precision);
   }
 
   equals(other: Precision): boolean {
-    if (this.constructor !== other.constructor) return false;
-    return this.equalsSameClass(other);
+    return this.n.equals(other.n);
   }
 
-  equalsSameClass(_other: Precision): boolean {
-    return this.abstractMethod(this.equalsSameClass);
+  le(other: Precision): boolean {
+    return this.n.le(other.n);
   }
 
-  le(_other: Precision): boolean {
-    return this.abstractMethod(this.equalsSameClass);
+  add(other: number | Precision): Precision {
+    let result = new RegularInt(0);
+    if (other instanceof Precision) {
+      result = this.n.add(other.n);
+    } else {
+      result = this.n.add(other);
+    }
+    if (result === InfInt) return InfPrec;
+    if (result === NegInfInt) return NegInfPrec;
+    if (result instanceof RegularInt) {
+      return new RegularPrec(result.n);
+    }
+    return unknownSubtype(result, ExtInteger);
   }
 }
 
 class InfPrecType extends Precision {
   constructor() {
-    super();
+    super(InfInt);
     Object.freeze(this);
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  equalsSameClass(_other: Precision): boolean {
-    return true;
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  le(other: Precision): boolean {
-    if (other instanceof InfPrecType) {
-      return true;
-    }
-    return false;
   }
 }
 
@@ -47,18 +48,8 @@ export const InfPrec: InfPrecType = new InfPrecType();
 
 class NegInfPrecType extends Precision {
   constructor() {
-    super();
+    super(NegInfInt);
     Object.freeze(this);
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  equalsSameClass(_other: Precision): boolean {
-    return true;
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  le(_other: Precision): boolean {
-    return true;
   }
 }
 
@@ -68,26 +59,8 @@ export class RegularPrec extends Precision {
   prec: number;
 
   constructor(prec: number) {
-    super();
+    super(new RegularInt(prec));
     this.prec = prec;
     Object.freeze(this);
-  }
-
-  equalsSameClass(other: Precision): boolean {
-    const otherCasted = downCast<Precision, _>(other, RegularPrec);
-    return this.prec === otherCasted.prec;
-  }
-
-  le(other: Precision): boolean {
-    if (other instanceof RegularPrec) {
-      return this.prec <= other.prec;
-    }
-    if (other === InfPrec) {
-      return true;
-    }
-    if (other === NegInfPrec) {
-      return false;
-    }
-    return unknownSubtype(other, Precision);
   }
 }

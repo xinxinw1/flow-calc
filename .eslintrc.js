@@ -39,6 +39,7 @@ module.exports = {
       'LabeledStatement',
       'WithStatement',
     ],
+    'no-use-before-define': 'off',
   },
   overrides: [
     {
