@@ -1,13 +1,13 @@
 // @flow
 
-import { iter, izip, reversed } from './itertools';
+import { iter, zip, reversed } from './itertools';
 
-test('izip', () => {
+test('zip', () => {
   const first = [1, 2, 3];
   const second = [6, 7, 8, 9];
   const third = [4, 5, 6];
 
-  const zipped = izip(first, second, third);
+  const zipped = zip(first, second, third);
 
   expect(zipped.next()).toStrictEqual({
     value: [1, 6, 4],

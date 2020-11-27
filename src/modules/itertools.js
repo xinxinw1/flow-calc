@@ -6,7 +6,7 @@ export function* iter<T>(iterable: Iterable<T>): Iterator<T> {
   yield* iterable;
 }
 
-export function* izip<T>(...iters: Array<Iterable<T>>): Iterator<Array<T>> {
+export function* zip<T>(...iters: Array<Iterable<T>>): Iterator<Array<T>> {
   const iterators = iters.map(iter);
   while (true) {
     const nextVal: Array<T> = [];

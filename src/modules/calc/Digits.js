@@ -2,7 +2,7 @@
 
 import nullthrows from 'nullthrows';
 
-import { izip, reversed } from '../itertools';
+import { zip, reversed } from '../itertools';
 import FingerTree from '../FingerTree';
 
 type DigitTree = FingerTree.Tree<number, number>;
@@ -112,7 +112,7 @@ export default class Digits {
   equals(other: Digits): boolean {
     if (this.size() !== other.size()) return false;
 
-    const zipped = izip(this, other);
+    const zipped = zip(this, other);
 
     for (const [d, otherD] of zipped) {
       if (d !== otherD) return false;
