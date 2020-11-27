@@ -232,6 +232,32 @@ export default class RealNum {
   trunc(prec: Precision): RealNum {
     return this.roundWithFunc(prec, (_d, _pos) => false);
   }
+
+  // assumes this is trimmed
+  // returns the digit before prec, the digits after,
+  // and the number of zeros before the digits after (leftWait)
+  getDigitsAfterPrec(prec: Precision): [number, Digits, number] {
+    if (!(prec instanceof RegularPrec)) {
+      throw new Error('digits after prec must be given a regular prec');
+    }
+    if (this.isZero()) return [0, Digits.empty, 0];
+
+    const precNum = prec.prec;
+
+    const splitDigits = this.sizeNonZero() + precNum;
+
+    if (splitDigits <= 0) {
+      return [0, this.digits, 0 - splitDigits];
+    }
+
+    if (splitDigits > this.digits.size()) {
+      return [0, Digits.empty, 0];
+    }
+
+    const [left, right] = this.digits.split(splitDigits);
+
+    return [left.last(), right, 0];
+  }
 }
 
 Object.freeze(RealNum);
