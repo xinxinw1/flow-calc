@@ -108,6 +108,28 @@ test('arbitrary add1 check', () => {
 });
 
 test.each([
+  ['1', '0'],
+  ['001', '000'],
+  ['9', '8'],
+  ['10', '09'],
+  ['999', '998'],
+  ['1000', '0999'],
+  ['60', '59'],
+  ['100', '099'],
+])('expect digits %o - 1 == %o', (s1: string, s2: string) => {
+  expect(Digits.fromStr(s1).sub1().toString()).toBe(s2);
+});
+
+test.each([['0'], [''], ['000']])(
+  'expect digits %o - 1 to throw',
+  (s1: string) => {
+    expect(() => {
+      Digits.fromStr(s1).sub1();
+    }).toThrow('Cannot subtract 1 from 0');
+  },
+);
+
+test.each([
   ['0', '0', 0, 0, '0', false],
   ['', '1', 0, 0, '1', false],
   ['1', '1', 0, 0, '2', false],

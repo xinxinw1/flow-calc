@@ -138,6 +138,23 @@ export default class Digits {
     return right.cons(1);
   }
 
+  sub1(): Digits {
+    let left = this;
+    let right = Digits.empty;
+    while (!left.isEmpty()) {
+      const last = left.last();
+      if (last !== 0) {
+        return left
+          .init()
+          .push(last - 1)
+          .concat(right);
+      }
+      left = left.init();
+      right = right.cons(9);
+    }
+    throw new Error('Cannot subtract 1 from 0');
+  }
+
   // adds digits a and b aligned on the left side
   // with a shifted to the right by aWait and
   // b shifted to the right by bWait
