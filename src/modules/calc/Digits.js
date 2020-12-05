@@ -173,7 +173,19 @@ export default class Digits {
     const aRightWait = maxSize - aSize;
     const bRightWait = maxSize - bSize;
 
-    return Digits.addRight(a, b, aRightWait, bRightWait);
+    let [sum, carry] = Digits.addRight(a, b, aRightWait, bRightWait);
+
+    // pad left when sum size doesn't match up
+    while (sum.size() < maxSize) {
+      if (carry) {
+        sum = sum.cons(1);
+        carry = false;
+      } else {
+        sum = sum.cons(0);
+      }
+    }
+
+    return [sum, carry];
   }
 
   // adds digits a and b aligned on the right side
