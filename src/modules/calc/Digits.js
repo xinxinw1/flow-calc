@@ -1,6 +1,6 @@
 // @flow
 
-import nullthrows from 'nullthrows';
+import assert from 'assert';
 
 import { zip, reversed } from '../itertools';
 import FingerTree from '../FingerTree';
@@ -87,6 +87,12 @@ export default class Digits {
     return [new Digits(left), new Digits(right)];
   }
 
+  // split the digits so that the right side
+  // has numInRight digits
+  splitRight(numInRight: number): [Digits, Digits] {
+    return this.split(this.size() - numInRight);
+  }
+
   concat(t: Digits): Digits {
     return new Digits(this.digits.concat(t.digits));
   }
@@ -155,99 +161,89 @@ export default class Digits {
     throw new Error('Cannot subtract 1 from 0');
   }
 
-  // adds digits a and b aligned on the left side
-  // with a shifted to the right by aWait and
-  // b shifted to the right by bWait
-  // returns the sum without the possible final carry
-  // and whether there was a final carry or not
-  static addLeft(
-    a: Digits,
-    b: Digits,
-    aLeftWait: number,
-    bLeftWait: number,
-  ): [Digits, boolean] {
-    const aSize = a.size() + aLeftWait;
-    const bSize = b.size() + bLeftWait;
-    const maxSize = Math.max(aSize, bSize);
-
-    const aRightWait = maxSize - aSize;
-    const bRightWait = maxSize - bSize;
-
-    let [sum, carry] = Digits.addRight(a, b, aRightWait, bRightWait);
-
-    // pad left when sum size doesn't match up
-    while (sum.size() < maxSize) {
-      if (carry) {
-        sum = sum.cons(1);
-        carry = false;
-      } else {
-        sum = sum.cons(0);
-      }
-    }
-
-    return [sum, carry];
-  }
-
   // adds digits a and b aligned on the right side
   // with a shifted to the left by aWait and
   // b shifted to the left by bWait
-  // returns the sum without the possible final carry
-  // and whether there was a final carry or not
   static addRight(
     a: Digits,
     b: Digits,
     aRightWait: number,
     bRightWait: number,
-  ): [Digits, boolean] {
-    const aIter = a.riter();
-    const bIter = b.riter();
-
-    let sum = Digits.empty;
-    let carry = 0;
-
-    let aWait = aRightWait;
-    let bWait = bRightWait;
-
-    let aDone = false;
-    let bDone = false;
-
-    for (;;) {
-      let aDig = 0;
-      let bDig = 0;
-      let value;
-
-      if (aWait > 0) {
-        aWait -= 1;
-      } else if (!aDone) {
-        ({ value, done: aDone } = aIter.next());
-        if (!aDone) {
-          aDig = nullthrows(value);
-        }
-      }
-
-      if (bWait > 0) {
-        bWait -= 1;
-      } else if (!bDone) {
-        ({ value, done: bDone } = bIter.next());
-        if (!bDone) {
-          bDig = nullthrows(value);
-        }
-      }
-
-      if (aDone && bDone) break;
-
-      const digSum = aDig + bDig + carry;
-
-      if (digSum >= 10) {
-        sum = sum.cons(digSum - 10);
-        carry = 1;
-      } else {
-        sum = sum.cons(digSum);
-        carry = 0;
-      }
+  ): Digits {
+    if (aRightWait < 0 || bRightWait < 0) {
+      throw new Error('addRight right waits must be >= 0');
     }
 
-    return [sum, carry === 1];
+    if (aRightWait > 0 && bRightWait > 0) {
+      throw new Error('addRight right waits must not both be > 0');
+    }
+
+    if (bRightWait > 0) {
+      return this.addRight(b, a, bRightWait, aRightWait);
+    }
+
+    // now only aRightWait can be > 0
+
+    if (aRightWait >= b.size()) {
+      // a = 123
+      // b =    234
+      // no need to add, just concat
+      let sum = a;
+      for (let i = 0; i < aRightWait - b.size(); i += 1) {
+        sum = sum.push(0);
+      }
+      sum = sum.concat(b);
+      return sum;
+    }
+
+    // now aRightWait < b.size()
+    // a = 123
+    // b =   234
+    // or
+    // a =  123
+    // b = 234234
+    const [bPrefix, suffix] = b.splitRight(aRightWait);
+
+    let prefix: Digits;
+    let aCommon: Digits;
+    let bCommon: Digits;
+    if (a.size() >= bPrefix.size()) {
+      // a = 123
+      // b =   234
+      [prefix, aCommon] = a.splitRight(bPrefix.size());
+      bCommon = bPrefix;
+    } else {
+      // a.size() < bPrefix.size()
+      // a =  123
+      // b = 234234
+      [prefix, bCommon] = bPrefix.splitRight(a.size());
+      aCommon = a;
+    }
+
+    assert(aCommon.size() === bCommon.size(), 'common sizes not equal');
+
+    let carry = 0;
+    let sumCommon = Digits.empty;
+    while (aCommon.size() > 0) {
+      const digSum = aCommon.last() + bCommon.last() + carry;
+
+      if (digSum >= 10) {
+        sumCommon = sumCommon.cons(digSum - 10);
+        carry = 1;
+      } else {
+        sumCommon = sumCommon.cons(digSum);
+        carry = 0;
+      }
+
+      aCommon = aCommon.init();
+      bCommon = bCommon.init();
+    }
+
+    if (carry > 0) {
+      prefix = prefix.add1();
+    }
+
+    return prefix.concat(sumCommon).concat(suffix);
   }
 }
 

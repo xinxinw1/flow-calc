@@ -48,6 +48,10 @@ test('Digits operations', () => {
   expect([...left2]).toStrictEqual([1, 2, 3, 4, 5]);
   expect([...right2]).toStrictEqual([]);
 
+  const [left3, right3] = digits.splitRight(2);
+  expect([...left3]).toStrictEqual([1, 2, 3]);
+  expect([...right3]).toStrictEqual([4, 5]);
+
   const digits2 = Digits.fromStr('98765');
   expect([...digits.concat(digits2)]).toStrictEqual([
     1,
@@ -130,24 +134,20 @@ test.each([['0'], [''], ['000']])(
 );
 
 test.each([
-  ['', '', 0, 0, '', false],
-  ['', '', 0, 2, '00', false],
-  ['', '', 2, 2, '00', false],
-  ['0', '0', 0, 0, '0', false],
-  ['', '1', 0, 0, '1', false],
-  ['', '1', 2, 0, '01', false],
-  ['', '1', 0, 2, '100', false],
-  ['', '1', 2, 2, '100', false],
-  ['1', '1', 0, 0, '2', false],
-  ['9', '10', 0, 0, '19', false],
-  ['000', '001', 0, 0, '001', false],
-  ['999', '1000', 0, 0, '1999', false],
-  ['59', '60', 0, 0, '19', true],
-  ['099', '100', 0, 0, '199', false],
-  ['1', '2', 2, 0, '102', false],
-  ['1', '2', 0, 2, '201', false],
-  ['1', '2', 2, 2, '300', false],
-  ['5', '5', 2, 2, '000', true],
+  ['', '', 0, 0, ''],
+  ['', '', 0, 2, '00'],
+  ['0', '0', 0, 0, '0'],
+  ['', '1', 0, 0, '1'],
+  ['', '1', 2, 0, '01'],
+  ['', '1', 0, 2, '100'],
+  ['1', '1', 0, 0, '2'],
+  ['9', '10', 0, 0, '19'],
+  ['000', '001', 0, 0, '001'],
+  ['999', '1000', 0, 0, '1999'],
+  ['59', '60', 0, 0, '119'],
+  ['099', '100', 0, 0, '199'],
+  ['1', '2', 2, 0, '102'],
+  ['1', '2', 0, 2, '201'],
 ])(
   'expect addRight(%p, %p, %p, %p) == %p',
   (
@@ -156,49 +156,10 @@ test.each([
     aRightWait: number,
     bRightWait: number,
     ans: string,
-    ansCarry: boolean,
   ) => {
     const aDig = Digits.fromStr(a);
     const bDig = Digits.fromStr(b);
-    const [res, carry] = Digits.addRight(aDig, bDig, aRightWait, bRightWait);
+    const res = Digits.addRight(aDig, bDig, aRightWait, bRightWait);
     expect(res.toString()).toBe(ans);
-    expect(carry).toBe(ansCarry);
-  },
-);
-
-test.each([
-  ['', '', 0, 0, '', false],
-  ['', '', 0, 2, '00', false],
-  ['', '', 2, 2, '00', false],
-  ['0', '0', 0, 0, '0', false],
-  ['', '1', 0, 0, '1', false],
-  ['', '1', 2, 0, '10', false],
-  ['', '1', 0, 2, '001', false],
-  ['', '1', 2, 2, '001', false],
-  ['1', '1', 0, 0, '2', false],
-  ['9', '10', 0, 0, '00', true],
-  ['000', '001', 0, 0, '001', false],
-  ['999', '1000', 0, 0, '0990', true],
-  ['59', '60', 0, 0, '19', true],
-  ['099', '100', 0, 0, '199', false],
-  ['1', '2', 2, 0, '201', false],
-  ['1', '2', 0, 2, '102', false],
-  ['1', '2', 2, 2, '003', false],
-  ['5', '5', 2, 2, '010', false],
-])(
-  'expect addLeft(%p, %p, %p, %p) == %p',
-  (
-    a: string,
-    b: string,
-    aLeftWait: number,
-    bLeftWait: number,
-    ans: string,
-    ansCarry: boolean,
-  ) => {
-    const aDig = Digits.fromStr(a);
-    const bDig = Digits.fromStr(b);
-    const [res, carry] = Digits.addLeft(aDig, bDig, aLeftWait, bLeftWait);
-    expect(res.toString()).toBe(ans);
-    expect(carry).toBe(ansCarry);
   },
 );
