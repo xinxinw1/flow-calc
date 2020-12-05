@@ -1,3 +1,5 @@
+// @flow
+
 module.exports = {
   ignorePatterns: ['flow-typed/', 'build/'],
   env: {
@@ -40,6 +42,11 @@ module.exports = {
       'WithStatement',
     ],
     'no-use-before-define': 'off',
+    'flowtype/require-valid-file-annotation': [
+      2,
+      'always',
+      { annotationStyle: 'line' },
+    ],
   },
   overrides: [
     {
