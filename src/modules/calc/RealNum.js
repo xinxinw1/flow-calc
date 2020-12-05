@@ -306,6 +306,61 @@ export default class RealNum {
     const [lastDig, _digitsAfter, _leftWait] = this.getDigitsAfterPrec(prec);
     return lastDig;
   }
+
+  add(other: RealNum): RealNum {
+    if (this.pos === other.pos) {
+      const outputPos = this.pos;
+      const smallerExp = Math.min(this.exp, other.exp);
+      const thisRightWait = this.exp - smallerExp;
+      const otherRightWait = other.exp - smallerExp;
+      const outputDigits = Digits.add(
+        this.digits,
+        other.digits,
+        thisRightWait,
+        otherRightWait,
+      );
+      const outputExp = smallerExp;
+      return RealNum.fromDigits(outputPos, outputDigits, outputExp);
+    }
+    if (this.pos && !other.pos) {
+      return this.sub(other.neg());
+    }
+    return other.sub(this.neg());
+  }
+
+  sub(other: RealNum): RealNum {
+    if (this.pos === other.pos) {
+      if (!this.pos) return this.neg().sub(other.neg()).neg();
+      const comp = this.compare(other);
+      if (comp === 0) return RealNum.zero;
+      let a: RealNum;
+      let b: RealNum;
+      let outputPos: boolean;
+      if (comp > 0) {
+        a = this;
+        b = other;
+        outputPos = true;
+      } else {
+        a = other;
+        b = this;
+        outputPos = false;
+      }
+      const smallerExp = Math.min(a.exp, b.exp);
+      const aRightWait = a.exp - smallerExp;
+      const bRightWait = b.exp - smallerExp;
+      const outputDigits = Digits.sub(
+        a.digits,
+        b.digits,
+        aRightWait,
+        bRightWait,
+      );
+      const outputExp = smallerExp;
+      return RealNum.fromDigits(outputPos, outputDigits, outputExp);
+    }
+    // this is pos, other is neg
+    // or this is neg, other is pos
+    return this.add(other.neg());
+  }
 }
 
 Object.freeze(RealNum);

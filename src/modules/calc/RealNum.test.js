@@ -392,3 +392,70 @@ test.each(getDigitsAfterPrecTests)(
     expect(RealNum.fromStr(s1).getDigitAtPrec(p)).toBe(digBefore);
   },
 );
+
+test.each([
+  ['0', '0', '0'],
+  ['0', '1', '1'],
+  ['0', '-1', '-1'],
+  ['1', '0', '1'],
+  ['1', '1', '2'],
+  ['1', '-1', '0'],
+  ['-1', '0', '-1'],
+  ['-1', '1', '0'],
+  ['-1', '-1', '-2'],
+])('expect %p + %p == %p', (s1: string, s2: string, ans: string) => {
+  expect(RealNum.fromStr(s1).add(RealNum.fromStr(s2)).toString()).toBe(ans);
+});
+
+test.each([
+  ['0', '0', '0'],
+  ['0', '1', '-1'],
+  ['0', '-1', '1'],
+  ['1', '0', '1'],
+  ['1', '1', '0'],
+  ['1', '-1', '2'],
+  ['-1', '0', '-1'],
+  ['-1', '1', '-2'],
+  ['-1', '-1', '0'],
+])('expect %p - %p == %p', (s1: string, s2: string, ans: string) => {
+  expect(RealNum.fromStr(s1).sub(RealNum.fromStr(s2)).toString()).toBe(ans);
+});
+
+const expBigIntArb = fc
+  .tuple(
+    // log_2(10^10000) = 33219.28
+    fc.bigIntN(33220),
+    fc.integer({ min: 0, max: 100 }),
+  )
+  .map(([bigInt, baseExp]: [number, number]) => {
+    let newBigInt = bigInt;
+    for (let i = 0; i < baseExp; i += 1) {
+      // $FlowIgnore[bigint-unsupported]
+      newBigInt *= 10n;
+    }
+    return newBigInt;
+  });
+
+test('big int add check', () => {
+  fc.assert(
+    fc.property(expBigIntArb, expBigIntArb, (n1: number, n2: number) => {
+      expect(
+        RealNum.fromStr(n1.toString())
+          .add(RealNum.fromStr(n2.toString()))
+          .toString(),
+      ).toBe((n1 + n2).toString());
+    }),
+  );
+});
+
+test('big int sub check', () => {
+  fc.assert(
+    fc.property(expBigIntArb, expBigIntArb, (n1: number, n2: number) => {
+      expect(
+        RealNum.fromStr(n1.toString())
+          .sub(RealNum.fromStr(n2.toString()))
+          .toString(),
+      ).toBe((n1 - n2).toString());
+    }),
+  );
+});
