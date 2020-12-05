@@ -177,9 +177,12 @@ test.each([
   expect(RealNum.fromStr(s).toString()).toEqual(s);
 });
 
-const smallStringNumArb = fc
-  .oneof(fc.maxSafeInteger(), fc.double({ min: -100, max: 100 }))
-  .map((n) => n.toString());
+const smallNumArb = fc.oneof(
+  fc.maxSafeInteger(),
+  fc.double({ min: -100, max: 100 }),
+);
+
+const smallStringNumArb = smallNumArb.map((n) => n.toString());
 
 test('small arbitrary convert to string', () => {
   // integers and small floats
@@ -261,6 +264,20 @@ test('all arbitrary equals check', () => {
         expect(RealNum.fromStr(s1)).toObjEqual(RealNum.fromStr(s2));
       } else {
         expect(RealNum.fromStr(s1)).not.toObjEqual(RealNum.fromStr(s2));
+      }
+    }),
+  );
+});
+
+test('small arbitrary compare check', () => {
+  fc.assert(
+    fc.property(smallNumArb, smallNumArb, (n1: number, n2: number) => {
+      if (n1 === n2) {
+        expect(RealNum.fromNum(n1).compare(RealNum.fromNum(n2))).toBe(0);
+      } else if (n1 > n2) {
+        expect(RealNum.fromNum(n1).compare(RealNum.fromNum(n2))).toBe(1);
+      } else {
+        expect(RealNum.fromNum(n1).compare(RealNum.fromNum(n2))).toBe(-1);
       }
     }),
   );

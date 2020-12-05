@@ -97,6 +97,49 @@ export default class RealNum {
     );
   }
 
+  // assumes this and other are trimmed
+  // returns 1 if this > other,
+  // 0 if this == other,
+  // -1 if this < other
+  compare(other: RealNum): number {
+    if (this.pos === other.pos) {
+      // both positive or both negative
+      const smallerExp = Math.min(this.exp, other.exp);
+      const thisRightWait = this.exp - smallerExp;
+      const otherRightWait = other.exp - smallerExp;
+      let outputCompare = Digits.compare(
+        this.digits,
+        other.digits,
+        thisRightWait,
+        otherRightWait,
+      );
+      if (!this.pos) {
+        outputCompare = 0 - outputCompare;
+      }
+      return outputCompare;
+    }
+    if (this.pos && !other.pos) {
+      return 1;
+    }
+    return -1;
+  }
+
+  gt(other: RealNum): boolean {
+    return this.compare(other) > 0;
+  }
+
+  ge(other: RealNum): boolean {
+    return this.compare(other) >= 0;
+  }
+
+  lt(other: RealNum): boolean {
+    return this.compare(other) < 0;
+  }
+
+  le(other: RealNum): boolean {
+    return this.compare(other) <= 0;
+  }
+
   // returns trimmed version if this is trimmed
   neg(): RealNum {
     if (this.isZero()) return RealNum.zero;
