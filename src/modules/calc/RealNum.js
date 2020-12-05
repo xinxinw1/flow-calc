@@ -88,14 +88,12 @@ export default class RealNum {
     return this.digits.isEmpty();
   }
 
+  // assumes this and other are trimmed
   equals(other: RealNum): boolean {
-    const trim = this.trim();
-    const otherTrim = other.trim();
-
     return (
-      trim.exp === otherTrim.exp &&
-      trim.pos === otherTrim.pos &&
-      trim.digits.equals(otherTrim.digits)
+      this.exp === other.exp &&
+      this.pos === other.pos &&
+      this.digits.equals(other.digits)
     );
   }
 
