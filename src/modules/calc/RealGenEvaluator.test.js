@@ -2,7 +2,7 @@
 import RealNum from './RealNum';
 import { RegularPrec, InfPrec, NegInfPrec } from './Precision';
 import { type RealGenerator } from './RealGenerator';
-import RealEvaluator from './RealEvaluator';
+import RealGenEvaluator from './RealGenEvaluator';
 
 function* makeInstantGen(a: RealNum): RealGenerator {
   yield RealNum.zero;
@@ -20,7 +20,9 @@ function* makeGen(a: RealNum): RealGenerator {
 }
 
 test('generator state eval works correctly with instant gen', () => {
-  const evaluator = new RealEvaluator(makeInstantGen(RealNum.fromStr('4.449')));
+  const evaluator = new RealGenEvaluator(
+    makeInstantGen(RealNum.fromStr('4.449')),
+  );
 
   let [value, done]: [RealNum, boolean] = [RealNum.zero, false];
 
@@ -60,7 +62,7 @@ test('generator state eval works correctly with instant gen', () => {
 });
 
 test('generator state eval works correctly with regular gen', () => {
-  const evaluator = new RealEvaluator(makeGen(RealNum.fromStr('4.449')));
+  const evaluator = new RealGenEvaluator(makeGen(RealNum.fromStr('4.449')));
 
   let [value, done]: [RealNum, boolean] = [RealNum.zero, false];
 

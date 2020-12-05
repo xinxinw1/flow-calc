@@ -1,18 +1,21 @@
 // @flow
 
 import { type RealGenerator } from '../RealGenerator';
-import RealEvaluator from '../RealEvaluator';
+import { type RealEvaluator } from '../RealEvaluator';
+import RealGenEvaluator from '../RealGenEvaluator';
 import AbstractClass from '../../AbstractClass';
 import RealNum from '../RealNum';
 import Precision from '../Precision';
 
-export default class RealEvalObj extends AbstractClass {
-  realEval: RealEvaluator;
+export default class RealEvalObj
+  extends AbstractClass
+  implements RealEvaluator {
+  realEval: RealGenEvaluator;
 
   constructor() {
     super();
     this.abstractClass(RealEvalObj);
-    this.realEval = new RealEvaluator(this.makeOutputGenerator());
+    this.realEval = new RealGenEvaluator(this.makeOutputGenerator());
   }
 
   // must satisfy the input conditions for RealEvaluator
