@@ -258,6 +258,13 @@ export default class RealNum {
 
     return [left.last(), right, 0];
   }
+
+  // assumes this is trimmed
+  // returns the digit before prec
+  getDigitAtPrec(prec: Precision): number {
+    const [lastDig, _digitsAfter, _leftWait] = this.getDigitsAfterPrec(prec);
+    return lastDig;
+  }
 }
 
 Object.freeze(RealNum);

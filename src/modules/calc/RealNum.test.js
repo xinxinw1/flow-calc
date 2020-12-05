@@ -335,7 +335,7 @@ test('expect ceil with neg inf prec of pos number to give error', () => {
   }).toThrow('Cannot infinitely round 1 away from zero');
 });
 
-test.each([
+const getDigitsAfterPrecTests = [
   ['0', new RegularPrec(0), 0, '', 0],
   ['15.43', new RegularPrec(0), 5, '43', 0],
   ['15.43', new RegularPrec(-1), 1, '543', 0],
@@ -348,7 +348,9 @@ test.each([
   ['15.43', new RegularPrec(4), 0, '', 0],
   ['10.03', new RegularPrec(0), 0, '03', 0],
   ['10.03', new RegularPrec(-1), 1, '003', 0],
-])(
+];
+
+test.each(getDigitsAfterPrecTests)(
   'expect %p .getDigitsAfterPrec %o prec to give [%p, %p, %p]',
   (
     s1: string,
@@ -357,11 +359,19 @@ test.each([
     digitsStr: string,
     leftWait: number,
   ) => {
-    const [ansDigBefore, ansDigits, ansLeftWait] = RealNum.fromStr(
-      s1,
-    ).getDigitsAfterPrec(p);
+    const num = RealNum.fromStr(s1);
+    const [ansDigBefore, ansDigits, ansLeftWait] = num.getDigitsAfterPrec(p);
     expect(ansDigBefore).toBe(digBefore);
     expect(ansDigits.toString()).toBe(digitsStr);
     expect(ansLeftWait).toBe(leftWait);
+
+    expect(num.getDigitAtPrec(p)).toBe(digBefore);
+  },
+);
+
+test.each(getDigitsAfterPrecTests)(
+  'expect %p .getDigitAtPrec %o prec to give %p',
+  (s1: string, p: Precision, digBefore: number) => {
+    expect(RealNum.fromStr(s1).getDigitAtPrec(p)).toBe(digBefore);
   },
 );
