@@ -289,15 +289,15 @@ export default class Digits {
     assert(aCommon.size() === bCommon.size(), 'common sizes not equal');
 
     let carry = 0;
-    let sumCommon = Digits.empty;
+    let sum = suffix;
     while (aCommon.size() > 0) {
       const digSum = aCommon.last() + bCommon.last() + carry;
 
       if (digSum >= 10) {
-        sumCommon = sumCommon.cons(digSum - 10);
+        sum = sum.cons(digSum - 10);
         carry = 1;
       } else {
-        sumCommon = sumCommon.cons(digSum);
+        sum = sum.cons(digSum);
         carry = 0;
       }
 
@@ -309,7 +309,105 @@ export default class Digits {
       prefix = prefix.add1();
     }
 
-    return prefix.concat(sumCommon).concat(suffix);
+    return prefix.concat(sum);
+  }
+
+  // subtracts digits a and b aligned on the right side
+  // with a shifted to the left by aWait and
+  // b shifted to the left by bWait
+  // assume a >= b
+  static sub(
+    a: Digits,
+    b: Digits,
+    aRightWait: number,
+    bRightWait: number,
+  ): Digits {
+    this.checkRightWaits(aRightWait, bRightWait);
+
+    let aPrefix: Digits;
+    let bPrefix: Digits;
+    let diff: Digits;
+    if (bRightWait > 0) {
+      if (bRightWait >= a.size()) {
+        // a =    123
+        // b = 000
+        // b is 0 in this case since a >= b
+        for (const dig of b) {
+          assert(dig === 0, 'digit of b is non-zero');
+        }
+        return a;
+      }
+      // now bRightWait < a.size()
+      // a =  423
+      // b = 034
+      // or
+      // a = 123123
+      // b =   234
+      [aPrefix, diff] = a.splitRight(bRightWait);
+      bPrefix = b;
+    } else {
+      aPrefix = a;
+      bPrefix = b;
+      diff = Digits.empty;
+    }
+
+    let aWait = aRightWait;
+
+    let borrow = 0;
+    while (!(aWait === 0 && aPrefix.isEmpty()) && !bPrefix.isEmpty()) {
+      let aDig = 0;
+      if (aWait > 0) {
+        aWait -= 1;
+      } else {
+        aDig = aPrefix.last();
+        aPrefix = aPrefix.init();
+      }
+      const bDig = bPrefix.last();
+      bPrefix = bPrefix.init();
+
+      const digDiff = aDig - bDig - borrow;
+
+      if (digDiff < 0) {
+        diff = diff.cons(digDiff + 10);
+        borrow = 1;
+      } else {
+        diff = diff.cons(digDiff);
+        borrow = 0;
+      }
+    }
+
+    // now either a finished first or b finished first
+    // aPrefix = 123s
+    // bPrefix =
+    // or
+    // aPrefix = 12
+    // bPrefix =
+    // or
+    // aPrefix =
+    // bPrefix = 0
+
+    if (!bPrefix.isEmpty()) {
+      // now aPrefix is empty with no aWait
+      // check that remaining b items are 0
+      for (const dig of bPrefix) {
+        assert(dig === 0, 'digit of bPrefix is non-zero');
+      }
+      return diff;
+    }
+
+    // now bPrefix is empty
+    // so maybe aWait > 0 or aPrefix is not empty
+    if (borrow === 0) {
+      for (let i = 0; i < aWait; i += 1) {
+        diff = diff.cons(0);
+      }
+      return aPrefix.concat(diff);
+    }
+    // now borrow > 0, need to sub1 from aPrefix
+    for (let i = 0; i < aWait; i += 1) {
+      diff = diff.cons(9);
+    }
+    return aPrefix.sub1().concat(diff);
   }
 }
 

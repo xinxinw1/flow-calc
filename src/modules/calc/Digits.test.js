@@ -207,3 +207,65 @@ test.each([
     expect(res.toString()).toBe(ans);
   },
 );
+
+test.each([
+  ['', '', 0, 0, ''],
+  ['', '', 0, 2, ''],
+  ['', '', 2, 0, '00'],
+  ['0', '0', 0, 0, '0'],
+  ['1', '', 0, 0, '1'],
+  ['1', '', 2, 0, '100'],
+  ['1', '', 0, 2, '1'],
+  ['1', '1', 0, 0, '0'],
+  ['10', '9', 0, 0, '01'],
+  ['001', '000', 0, 0, '001'],
+  ['1000', '999', 0, 0, '0001'],
+  ['60', '59', 0, 0, '01'],
+  ['100', '099', 0, 0, '001'],
+  ['2', '1', 2, 0, '199'],
+  ['200', '1', 0, 2, '100'],
+  ['1234', '9', 0, 1, '1144'],
+  ['1234', '2', 0, 1, '1214'],
+  // a =  3234
+  // b = 0234
+  ['3234', '0234', 0, 1, '0894'],
+  // a = 1234
+  // b =  1234
+  ['1234', '1234', 1, 0, '11106'],
+])(
+  'expect sub(%p, %p, %p, %p) == %p',
+  (
+    a: string,
+    b: string,
+    aRightWait: number,
+    bRightWait: number,
+    ans: string,
+  ) => {
+    const aDig = Digits.fromStr(a);
+    const bDig = Digits.fromStr(b);
+    const res = Digits.sub(aDig, bDig, aRightWait, bRightWait);
+    expect(res.toString()).toBe(ans);
+  },
+);
+
+test.each([
+  ['', '1', 0, 0],
+  ['', '1', 2, 0],
+  ['', '1', 0, 2],
+  ['9', '10', 0, 0],
+  ['000', '001', 0, 0],
+  ['999', '1000', 0, 0],
+  ['59', '60', 0, 0],
+  ['099', '100', 0, 0],
+  ['1', '2', 0, 2],
+  ['1234', '1234', 0, 1],
+])(
+  'expect sub(%p, %p, %p, %p) to throw an error',
+  (a: string, b: string, aRightWait: number, bRightWait: number) => {
+    const aDig = Digits.fromStr(a);
+    const bDig = Digits.fromStr(b);
+    expect(() => {
+      Digits.sub(aDig, bDig, aRightWait, bRightWait);
+    }).toThrow(); // messages are varied
+  },
+);
