@@ -1,6 +1,7 @@
 // @flow
 
 import assert from 'assert';
+import nullthrows from 'nullthrows';
 
 import { zip, reversed } from '../itertools';
 import FingerTree from '../FingerTree';
@@ -161,25 +162,90 @@ export default class Digits {
     throw new Error('Cannot subtract 1 from 0');
   }
 
+  static checkRightWaits(aRightWait: number, bRightWait: number): void {
+    if (aRightWait < 0 || bRightWait < 0) {
+      throw new Error('Right waits must be >= 0');
+    }
+
+    if (aRightWait > 0 && bRightWait > 0) {
+      throw new Error('Right waits must not both be > 0');
+    }
+  }
+
+  // returns 0 if digits have equal value
+  // 1 if a > b,
+  // -1 if a < b
+  static compare(
+    a: Digits,
+    b: Digits,
+    aRightWait: number,
+    bRightWait: number,
+  ): number {
+    this.checkRightWaits(aRightWait, bRightWait);
+
+    const aSize = a.size() + aRightWait;
+    const bSize = b.size() + bRightWait;
+    const maxSize = Math.max(aSize, bSize);
+
+    const aLeftWait = maxSize - aSize;
+    const bLeftWait = maxSize - bSize;
+
+    const aIter = a.iter();
+    const bIter = b.iter();
+
+    let aWait = aLeftWait;
+    let bWait = bLeftWait;
+
+    let aDone = false;
+    let bDone = false;
+
+    for (;;) {
+      let aDig = 0;
+      let bDig = 0;
+      let value;
+
+      if (aWait > 0) {
+        aWait -= 1;
+      } else if (!aDone) {
+        ({ value, done: aDone } = aIter.next());
+        if (!aDone) {
+          aDig = nullthrows(value);
+        }
+      }
+
+      if (bWait > 0) {
+        bWait -= 1;
+      } else if (!bDone) {
+        ({ value, done: bDone } = bIter.next());
+        if (!bDone) {
+          bDig = nullthrows(value);
+        }
+      }
+
+      if (aDone && bDone) break;
+
+      if (aDig !== bDig) {
+        if (aDig > bDig) return 1;
+        return -1;
+      }
+    }
+
+    return 0;
+  }
+
   // adds digits a and b aligned on the right side
   // with a shifted to the left by aWait and
   // b shifted to the left by bWait
-  static addRight(
+  static add(
     a: Digits,
     b: Digits,
     aRightWait: number,
     bRightWait: number,
   ): Digits {
-    if (aRightWait < 0 || bRightWait < 0) {
-      throw new Error('addRight right waits must be >= 0');
-    }
-
-    if (aRightWait > 0 && bRightWait > 0) {
-      throw new Error('addRight right waits must not both be > 0');
-    }
+    this.checkRightWaits(aRightWait, bRightWait);
 
     if (bRightWait > 0) {
-      return this.addRight(b, a, bRightWait, aRightWait);
+      return this.add(b, a, bRightWait, aRightWait);
     }
 
     // now only aRightWait can be > 0

@@ -134,6 +134,45 @@ test.each([['0'], [''], ['000']])(
 );
 
 test.each([
+  ['', '', 0, 0, 0],
+  ['', '', 0, 2, 0],
+  ['0', '0', 0, 0, 0],
+  ['', '1', 0, 0, -1],
+  ['', '1', 2, 0, -1],
+  ['', '1', 0, 2, -1],
+  ['', '0', 0, 0, 0],
+  ['', '0', 2, 0, 0],
+  ['', '0', 0, 2, 0],
+  ['1', '1', 0, 0, 0],
+  ['1', '1', 2, 0, 1],
+  ['1', '1', 0, 2, -1],
+  ['9', '10', 0, 0, -1],
+  ['10', '9', 0, 0, 1],
+  ['000', '001', 0, 0, -1],
+  ['001', '000', 0, 0, 1],
+  ['999', '1000', 0, 0, -1],
+  ['59', '60', 0, 0, -1],
+  ['099', '100', 0, 0, -1],
+  ['0099', '100', 0, 0, -1],
+  ['1234', '9', 0, 1, 1],
+  ['1234', '1234', 0, 1, -1],
+])(
+  'expect compare(%p, %p, %p, %p) == %p',
+  (
+    a: string,
+    b: string,
+    aRightWait: number,
+    bRightWait: number,
+    ans: number,
+  ) => {
+    const aDig = Digits.fromStr(a);
+    const bDig = Digits.fromStr(b);
+    const res = Digits.compare(aDig, bDig, aRightWait, bRightWait);
+    expect(res).toBe(ans);
+  },
+);
+
+test.each([
   ['', '', 0, 0, ''],
   ['', '', 0, 2, '00'],
   ['0', '0', 0, 0, '0'],
@@ -148,8 +187,13 @@ test.each([
   ['099', '100', 0, 0, '199'],
   ['1', '2', 2, 0, '102'],
   ['1', '2', 0, 2, '201'],
+  ['1234', '9', 0, 1, '1324'],
+  ['1234', '2', 0, 1, '1254'],
+  // a =  1234
+  // b = 1234
+  ['1234', '1234', 0, 1, '13574'],
 ])(
-  'expect addRight(%p, %p, %p, %p) == %p',
+  'expect add(%p, %p, %p, %p) == %p',
   (
     a: string,
     b: string,
@@ -159,7 +203,7 @@ test.each([
   ) => {
     const aDig = Digits.fromStr(a);
     const bDig = Digits.fromStr(b);
-    const res = Digits.addRight(aDig, bDig, aRightWait, bRightWait);
+    const res = Digits.add(aDig, bDig, aRightWait, bRightWait);
     expect(res.toString()).toBe(ans);
   },
 );
