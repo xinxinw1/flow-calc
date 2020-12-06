@@ -339,6 +339,8 @@ export default class RealNum {
   }
 
   add(other: RealNum): RealNum {
+    if (this.isZero()) return other;
+    if (other.isZero()) return this;
     if (this.pos === other.pos) {
       const outputPos = this.pos;
       const smallerExp = Math.min(this.exp, other.exp);
@@ -360,6 +362,8 @@ export default class RealNum {
   }
 
   sub(other: RealNum): RealNum {
+    if (this.isZero()) return other.neg();
+    if (other.isZero()) return this;
     if (this.pos === other.pos) {
       if (!this.pos) return this.neg().sub(other.neg()).neg();
       const comp = this.compare(other);
