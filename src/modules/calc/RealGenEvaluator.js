@@ -4,7 +4,11 @@ import nullthrows from 'nullthrows';
 
 import RealNum from './RealNum';
 import Precision, { InfPrec, NegInfPrec } from './Precision';
-import { type RealGenerator } from './RealGenerator';
+import {
+  type RealGenerator,
+  makeContinuousGen,
+  makeInstantGen,
+} from './RealGenerator';
 import { type RealEvaluator } from './RealEvaluator';
 
 export default class RealGenEvaluator implements RealEvaluator {
@@ -53,5 +57,13 @@ export default class RealGenEvaluator implements RealEvaluator {
       return [this.currNum, true];
     }
     return [this.currNum.round(prec), false];
+  }
+
+  static makeInstantEval(a: RealNum): RealGenEvaluator {
+    return new RealGenEvaluator(makeInstantGen(a));
+  }
+
+  static makeContinuousEval(a: RealNum): RealGenEvaluator {
+    return new RealGenEvaluator(makeContinuousGen(a));
   }
 }

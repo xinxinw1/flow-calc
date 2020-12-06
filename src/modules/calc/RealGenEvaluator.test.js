@@ -1,28 +1,10 @@
 // @flow
 import RealNum from './RealNum';
 import { RegularPrec, InfPrec, NegInfPrec } from './Precision';
-import { type RealGenerator } from './RealGenerator';
 import RealGenEvaluator from './RealGenEvaluator';
 
-function* makeInstantGen(a: RealNum): RealGenerator {
-  yield RealNum.zero;
-  return a;
-}
-
-function* makeGen(a: RealNum): RealGenerator {
-  let prec = yield RealNum.zero;
-  for (;;) {
-    prec = yield a.round(prec);
-  }
-  // for type-check only
-  // eslint-disable-next-line no-unreachable
-  return RealNum.zero;
-}
-
 test('generator state eval works correctly with instant gen', () => {
-  const evaluator = new RealGenEvaluator(
-    makeInstantGen(RealNum.fromStr('4.449')),
-  );
+  const evaluator = RealGenEvaluator.makeInstantEval(RealNum.fromStr('4.449'));
 
   let [value, done]: [RealNum, boolean] = [RealNum.zero, false];
 
@@ -62,7 +44,9 @@ test('generator state eval works correctly with instant gen', () => {
 });
 
 test('generator state eval works correctly with regular gen', () => {
-  const evaluator = new RealGenEvaluator(makeGen(RealNum.fromStr('4.449')));
+  const evaluator = RealGenEvaluator.makeContinuousEval(
+    RealNum.fromStr('4.449'),
+  );
 
   let [value, done]: [RealNum, boolean] = [RealNum.zero, false];
 
