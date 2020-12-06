@@ -2,7 +2,7 @@
 
 import RealEvalObj from './RealEvalObj';
 import RealNum from '../RealNum';
-import { type RealGenerator } from '../RealGenerator';
+import { type RealGenerator, makeInstantGen } from '../RealGenerator';
 
 export default class ConstEvalObj extends RealEvalObj {
   v: RealNum;
@@ -10,11 +10,9 @@ export default class ConstEvalObj extends RealEvalObj {
   constructor(v: RealNum) {
     super();
     this.v = v;
-    Object.freeze(this);
   }
 
-  *makeOutputGenerator(): RealGenerator {
-    yield RealNum.zero;
-    return this.v;
+  makeOutputGenerator(): RealGenerator {
+    return makeInstantGen(this.v);
   }
 }

@@ -10,12 +10,11 @@ import Precision from '../Precision';
 export default class RealEvalObj
   extends AbstractClass
   implements RealEvaluator {
-  realEval: RealGenEvaluator;
+  realEval: ?RealGenEvaluator;
 
   constructor() {
     super();
     this.abstractClass(RealEvalObj);
-    this.realEval = new RealGenEvaluator(this.makeOutputGenerator());
   }
 
   // must satisfy the input conditions for RealEvaluator
@@ -25,6 +24,11 @@ export default class RealEvalObj
 
   // will satisfy the output conditions for RealEvaluator.eval
   eval(prec: Precision): [RealNum, boolean] {
+    if (!this.realEval) {
+      // can't call this in constructor because
+      // subclass instance vars aren't ready yet
+      this.realEval = new RealGenEvaluator(this.makeOutputGenerator());
+    }
     return this.realEval.eval(prec);
   }
 }
