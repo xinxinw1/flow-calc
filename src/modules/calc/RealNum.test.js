@@ -394,6 +394,29 @@ test.each(getDigitsAfterPrecTests)(
 );
 
 test.each([
+  ['0', new RegularPrec(0), 0, '0'],
+  ['15.43', new RegularPrec(0), 5, '0.43'],
+  ['15.43', new RegularPrec(-1), 1, '5.43'],
+  ['15.43', new RegularPrec(-2), 0, '15.43'],
+  ['15.43', new RegularPrec(-3), 0, '15.43'],
+  ['15.43', new RegularPrec(-4), 0, '15.43'],
+  ['15.43', new RegularPrec(1), 4, '0.03'],
+  ['15.43', new RegularPrec(2), 3, '0'],
+  ['15.43', new RegularPrec(3), 0, '0'],
+  ['15.43', new RegularPrec(4), 0, '0'],
+  ['10.03', new RegularPrec(0), 0, '0.03'],
+  ['10.03', new RegularPrec(-1), 1, '0.03'],
+])(
+  'expect %p .getNumAfterPrec %o prec to give [%p, %p]',
+  (s1: string, p: Precision, digBefore: number, numAfter: string) => {
+    const num = RealNum.fromStr(s1);
+    const [ansDigBefore, ansNumAfter] = num.getNumAfterPrec(p);
+    expect(ansDigBefore).toBe(digBefore);
+    expect(ansNumAfter.toString()).toBe(numAfter);
+  },
+);
+
+test.each([
   ['0', '0', '0'],
   ['0', '1', '1'],
   ['0', '-1', '-1'],

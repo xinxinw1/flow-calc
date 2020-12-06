@@ -307,6 +307,29 @@ export default class RealNum {
     return lastDig;
   }
 
+  getNumAfterPrec(prec: Precision): [number, RealNum] {
+    if (!(prec instanceof RegularPrec)) {
+      throw new Error('digits after prec must be given a regular prec');
+    }
+    if (this.isZero()) return [0, RealNum.zero];
+
+    const precNum = prec.prec;
+
+    const splitDigits = this.sizeNonZero() + precNum;
+
+    if (splitDigits <= 0) {
+      return [0, this];
+    }
+
+    if (splitDigits > this.digits.size()) {
+      return [0, RealNum.zero];
+    }
+
+    const [left, right] = this.digits.split(splitDigits);
+
+    return [left.last(), RealNum.fromDigits(this.pos, right, this.exp)];
+  }
+
   add(other: RealNum): RealNum {
     if (this.pos === other.pos) {
       const outputPos = this.pos;
