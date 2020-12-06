@@ -103,6 +103,30 @@ test('RealNum.one is correct', () => {
   expect(n.pos).toBe(true);
 });
 
+test('RealNum.digitAtPrec is correct', () => {
+  let n: RealNum;
+
+  n = RealNum.digitAtPrec(false, 0, new RegularPrec(10));
+  expect([...n.digits]).toStrictEqual([]);
+  expect(n.exp).toBe(0);
+  expect(n.pos).toBe(true);
+
+  n = RealNum.digitAtPrec(true, 1, new RegularPrec(0));
+  expect([...n.digits]).toStrictEqual([1]);
+  expect(n.exp).toBe(0);
+  expect(n.pos).toBe(true);
+
+  n = RealNum.digitAtPrec(false, 9, new RegularPrec(1));
+  expect([...n.digits]).toStrictEqual([9]);
+  expect(n.exp).toBe(-1);
+  expect(n.pos).toBe(false);
+
+  n = RealNum.digitAtPrec(true, 2, new RegularPrec(-1));
+  expect([...n.digits]).toStrictEqual([2]);
+  expect(n.exp).toBe(1);
+  expect(n.pos).toBe(true);
+});
+
 test('cannot change RealNum static values', () => {
   expect(() => {
     RealNum.zero = RealNum.fromNum(1);

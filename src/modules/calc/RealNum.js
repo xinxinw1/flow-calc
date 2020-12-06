@@ -57,6 +57,14 @@ export default class RealNum {
     return RealNum.fromDigits(pos, tree, exp);
   }
 
+  static digitAtPrec(pos: boolean, dig: number, prec: Precision): RealNum {
+    if (!(prec instanceof RegularPrec)) {
+      throw new Error('digitAtPrec must be given a regular prec');
+    }
+    const precNum = prec.prec;
+    return RealNum.fromDigits(pos, Digits.fromIter([dig]), 0 - precNum);
+  }
+
   trim(): RealNum {
     let changed = false;
     let { digits, exp } = this;
