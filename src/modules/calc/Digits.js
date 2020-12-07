@@ -290,7 +290,8 @@ export default class Digits {
 
     let carry = 0;
     let sum = suffix;
-    while (aCommon.size() > 0) {
+    // TODO: use riter()
+    while (!aCommon.isEmpty()) {
       const digSum = aCommon.last() + bCommon.last() + carry;
 
       if (digSum >= 10) {
@@ -354,6 +355,7 @@ export default class Digits {
     let aWait = aRightWait;
 
     let borrow = 0;
+    // TODO: use riter()
     while (!(aWait === 0 && aPrefix.isEmpty()) && !bPrefix.isEmpty()) {
       let aDig = 0;
       if (aWait > 0) {
@@ -408,6 +410,57 @@ export default class Digits {
       diff = diff.cons(9);
     }
     return aPrefix.sub1().concat(diff);
+  }
+
+  // multiply these digits by dig
+  multDig(dig: number): Digits {
+    if (dig === 0) return Digits.empty;
+    if (dig === 1) return this;
+
+    let a = this;
+
+    // TODO: use riter()
+    let prod = Digits.empty;
+    let carry = 0;
+    while (!a.isEmpty()) {
+      const digProd = a.last() * dig + carry;
+
+      const prodDig = digProd % 10;
+      prod = prod.cons(prodDig);
+      carry = (digProd - prodDig) / 10;
+
+      a = a.init();
+    }
+
+    if (carry > 0) {
+      prod = prod.cons(carry);
+    }
+
+    return prod;
+  }
+
+  // multiplies digits a and b aligned on the right side
+  static mult(a: Digits, b: Digits): Digits {
+    if (a.size() < b.size()) {
+      // make b the one with less digits
+      return Digits.mult(b, a);
+    }
+
+    let prod = Digits.empty;
+
+    // TODO: use riter()
+    let index = 0;
+    let bLeft = b;
+    while (!bLeft.isEmpty()) {
+      const bDig = bLeft.last();
+      if (bDig > 0) {
+        prod = Digits.add(prod, a.multDig(bDig), 0, index);
+      }
+      bLeft = bLeft.init();
+      index += 1;
+    }
+
+    return prod;
   }
 }
 

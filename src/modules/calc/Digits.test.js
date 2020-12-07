@@ -269,3 +269,69 @@ test.each([
     }).toThrow(); // messages are varied
   },
 );
+
+test.each([
+  ['', 0, ''],
+  ['2134432', 0, ''],
+  ['2543', 1, '2543'],
+  ['1', 2, '2'],
+  ['1', 9, '9'],
+  ['2', 9, '18'],
+  ['2543', 2, '5086'],
+  ['2543', 4, '10172'],
+  ['005', 3, '015'],
+  ['005', 0, ''],
+  ['000', 1, '000'],
+])('expect %p.multDig(%p) == %p', (a: string, dig: number, ans: string) => {
+  const aDig = Digits.fromStr(a);
+  const res = aDig.multDig(dig);
+  expect(res.toString()).toBe(ans);
+});
+
+test.each([
+  ['', '', ''],
+  ['0', '0', ''],
+  ['0', '', ''],
+  ['', '0', ''],
+  ['1', '', ''],
+  ['0', '1', '0'],
+  ['1', '0', ''],
+  ['1', '1', '1'],
+  ['10', '9', '90'],
+  ['3', '5', '15'],
+  ['001', '000', ''],
+  ['000', '001', '000'],
+  ['60', '59', '3540'],
+  ['59', '60', '3540'],
+  [
+    '17589432253425487839',
+    '748295725434947923',
+    '13162096968065896181339813845834808397',
+  ],
+])('expect mult(%p, %p) == %p', (a: string, b: string, ans: string) => {
+  const aDig = Digits.fromStr(a);
+  const bDig = Digits.fromStr(b);
+  const res = Digits.mult(aDig, bDig);
+  expect(res.toString()).toBe(ans);
+});
+
+test('arbitrary mult check', () => {
+  fc.assert(
+    fc.property(
+      fc.bigUintN(100),
+      fc.bigUintN(100),
+      (n1: number, n2: number) => {
+        let n1Str = n1.toString();
+        if (n1Str === '0') n1Str = '';
+        let n2Str = n2.toString();
+        if (n2Str === '0') n2Str = '';
+        let expResStr = (n1 * n2).toString();
+        if (expResStr === '0') expResStr = '';
+
+        const aDig = Digits.fromStr(n1Str);
+        const bDig = Digits.fromStr(n2Str);
+        expect(Digits.mult(aDig, bDig).toString()).toBe(expResStr);
+      },
+    ),
+  );
+});
