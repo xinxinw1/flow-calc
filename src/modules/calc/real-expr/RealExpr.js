@@ -1,7 +1,7 @@
 // @flow
 
 import AbstractClass from '../../AbstractClass';
-import RealEvalObj from '../real-eval/RealEvalObj';
+import { type RealEvaluator } from '../real-eval/RealEvaluator';
 import type Environment from '../Environment';
 
 export default class RealExpr extends AbstractClass {
@@ -14,7 +14,7 @@ export default class RealExpr extends AbstractClass {
     return this.abstractMethod(this.uniqString);
   }
 
-  makeEvalObj(_env: Environment): RealEvalObj {
-    return this.abstractMethod(this.makeEvalObj);
+  makeEvaluator(_env: Environment): RealEvaluator {
+    return this.abstractMethod(this.makeEvaluator);
   }
 }

@@ -1,20 +1,22 @@
 // @flow
 
 import { type RealGenerator } from '../RealGenerator';
-import { type RealEvaluator } from '../RealEvaluator';
-import RealGenEvaluator from '../RealGenEvaluator';
+import { type RealEvaluator } from './RealEvaluator';
+import RealGeneratorState from '../RealGeneratorState';
 import AbstractClass from '../../AbstractClass';
 import RealNum from '../RealNum';
 import Precision from '../Precision';
 
-export default class RealEvalObj
+// Creates a RealEvaluator from a class definition
+// that defines makeOutputGenerator()
+export default class RealClassEvaluator
   extends AbstractClass
   implements RealEvaluator {
-  realEval: ?RealGenEvaluator;
+  realGenState: ?RealGeneratorState;
 
   constructor() {
     super();
-    this.abstractClass(RealEvalObj);
+    this.abstractClass(RealClassEvaluator);
   }
 
   // must satisfy the input conditions for RealEvaluator
@@ -24,11 +26,11 @@ export default class RealEvalObj
 
   // will satisfy the output conditions for RealEvaluator.eval
   eval(prec: Precision): [RealNum, boolean] {
-    if (!this.realEval) {
+    if (!this.realGenState) {
       // can't call this in constructor because
       // subclass instance vars aren't ready yet
-      this.realEval = new RealGenEvaluator(this.makeOutputGenerator());
+      this.realGenState = new RealGeneratorState(this.makeOutputGenerator());
     }
-    return this.realEval.eval(prec);
+    return this.realGenState.eval(prec);
   }
 }

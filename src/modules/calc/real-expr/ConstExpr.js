@@ -2,8 +2,8 @@
 
 import RealExpr from './RealExpr';
 import RealNum from '../RealNum';
-import RealEvalObj from '../real-eval/RealEvalObj';
-import ConstEvalObj from '../real-eval/ConstEvalObj';
+import { type RealEvaluator } from '../real-eval/RealEvaluator';
+import ConstEvaluator from '../real-eval/ConstEvaluator';
 import type Environment from '../Environment';
 
 export default class ConstExpr extends RealExpr {
@@ -19,7 +19,7 @@ export default class ConstExpr extends RealExpr {
     return this.v.toString();
   }
 
-  makeEvalObj(_env: Environment): RealEvalObj {
-    return new ConstEvalObj(this.v);
+  makeEvaluator(_env: Environment): RealEvaluator {
+    return new ConstEvaluator(this.v);
   }
 }

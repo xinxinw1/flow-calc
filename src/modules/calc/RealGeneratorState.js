@@ -4,14 +4,9 @@ import nullthrows from 'nullthrows';
 
 import RealNum from './RealNum';
 import Precision, { InfPrec, NegInfPrec } from './Precision';
-import {
-  type RealGenerator,
-  makeContinuousGen,
-  makeInstantGen,
-} from './RealGenerator';
-import { type RealEvaluator } from './RealEvaluator';
+import { type RealGenerator } from './RealGenerator';
 
-export default class RealGenEvaluator implements RealEvaluator {
+export default class RealGeneratorState {
   gen: RealGenerator;
   currNum: RealNum = RealNum.zero;
   currPrec: Precision = NegInfPrec;
@@ -42,28 +37,12 @@ export default class RealGenEvaluator implements RealEvaluator {
     this.currPrec = done ? InfPrec : prec;
   }
 
-  // returns [value, done]
-  // value will always be rounded to the input precision
-  // evaluated value will have an error
-  // < 1/10^prec
-  // from the true expression value
-  // (< 0.5*1/10^prec before rounding)
-  // this means if output value is non-zero,
-  // calculating to a higher prec
-  // will never change its sign
+  // will satisfy the output conditions for RealEvaluator.eval
   eval(prec: Precision): [RealNum, boolean] {
     this.updatePrecValue(prec);
     if (this.currPrec === InfPrec && this.currNum.prec().le(prec)) {
       return [this.currNum, true];
     }
     return [this.currNum.round(prec), false];
-  }
-
-  static makeInstantEval(a: RealNum): RealGenEvaluator {
-    return new RealGenEvaluator(makeInstantGen(a));
-  }
-
-  static makeContinuousEval(a: RealNum): RealGenEvaluator {
-    return new RealGenEvaluator(makeContinuousGen(a));
   }
 }

@@ -1,10 +1,13 @@
 // @flow
 import RealNum from './RealNum';
 import { RegularPrec, InfPrec, NegInfPrec } from './Precision';
-import RealGenEvaluator from './RealGenEvaluator';
+import RealGeneratorState from './RealGeneratorState';
+import { makeContinuousGen, makeInstantGen } from './RealGenerator';
 
 test('generator state eval works correctly with instant gen', () => {
-  const evaluator = RealGenEvaluator.makeInstantEval(RealNum.fromStr('4.449'));
+  const evaluator = new RealGeneratorState(
+    makeInstantGen(RealNum.fromStr('4.449')),
+  );
 
   let [value, done]: [RealNum, boolean] = [RealNum.zero, false];
 
@@ -44,8 +47,8 @@ test('generator state eval works correctly with instant gen', () => {
 });
 
 test('generator state eval works correctly with regular gen', () => {
-  const evaluator = RealGenEvaluator.makeContinuousEval(
-    RealNum.fromStr('4.449'),
+  const evaluator = new RealGeneratorState(
+    makeContinuousGen(RealNum.fromStr('4.449')),
   );
 
   let [value, done]: [RealNum, boolean] = [RealNum.zero, false];

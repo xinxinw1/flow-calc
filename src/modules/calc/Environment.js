@@ -1,14 +1,14 @@
 // @flow
 
 import type RealExpr from './real-expr/RealExpr';
-import RealEvalObj from './real-eval/RealEvalObj';
+import { type RealEvaluator } from './real-eval/RealEvaluator';
 
 export type EnvOptions = {|
   precMargin: number,
 |};
 
 export default class Environment {
-  realExprCache: Map<string, RealEvalObj> = new Map();
+  realExprCache: Map<string, RealEvaluator> = new Map();
   precMargin: number;
 
   constructor(options: EnvOptions) {
@@ -21,14 +21,14 @@ export default class Environment {
     Object.freeze(this);
   }
 
-  getRealEvalObj(expr: RealExpr): RealEvalObj {
+  getRealEvaluator(expr: RealExpr): RealEvaluator {
     const exprStr = expr.uniqString();
-    const possibleEvalObj = this.realExprCache.get(exprStr);
-    if (possibleEvalObj) {
-      return possibleEvalObj;
+    const possibleEvaluator = this.realExprCache.get(exprStr);
+    if (possibleEvaluator) {
+      return possibleEvaluator;
     }
-    const evalObj = expr.makeEvalObj(this);
-    this.realExprCache.set(exprStr, evalObj);
-    return evalObj;
+    const evaluator = expr.makeEvaluator(this);
+    this.realExprCache.set(exprStr, evaluator);
+    return evaluator;
   }
 }
