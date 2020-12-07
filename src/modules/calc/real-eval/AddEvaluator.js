@@ -1,12 +1,12 @@
 // @flow
 
 import RealNum from '../RealNum';
-import RealClassEvaluator from './RealClassEvaluator';
+import RealGenClassEvaluator from './RealGenClassEvaluator';
 import { type RealEvaluator } from './RealEvaluator';
 import { type RealGenerator } from '../RealGenerator';
 import ContinuableAdd from '../ContinuableAdd';
 
-export default class AddEvaluator extends RealClassEvaluator {
+export default class AddEvaluator extends RealGenClassEvaluator {
   aEval: RealEvaluator;
   bEval: RealEvaluator;
 
