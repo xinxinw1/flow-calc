@@ -23,9 +23,9 @@ test.each(evalSequences)(
   (a, seq: Array<[Precision, string, boolean]>) => {
     const evaluator = new ConstEvaluator(RealNum.fromStr(a));
 
-    for (const [prec, expSum, expDone] of seq) {
-      const [sum, done] = evaluator.eval(prec);
-      expect(sum.toString()).toBe(expSum);
+    for (const [prec, expVal, expDone] of seq) {
+      const [val, done] = evaluator.eval(prec);
+      expect(val.toString()).toBe(expVal);
       expect(done).toBe(expDone);
     }
   },

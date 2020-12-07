@@ -74,9 +74,9 @@ test.each(evalSequences)(
     const bEval = new ConstEvaluator(RealNum.fromStr(b));
     const evaluator = new AddEvaluator(aEval, bEval);
 
-    for (const [prec, expSum, expDone] of seq) {
-      const [sum, done] = evaluator.eval(prec);
-      expect(sum.toString()).toBe(expSum);
+    for (const [prec, expVal, expDone] of seq) {
+      const [val, done] = evaluator.eval(prec);
+      expect(val.toString()).toBe(expVal);
       expect(done).toBe(expDone);
     }
   },
