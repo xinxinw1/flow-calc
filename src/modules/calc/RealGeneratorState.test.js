@@ -5,75 +5,50 @@ import RealGeneratorState from './RealGeneratorState';
 import { makeContinuousGen, makeInstantGen } from './RealGenerator';
 
 test('generator state eval works correctly with instant gen', () => {
-  const evaluator = new RealGeneratorState(
+  const genState = new RealGeneratorState(
     makeInstantGen(RealNum.fromStr('4.449')),
   );
 
-  let [value, done]: [RealNum, boolean] = [RealNum.zero, false];
+  const seq = [
+    [NegInfPrec, '0', false],
+    [new RegularPrec(0), '4', false],
+    [new RegularPrec(1), '4.4', false],
+    [new RegularPrec(2), '4.45', false],
+    // expected to be the same since result is already known
+    // internally to full precision
+    [new RegularPrec(1), '4.4', false],
+    [InfPrec, '4.449', true],
+    [new RegularPrec(1), '4.4', false],
+    [NegInfPrec, '0', false],
+  ];
 
-  [value, done] = evaluator.eval(NegInfPrec);
-  expect(value).toObjEqual(RealNum.zero);
-  expect(done).toBe(false);
-
-  [value, done] = evaluator.eval(new RegularPrec(0));
-  expect(value).toObjEqual(RealNum.fromNum(4));
-  expect(done).toBe(false);
-
-  [value, done] = evaluator.eval(new RegularPrec(1));
-  expect(value).toObjEqual(RealNum.fromNum(4.4));
-  expect(done).toBe(false);
-
-  [value, done] = evaluator.eval(new RegularPrec(2));
-  expect(value).toObjEqual(RealNum.fromNum(4.45));
-  expect(done).toBe(false);
-
-  // expected to be the same since result is already known
-  // internally to full precision
-  [value, done] = evaluator.eval(new RegularPrec(1));
-  expect(value).toObjEqual(RealNum.fromNum(4.4));
-  expect(done).toBe(false);
-
-  [value, done] = evaluator.eval(InfPrec);
-  expect(value).toObjEqual(RealNum.fromNum(4.449));
-  expect(done).toBe(true);
-
-  [value, done] = evaluator.eval(new RegularPrec(1));
-  expect(value).toObjEqual(RealNum.fromNum(4.4));
-  expect(done).toBe(false);
-
-  [value, done] = evaluator.eval(NegInfPrec);
-  expect(value).toObjEqual(RealNum.zero);
-  expect(done).toBe(false);
+  for (const [prec, expVal, expDone] of seq) {
+    const [val, done] = genState.eval(prec);
+    expect(val.toString()).toBe(expVal);
+    expect(done).toBe(expDone);
+  }
 });
 
 test('generator state eval works correctly with regular gen', () => {
-  const evaluator = new RealGeneratorState(
+  const genState = new RealGeneratorState(
     makeContinuousGen(RealNum.fromStr('4.449')),
   );
 
-  let [value, done]: [RealNum, boolean] = [RealNum.zero, false];
+  const seq = [
+    [new RegularPrec(1), '4.4', false],
+    [new RegularPrec(2), '4.45', false],
+    // expected to be different since previous result will be rounded
+    // and max allowed error is 0.1
+    [new RegularPrec(1), '4.5', false],
+    [new RegularPrec(3), '4.449', false],
+    // expected to be different since with more precision, we confirm it's
+    // supposed to round to 4.4
+    [new RegularPrec(1), '4.4', false],
+  ];
 
-  [value, done] = evaluator.eval(new RegularPrec(1));
-  expect(value).toObjEqual(RealNum.fromNum(4.4));
-  expect(done).toBe(false);
-
-  [value, done] = evaluator.eval(new RegularPrec(2));
-  expect(value).toObjEqual(RealNum.fromNum(4.45));
-  expect(done).toBe(false);
-
-  // expected to be different since previous result will be rounded
-  // and max allowed error is 0.1
-  [value, done] = evaluator.eval(new RegularPrec(1));
-  expect(value).toObjEqual(RealNum.fromNum(4.5));
-  expect(done).toBe(false);
-
-  [value, done] = evaluator.eval(new RegularPrec(3));
-  expect(value).toObjEqual(RealNum.fromNum(4.449));
-  expect(done).toBe(false);
-
-  // expected to be different since with more precision, we confirm it's
-  // supposed to round to 4.4
-  [value, done] = evaluator.eval(new RegularPrec(1));
-  expect(value).toObjEqual(RealNum.fromNum(4.4));
-  expect(done).toBe(false);
+  for (const [prec, expVal, expDone] of seq) {
+    const [val, done] = genState.eval(prec);
+    expect(val.toString()).toBe(expVal);
+    expect(done).toBe(expDone);
+  }
 });
