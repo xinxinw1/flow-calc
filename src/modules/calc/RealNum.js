@@ -1,5 +1,7 @@
 // @flow
 
+import nullthrows from 'nullthrows';
+
 import { downCast } from '../typetools';
 import NatNum from './NatNum';
 import Size, { RegularSize, NegInfSize } from './Size';
@@ -234,7 +236,7 @@ export default class RealNum {
     const [shiftedNat, shiftedNums] = this.nat.shiftRight(numToShift);
 
     // guaranteed to exist since numToShift > 0
-    const decidingDig = shiftedNums[0];
+    const decidingDig = nullthrows(shiftedNums[0]);
 
     const roundAway = shouldRoundAwayFromZero(decidingDig, this.pos);
     if (roundAway) {
