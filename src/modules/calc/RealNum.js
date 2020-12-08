@@ -1,27 +1,27 @@
 // @flow
 
 import { downCast } from '../typetools';
-import Digits from './Digits';
+import NatNum from './NatNum';
 import Size, { RegularSize, NegInfSize } from './Size';
 import Precision, { RegularPrec, NegInfPrec } from './Precision';
 
 export default class RealNum {
   pos: boolean;
-  digits: Digits;
+  nat: NatNum;
   exp: number;
 
-  constructor(pos: boolean, digits: Digits, exp: number) {
+  constructor(pos: boolean, nat: NatNum, exp: number) {
     this.pos = pos;
-    this.digits = digits;
+    this.nat = nat;
     this.exp = exp;
     Object.freeze(this);
   }
 
-  static zero: RealNum = new RealNum(true, Digits.empty, 0);
+  static zero: RealNum = new RealNum(true, NatNum.zero, 0);
   static one: RealNum = RealNum.fromNum(1);
 
-  static fromDigits(pos: boolean, digits: Digits, exp: number): RealNum {
-    return new RealNum(pos, digits, exp).trim();
+  static fromNat(pos: boolean, nat: NatNum, exp: number): RealNum {
+    return new RealNum(pos, nat, exp).trim();
   }
 
   static fromNum(n: number): RealNum {
@@ -41,20 +41,20 @@ export default class RealNum {
     const pos = s[0] !== '-';
     const start = pos ? 0 : 1;
 
-    const arr: Array<number> = [];
+    let str = '';
     let exp: number = 0;
 
     for (let i = start; i < s.length; i += 1) {
       if (s[i] === '.') {
         exp = -(s.length - 1 - i);
       } else {
-        arr.push(parseInt(s[i], 10));
+        str += s[i];
       }
     }
 
-    const tree = Digits.fromIter(arr);
+    const nat = NatNum.fromStr(str);
 
-    return RealNum.fromDigits(pos, tree, exp);
+    return RealNum.fromNat(pos, nat, exp);
   }
 
   static digitAtPrec(pos: boolean, dig: number, prec: Precision): RealNum {
@@ -62,38 +62,31 @@ export default class RealNum {
       throw new Error('digitAtPrec must be given a regular prec');
     }
     const precNum = prec.prec;
-    return RealNum.fromDigits(pos, Digits.fromIter([dig]), 0 - precNum);
+    return RealNum.fromNat(pos, NatNum.fromNum(dig), 0 - precNum);
   }
 
   trim(): RealNum {
     let changed = false;
-    let { digits, exp } = this;
+    let { nat, exp } = this;
     const { pos } = this;
 
-    if (digits.isEmpty()) return RealNum.zero;
-
-    // trim left side
-    while (digits.head() === 0) {
-      changed = true;
-      digits = digits.tail();
-      if (digits.isEmpty()) return RealNum.zero;
-    }
+    if (nat.isZero()) return RealNum.zero;
 
     // trim right side
-    // at this point digits cannot be empty
-    while (digits.last() === 0) {
+    // at this point nat cannot be zero
+    while (nat.last() === 0) {
       changed = true;
-      digits = digits.init();
+      nat = nat.init();
       exp += 1;
     }
 
     if (!changed) return this;
 
-    return new RealNum(pos, digits, exp);
+    return new RealNum(pos, nat, exp);
   }
 
   isZero(): boolean {
-    return this.digits.isEmpty();
+    return this.nat.isZero();
   }
 
   // assumes this and other are trimmed
@@ -101,7 +94,7 @@ export default class RealNum {
     return (
       this.exp === other.exp &&
       this.pos === other.pos &&
-      this.digits.equals(other.digits)
+      this.nat.equals(other.nat)
     );
   }
 
@@ -115,9 +108,9 @@ export default class RealNum {
       const smallerExp = Math.min(this.exp, other.exp);
       const thisRightWait = this.exp - smallerExp;
       const otherRightWait = other.exp - smallerExp;
-      let outputCompare = Digits.compare(
-        this.digits,
-        other.digits,
+      let outputCompare = NatNum.compare(
+        this.nat,
+        other.nat,
         thisRightWait,
         otherRightWait,
       );
@@ -151,13 +144,13 @@ export default class RealNum {
   // returns trimmed version if this is trimmed
   neg(): RealNum {
     if (this.isZero()) return RealNum.zero;
-    return new RealNum(!this.pos, this.digits, this.exp);
+    return new RealNum(!this.pos, this.nat, this.exp);
   }
 
   // assumes this is trimmed
   size(): Size {
     if (this.isZero()) return NegInfSize;
-    return new RegularSize(this.digits.size() + this.exp);
+    return new RegularSize(this.nat.size() + this.exp);
   }
 
   // assumes this is trimmed
@@ -166,7 +159,7 @@ export default class RealNum {
     if (this.isZero()) {
       throw new Error('sizeNonZero not defined for 0');
     }
-    return this.digits.size() + this.exp;
+    return this.nat.size() + this.exp;
   }
 
   // assumes this is trimmed
@@ -189,26 +182,27 @@ export default class RealNum {
   toString(): string {
     if (this.isZero()) return '0';
     let str = this.pos ? '' : '-';
+    const natStr = this.nat.toString();
     if (this.exp >= 0) {
-      str += [...this.digits].join('');
+      str += natStr;
       for (let i = 1; i <= this.exp; i += 1) {
         str += '0';
       }
       return str;
     }
-    const numDig = this.digits.size();
+    const numDig = natStr.length;
     if (-this.exp >= numDig) {
       str += '0.';
       for (let i = 1; i <= -this.exp - numDig; i += 1) {
         str += '0';
       }
-      str += [...this.digits].join('');
+      str += natStr;
       return str;
     }
-    const [left, right] = this.digits.split(numDig + this.exp);
-    str += [...left].join('');
+    const splitPos = numDig + this.exp;
+    str += natStr.substring(0, splitPos);
     str += '.';
-    str += [...right].join('');
+    str += natStr.substring(splitPos);
     return str;
   }
 
@@ -234,32 +228,19 @@ export default class RealNum {
     // prec is a RegularPrec
     const precNum = downCast(prec, RegularPrec).prec;
 
-    // the deciding digit's position
-    // is position after decimal adjusted by prec
-    const decidingPos = this.sizeNonZero() + precNum;
-    // since !(this.prec() <= prec),
-    // this.prec() > precNum
-    // so decidingPos < digits.size() = this.size() + this.prec()
+    // we already have this.prec() > prec so can subtract
+    // and get > 0 value
+    const numToShift = this.precNonZero() - precNum;
+    const [shiftedNat, shiftedNums] = this.nat.shiftRight(numToShift);
 
-    if (decidingPos < 0) {
-      // the deciding number is before start of
-      // the number, so is 0
-      const roundAway = shouldRoundAwayFromZero(0, this.pos);
-      if (roundAway) {
-        return new RealNum(this.pos, Digits.fromIter([1]), -precNum);
-      }
-      return RealNum.zero;
-    }
+    // guaranteed to exist since numToShift > 0
+    const decidingDig = shiftedNums[0];
 
-    // now we are guaranteed to have a digit in the digits list to have to decide on
-    // ie. 0 <= decidingPos < digits.size()
-    const [left, right] = this.digits.split(decidingPos);
-    const decidingDig = right.head();
     const roundAway = shouldRoundAwayFromZero(decidingDig, this.pos);
     if (roundAway) {
-      return RealNum.fromDigits(this.pos, left.add1(), -precNum);
+      return RealNum.fromNat(this.pos, shiftedNat.add1(), -precNum);
     }
-    return RealNum.fromDigits(this.pos, left, -precNum);
+    return RealNum.fromNat(this.pos, shiftedNat, -precNum);
   }
 
   // assumes this is trimmed
@@ -283,38 +264,7 @@ export default class RealNum {
   }
 
   // assumes this is trimmed
-  // returns the digit before prec, the digits after,
-  // and the number of zeros before the digits after (leftWait)
-  getDigitsAfterPrec(prec: Precision): [number, Digits, number] {
-    if (!(prec instanceof RegularPrec)) {
-      throw new Error('digits after prec must be given a regular prec');
-    }
-    if (this.isZero()) return [0, Digits.empty, 0];
-
-    const precNum = prec.prec;
-
-    const splitDigits = this.sizeNonZero() + precNum;
-
-    if (splitDigits <= 0) {
-      return [0, this.digits, 0 - splitDigits];
-    }
-
-    if (splitDigits > this.digits.size()) {
-      return [0, Digits.empty, 0];
-    }
-
-    const [left, right] = this.digits.split(splitDigits);
-
-    return [left.last(), right, 0];
-  }
-
-  // assumes this is trimmed
-  // returns the digit before prec
-  getDigitAtPrec(prec: Precision): number {
-    const [lastDig, _digitsAfter, _leftWait] = this.getDigitsAfterPrec(prec);
-    return lastDig;
-  }
-
+  // returns the digit before prec, and the real number after
   getNumAfterPrec(prec: Precision): [number, RealNum] {
     if (!(prec instanceof RegularPrec)) {
       throw new Error('digits after prec must be given a regular prec');
@@ -323,19 +273,20 @@ export default class RealNum {
 
     const precNum = prec.prec;
 
-    const splitDigits = this.sizeNonZero() + precNum;
-
-    if (splitDigits <= 0) {
-      return [0, this];
-    }
-
-    if (splitDigits > this.digits.size()) {
+    const numToSplit = this.precNonZero() - precNum;
+    if (numToSplit < 0) {
+      // splitting after end of number
       return [0, RealNum.zero];
     }
+    const [left, right] = this.nat.splitRight(numToSplit);
+    return [left.last(), RealNum.fromNat(this.pos, right, this.exp)];
+  }
 
-    const [left, right] = this.digits.split(splitDigits);
-
-    return [left.last(), RealNum.fromDigits(this.pos, right, this.exp)];
+  // assumes this is trimmed
+  // returns the digit before prec
+  getDigitAtPrec(prec: Precision): number {
+    const [lastDig, _numAfter] = this.getNumAfterPrec(prec);
+    return lastDig;
   }
 
   add(other: RealNum): RealNum {
@@ -346,14 +297,14 @@ export default class RealNum {
       const smallerExp = Math.min(this.exp, other.exp);
       const thisRightWait = this.exp - smallerExp;
       const otherRightWait = other.exp - smallerExp;
-      const outputDigits = Digits.add(
-        this.digits,
-        other.digits,
+      const outputNat = NatNum.add(
+        this.nat,
+        other.nat,
         thisRightWait,
         otherRightWait,
       );
       const outputExp = smallerExp;
-      return RealNum.fromDigits(outputPos, outputDigits, outputExp);
+      return RealNum.fromNat(outputPos, outputNat, outputExp);
     }
     if (this.pos && !other.pos) {
       return this.sub(other.neg());
@@ -383,14 +334,9 @@ export default class RealNum {
       const smallerExp = Math.min(a.exp, b.exp);
       const aRightWait = a.exp - smallerExp;
       const bRightWait = b.exp - smallerExp;
-      const outputDigits = Digits.sub(
-        a.digits,
-        b.digits,
-        aRightWait,
-        bRightWait,
-      );
+      const outputNat = NatNum.sub(a.nat, b.nat, aRightWait, bRightWait);
       const outputExp = smallerExp;
-      return RealNum.fromDigits(outputPos, outputDigits, outputExp);
+      return RealNum.fromNat(outputPos, outputNat, outputExp);
     }
     // this is pos, other is neg
     // or this is neg, other is pos

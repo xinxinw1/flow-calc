@@ -50,29 +50,45 @@ test('arbitrary NatNum to string', () => {
 });
 
 test('NatNum operations', () => {
-  const n = NatNum.fromStr('12345');
+  const n = NatNum.fromStr('123045');
 
   expect(n.last()).toBe(5);
 
-  expect(n.init().toString()).toBe('1234');
-  expect(n.push(6).toString()).toBe('123456');
+  expect(n.init().toString()).toBe('12304');
+  expect(n.push(6).toString()).toBe('1230456');
 
   const [left, right] = n.splitRight(3);
-  expect(left.toString()).toBe('12');
-  expect(right.toString()).toBe('345');
+  expect(left.toString()).toBe('123');
+  expect(right.toString()).toBe('45');
 
-  const [left2, right2] = n.splitRight(7);
-  expect(left2.toString()).toBe('0');
-  expect(right2.toString()).toBe('12345');
+  const [left2, right2] = n.splitRight(2);
+  expect(left2.toString()).toBe('1230');
+  expect(right2.toString()).toBe('45');
+
+  const [left3, right3] = n.splitRight(8);
+  expect(left3.toString()).toBe('0');
+  expect(right3.toString()).toBe('123045');
 
   expect(() => {
     n.splitRight(-1);
   }).toThrow('NatNum.splitRight cannot take a negative number');
 
-  expect(n.shiftLeft(3).toString()).toBe('12345000');
-  expect(n.shiftLeft(-3).toString()).toBe('12');
-  expect(n.shiftRight(3).toString()).toBe('12');
-  expect(n.shiftRight(-3).toString()).toBe('12345000');
+  expect(n.shiftLeft(3).toString()).toBe('123045000');
+  expect(() => {
+    n.shiftLeft(-3);
+  }).toThrow('cannot shiftLeft by a negative number, use shiftRight');
+
+  const [shiftedNum, shiftedOff] = n.shiftRight(3);
+  expect(shiftedNum.toString()).toBe('123');
+  expect(shiftedOff).toStrictEqual([0, 4, 5]);
+
+  const [shiftedNum2, shiftedOff2] = n.shiftRight(2);
+  expect(shiftedNum2.toString()).toBe('1230');
+  expect(shiftedOff2).toStrictEqual([4, 5]);
+
+  const [shiftedNum3, shiftedOff3] = n.shiftRight(8);
+  expect(shiftedNum3.toString()).toBe('0');
+  expect(shiftedOff3).toStrictEqual([0, 0, 1, 2, 3, 0, 4, 5]);
 });
 
 test.each([

@@ -85,7 +85,9 @@ export default class NatNum {
 
   // this * 10^n
   shiftLeft(n: number): NatNum {
-    if (n < 0) return this.shiftRight(0 - n);
+    if (n < 0) {
+      throw new Error('cannot shiftLeft by a negative number, use shiftRight');
+    }
     let num = this;
     for (let i = 0; i < n; i += 1) {
       num = num.push(0);
@@ -94,13 +96,20 @@ export default class NatNum {
   }
 
   // this * 10^-n
-  shiftRight(n: number): NatNum {
-    if (n < 0) return this.shiftLeft(0 - n);
+  // 2nd return is the list of removed numbers
+  // with leftmost ones being the last removed
+  shiftRight(n: number): [NatNum, Array<number>] {
+    if (n < 0) {
+      throw new Error('cannot shiftRight by a negative number, use shiftLeft');
+    }
     let num = this;
+    const shifted = [];
     for (let i = 0; i < n; i += 1) {
+      shifted.push(num.last());
       num = num.init();
     }
-    return num;
+    shifted.reverse();
+    return [num, shifted];
   }
 
   // assumes this is trimmed

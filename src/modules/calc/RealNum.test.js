@@ -9,7 +9,7 @@ import Precision, { RegularPrec, InfPrec, NegInfPrec } from './Precision';
 test('RealNum.zero is correct', () => {
   const n: RealNum = RealNum.zero;
 
-  expect(n.digits.isEmpty()).toBe(true);
+  expect(n.nat.isZero()).toBe(true);
   expect(n.exp).toBe(0);
   expect(n.pos).toBe(true);
 });
@@ -18,65 +18,37 @@ test('creates RealNum from string', () => {
   let n: RealNum = RealNum.zero;
 
   n = RealNum.fromStr('1');
-  expect([...n.digits]).toStrictEqual([1]);
+  expect(n.nat.toString()).toBe('1');
   expect(n.exp).toBe(0);
   expect(n.pos).toBe(true);
 
   n = RealNum.fromStr('10.5');
-  expect([...n.digits]).toStrictEqual([1, 0, 5]);
+  expect(n.nat.toString()).toBe('105');
   expect(n.exp).toBe(-1);
   expect(n.pos).toBe(true);
 
   n = RealNum.fromStr('0');
-  expect(n.digits.isEmpty()).toBe(true);
+  expect(n.nat.isZero()).toBe(true);
   expect(n.exp).toBe(0);
   expect(n.pos).toBe(true);
 
   n = RealNum.fromStr('-00.00');
-  expect(n.digits.isEmpty()).toBe(true);
+  expect(n.nat.isZero()).toBe(true);
   expect(n.exp).toBe(0);
   expect(n.pos).toBe(true);
 
   n = RealNum.fromStr('-1000');
-  expect([...n.digits]).toStrictEqual([1]);
+  expect(n.nat.toString()).toBe('1');
   expect(n.exp).toBe(3);
   expect(n.pos).toBe(false);
 
   n = RealNum.fromStr('0.004000');
-  expect([...n.digits]).toStrictEqual([4]);
+  expect(n.nat.toString()).toBe('4');
   expect(n.exp).toBe(-3);
   expect(n.pos).toBe(true);
 
   n = RealNum.fromStr('123456789123456789123456789');
-  expect([...n.digits]).toStrictEqual([
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-  ]);
+  expect(n.nat.toString()).toBe('123456789123456789123456789');
   expect(n.exp).toBe(0);
   expect(n.pos).toBe(true);
 });
@@ -85,12 +57,12 @@ test('creates RealNum from num', () => {
   let n: RealNum = RealNum.zero;
 
   n = RealNum.fromNum(1);
-  expect([...n.digits]).toStrictEqual([1]);
+  expect(n.nat.toString()).toBe('1');
   expect(n.exp).toBe(0);
   expect(n.pos).toBe(true);
 
   n = RealNum.fromNum(10.5);
-  expect([...n.digits]).toStrictEqual([1, 0, 5]);
+  expect(n.nat.toString()).toBe('105');
   expect(n.exp).toBe(-1);
   expect(n.pos).toBe(true);
 });
@@ -98,7 +70,7 @@ test('creates RealNum from num', () => {
 test('RealNum.one is correct', () => {
   const n: RealNum = RealNum.one;
 
-  expect([...n.digits]).toStrictEqual([1]);
+  expect(n.nat.toString()).toBe('1');
   expect(n.exp).toBe(0);
   expect(n.pos).toBe(true);
 });
@@ -107,22 +79,22 @@ test('RealNum.digitAtPrec is correct', () => {
   let n: RealNum;
 
   n = RealNum.digitAtPrec(false, 0, new RegularPrec(10));
-  expect([...n.digits]).toStrictEqual([]);
+  expect(n.nat.toString()).toBe('0');
   expect(n.exp).toBe(0);
   expect(n.pos).toBe(true);
 
   n = RealNum.digitAtPrec(true, 1, new RegularPrec(0));
-  expect([...n.digits]).toStrictEqual([1]);
+  expect(n.nat.toString()).toBe('1');
   expect(n.exp).toBe(0);
   expect(n.pos).toBe(true);
 
   n = RealNum.digitAtPrec(false, 9, new RegularPrec(1));
-  expect([...n.digits]).toStrictEqual([9]);
+  expect(n.nat.toString()).toBe('9');
   expect(n.exp).toBe(-1);
   expect(n.pos).toBe(false);
 
   n = RealNum.digitAtPrec(true, 2, new RegularPrec(-1));
-  expect([...n.digits]).toStrictEqual([2]);
+  expect(n.nat.toString()).toBe('2');
   expect(n.exp).toBe(1);
   expect(n.pos).toBe(true);
 });
@@ -376,41 +348,20 @@ test('expect ceil with neg inf prec of pos number to give error', () => {
   }).toThrow('Cannot infinitely round 1 away from zero');
 });
 
-const getDigitsAfterPrecTests = [
-  ['0', new RegularPrec(0), 0, '', 0],
-  ['15.43', new RegularPrec(0), 5, '43', 0],
-  ['15.43', new RegularPrec(-1), 1, '543', 0],
-  ['15.43', new RegularPrec(-2), 0, '1543', 0],
-  ['15.43', new RegularPrec(-3), 0, '1543', 1],
-  ['15.43', new RegularPrec(-4), 0, '1543', 2],
-  ['15.43', new RegularPrec(1), 4, '3', 0],
-  ['15.43', new RegularPrec(2), 3, '', 0],
-  ['15.43', new RegularPrec(3), 0, '', 0],
-  ['15.43', new RegularPrec(4), 0, '', 0],
-  ['10.03', new RegularPrec(0), 0, '03', 0],
-  ['10.03', new RegularPrec(-1), 1, '003', 0],
-];
-
-test.each(getDigitsAfterPrecTests)(
-  'expect %p .getDigitsAfterPrec %o prec to give [%p, %p, %p]',
-  (
-    s1: string,
-    p: Precision,
-    digBefore: number,
-    digitsStr: string,
-    leftWait: number,
-  ) => {
-    const num = RealNum.fromStr(s1);
-    const [ansDigBefore, ansDigits, ansLeftWait] = num.getDigitsAfterPrec(p);
-    expect(ansDigBefore).toBe(digBefore);
-    expect(ansDigits.toString()).toBe(digitsStr);
-    expect(ansLeftWait).toBe(leftWait);
-
-    expect(num.getDigitAtPrec(p)).toBe(digBefore);
-  },
-);
-
-test.each(getDigitsAfterPrecTests)(
+test.each([
+  ['0', new RegularPrec(0), 0],
+  ['15.43', new RegularPrec(0), 5],
+  ['15.43', new RegularPrec(-1), 1],
+  ['15.43', new RegularPrec(-2), 0],
+  ['15.43', new RegularPrec(-3), 0],
+  ['15.43', new RegularPrec(-4), 0],
+  ['15.43', new RegularPrec(1), 4],
+  ['15.43', new RegularPrec(2), 3],
+  ['15.43', new RegularPrec(3), 0],
+  ['15.43', new RegularPrec(4), 0],
+  ['10.03', new RegularPrec(0), 0],
+  ['10.03', new RegularPrec(-1), 1],
+])(
   'expect %p .getDigitAtPrec %o prec to give %p',
   (s1: string, p: Precision, digBefore: number) => {
     expect(RealNum.fromStr(s1).getDigitAtPrec(p)).toBe(digBefore);
