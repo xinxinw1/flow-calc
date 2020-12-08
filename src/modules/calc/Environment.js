@@ -3,9 +3,9 @@
 import type RealExpr from './real-expr/RealExpr';
 import { type RealEvaluator } from './real-eval/RealEvaluator';
 
-export type EnvOptions = {|
+export type EnvOptions = {
   precMargin: number,
-|};
+};
 
 export default class Environment {
   realExprCache: Map<string, RealEvaluator> = new Map();
