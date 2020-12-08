@@ -16,10 +16,10 @@ const digitMeasure: FingerTree.Measure<number, number> = {
 };
 
 export default class Digits {
-  digits: DigitTree;
+  digitTree: DigitTree;
 
-  constructor(digits: DigitTree) {
-    this.digits = digits;
+  constructor(digitTree: DigitTree) {
+    this.digitTree = digitTree;
     Object.freeze(this);
   }
 
@@ -50,41 +50,41 @@ export default class Digits {
   }
 
   isEmpty(): boolean {
-    return this.digits.empty();
+    return this.digitTree.empty();
   }
 
   size(): number {
-    return this.digits.measure();
+    return this.digitTree.measure();
   }
 
   head(): number {
-    return this.digits.head();
+    return this.digitTree.head();
   }
 
   last(): number {
-    return this.digits.last();
+    return this.digitTree.last();
   }
 
   init(): Digits {
-    return new Digits(this.digits.init());
+    return new Digits(this.digitTree.init());
   }
 
   tail(): Digits {
-    return new Digits(this.digits.tail());
+    return new Digits(this.digitTree.tail());
   }
 
   push(x: number): Digits {
-    return new Digits(this.digits.push(x));
+    return new Digits(this.digitTree.push(x));
   }
 
   cons(x: number): Digits {
-    return new Digits(this.digits.cons(x));
+    return new Digits(this.digitTree.cons(x));
   }
 
   // split the digits so that the left side
   // has numInLeft digits
   split(numInLeft: number): [Digits, Digits] {
-    const [left, right] = this.digits.split((m) => m > numInLeft);
+    const [left, right] = this.digitTree.split((m) => m > numInLeft);
     return [new Digits(left), new Digits(right)];
   }
 
@@ -95,11 +95,11 @@ export default class Digits {
   }
 
   concat(t: Digits): Digits {
-    return new Digits(this.digits.concat(t.digits));
+    return new Digits(this.digitTree.concat(t.digitTree));
   }
 
   iter(): Iterator<number> {
-    return this.digits[Symbol.iterator]();
+    return this.digitTree[Symbol.iterator]();
   }
 
   // will get all digits using left-to-right iterator
