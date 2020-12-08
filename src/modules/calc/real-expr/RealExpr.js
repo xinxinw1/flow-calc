@@ -14,7 +14,7 @@ export default class RealExpr extends AbstractClass {
     return this.abstractMethod(this.uniqString);
   }
 
-  makeEvaluator(_env: Environment): RealEvaluator {
-    return this.abstractMethod(this.makeEvaluator);
+  makeEvaluator(env: Environment): RealEvaluator {
+    return this.abstractMethod(this.makeEvaluator, env);
   }
 }

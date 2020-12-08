@@ -14,16 +14,16 @@ export default class ExtInteger extends AbstractClass {
     return this.equalsSameClass(other);
   }
 
-  equalsSameClass(_other: ExtInteger): boolean {
-    return this.abstractMethod(this.equalsSameClass);
+  equalsSameClass(other: ExtInteger): boolean {
+    return this.abstractMethod(this.equalsSameClass, other);
   }
 
-  le(_other: ExtInteger): boolean {
-    return this.abstractMethod(this.equalsSameClass);
+  le(other: ExtInteger): boolean {
+    return this.abstractMethod(this.equalsSameClass, other);
   }
 
-  add(_other: number | ExtInteger): ExtInteger {
-    return this.abstractMethod(this.equalsSameClass);
+  add(other: number | ExtInteger): ExtInteger {
+    return this.abstractMethod(this.equalsSameClass, other);
   }
 }
 

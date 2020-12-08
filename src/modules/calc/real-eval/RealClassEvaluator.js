@@ -15,7 +15,7 @@ export default class RealClassEvaluator
   }
 
   // will satisfy the output conditions for RealEvaluator.eval
-  eval(_prec: Precision): [RealNum, boolean] {
-    return this.abstractMethod(this.eval);
+  eval(prec: Precision): [RealNum, boolean] {
+    return this.abstractMethod(this.eval, prec);
   }
 }

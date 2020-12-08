@@ -14,8 +14,8 @@ export default class Size extends AbstractClass {
     return this.equalsSameClass(other);
   }
 
-  equalsSameClass(_other: Size): boolean {
-    return this.abstractMethod(this.equalsSameClass);
+  equalsSameClass(other: Size): boolean {
+    return this.abstractMethod(this.equalsSameClass, other);
   }
 }
 
