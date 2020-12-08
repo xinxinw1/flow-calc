@@ -3,8 +3,9 @@
 import fc from 'fast-check';
 import NatNum from './NatNum';
 import NatNumDigits from './NatNumDigits';
+import NatNumBigInt from './NatNumBigInt';
 
-describe.each([[NatNumDigits]])(
+describe.each([[NatNumBigInt], [NatNumDigits]])(
   'runs for NatNum implementation %p',
   (NatNumImpl: Class<NatNum>) => {
     test('gets zero NatNum', () => {
@@ -191,6 +192,7 @@ describe.each([[NatNumDigits]])(
       ['0', '1', 0, 2, -1],
       ['1', '1', 0, 0, 0],
       ['1', '1', 2, 0, 1],
+      ['1', '10', 1, 0, 0],
       ['1', '1', 0, 2, -1],
       ['9', '10', 0, 0, -1],
       ['10', '9', 0, 0, 1],
