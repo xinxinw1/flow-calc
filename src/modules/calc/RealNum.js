@@ -344,6 +344,14 @@ export default class RealNum {
     // or this is neg, other is pos
     return this.add(other.neg());
   }
+
+  mult(other: RealNum): RealNum {
+    if (this.isZero() || other.isZero()) return RealNum.zero;
+    const outputPos = this.pos === other.pos;
+    const outputNat = NatNum.mult(this.nat, other.nat);
+    const outputExp = this.exp + other.exp;
+    return RealNum.fromNat(outputPos, outputNat, outputExp);
+  }
 }
 
 Object.freeze(RealNum);

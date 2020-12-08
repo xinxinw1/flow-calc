@@ -457,3 +457,30 @@ test('big int sub check', () => {
     }),
   );
 });
+
+const smallerExpBigIntArb = fc
+  .tuple(fc.bigIntN(100), fc.integer({ min: 0, max: 100 }))
+  .map(([bigInt, baseExp]: [number, number]) => {
+    let newBigInt = bigInt;
+    for (let i = 0; i < baseExp; i += 1) {
+      // $FlowIgnore[bigint-unsupported]
+      newBigInt *= 10n;
+    }
+    return newBigInt;
+  });
+
+test('big int mult check', () => {
+  fc.assert(
+    fc.property(
+      smallerExpBigIntArb,
+      smallerExpBigIntArb,
+      (n1: number, n2: number) => {
+        expect(
+          RealNum.fromStr(n1.toString())
+            .mult(RealNum.fromStr(n2.toString()))
+            .toString(),
+        ).toBe((n1 * n2).toString());
+      },
+    ),
+  );
+});
