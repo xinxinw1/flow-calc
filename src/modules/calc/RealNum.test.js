@@ -458,8 +458,22 @@ test('big int sub check', () => {
   );
 });
 
+test.each([
+  ['0', '0', '0'],
+  ['0', '1', '0'],
+  ['0', '-1', '0'],
+  ['1', '0', '0'],
+  ['1', '1', '1'],
+  ['1', '-1', '-1'],
+  ['-1', '0', '0'],
+  ['-1', '1', '-1'],
+  ['-1', '-1', '1'],
+])('expect %p * %p == %p', (s1: string, s2: string, ans: string) => {
+  expect(RealNum.fromStr(s1).mult(RealNum.fromStr(s2)).toString()).toBe(ans);
+});
+
 const smallerExpBigIntArb = fc
-  .tuple(fc.bigIntN(100), fc.integer({ min: 0, max: 100 }))
+  .tuple(fc.bigIntN(500), fc.integer({ min: 0, max: 100 }))
   .map(([bigInt, baseExp]: [number, number]) => {
     let newBigInt = bigInt;
     for (let i = 0; i < baseExp; i += 1) {
