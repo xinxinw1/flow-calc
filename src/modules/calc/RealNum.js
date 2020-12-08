@@ -4,8 +4,11 @@ import nullthrows from 'nullthrows';
 
 import { downCast } from '../typetools';
 import NatNum from './NatNum';
+import NatNumDigits from './NatNumDigits';
 import Size, { RegularSize, NegInfSize } from './Size';
 import Precision, { RegularPrec, NegInfPrec } from './Precision';
+
+const NatNumImpl = NatNumDigits;
 
 export default class RealNum {
   pos: boolean;
@@ -19,7 +22,7 @@ export default class RealNum {
     Object.freeze(this);
   }
 
-  static zero: RealNum = new RealNum(true, NatNum.zero, 0);
+  static zero: RealNum = new RealNum(true, NatNumImpl.zero, 0);
   static one: RealNum = RealNum.fromNum(1);
 
   static fromNat(pos: boolean, nat: NatNum, exp: number): RealNum {
@@ -54,7 +57,7 @@ export default class RealNum {
       }
     }
 
-    const nat = NatNum.fromStr(str);
+    const nat = NatNumImpl.fromStr(str);
 
     return RealNum.fromNat(pos, nat, exp);
   }
@@ -64,7 +67,7 @@ export default class RealNum {
       throw new Error('digitAtPrec must be given a regular prec');
     }
     const precNum = prec.prec;
-    return RealNum.fromNat(pos, NatNum.fromNum(dig), 0 - precNum);
+    return RealNum.fromNat(pos, NatNumImpl.fromNum(dig), 0 - precNum);
   }
 
   trim(): RealNum {
@@ -110,7 +113,7 @@ export default class RealNum {
       const smallerExp = Math.min(this.exp, other.exp);
       const thisRightWait = this.exp - smallerExp;
       const otherRightWait = other.exp - smallerExp;
-      let outputCompare = NatNum.compare(
+      let outputCompare = NatNumImpl.compare(
         this.nat,
         other.nat,
         thisRightWait,
@@ -299,7 +302,7 @@ export default class RealNum {
       const smallerExp = Math.min(this.exp, other.exp);
       const thisRightWait = this.exp - smallerExp;
       const otherRightWait = other.exp - smallerExp;
-      const outputNat = NatNum.add(
+      const outputNat = NatNumImpl.add(
         this.nat,
         other.nat,
         thisRightWait,
@@ -336,7 +339,7 @@ export default class RealNum {
       const smallerExp = Math.min(a.exp, b.exp);
       const aRightWait = a.exp - smallerExp;
       const bRightWait = b.exp - smallerExp;
-      const outputNat = NatNum.sub(a.nat, b.nat, aRightWait, bRightWait);
+      const outputNat = NatNumImpl.sub(a.nat, b.nat, aRightWait, bRightWait);
       const outputExp = smallerExp;
       return RealNum.fromNat(outputPos, outputNat, outputExp);
     }
@@ -348,7 +351,7 @@ export default class RealNum {
   mult(other: RealNum): RealNum {
     if (this.isZero() || other.isZero()) return RealNum.zero;
     const outputPos = this.pos === other.pos;
-    const outputNat = NatNum.mult(this.nat, other.nat);
+    const outputNat = NatNumImpl.mult(this.nat, other.nat);
     const outputExp = this.exp + other.exp;
     return RealNum.fromNat(outputPos, outputNat, outputExp);
   }

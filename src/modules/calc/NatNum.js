@@ -1,86 +1,55 @@
 // @flow
 
-import Digits from './Digits';
+import AbstractClass from '../AbstractClass';
 
-export default class NatNum {
-  digits: Digits;
-
-  constructor(digits: Digits) {
-    this.digits = digits;
-    Object.freeze(this);
+export default class NatNum extends AbstractClass {
+  constructor() {
+    super();
+    this.abstractClass(NatNum);
   }
 
-  static zero: NatNum = new NatNum(Digits.empty);
-
-  static fromDigits(digits: Digits): NatNum {
-    return new NatNum(digits).trim();
-  }
+  static zero: NatNum;
 
   static fromStr(s: string): NatNum {
-    return NatNum.fromDigits(Digits.fromStr(s));
+    return AbstractClass.abstractMethod(NatNum.fromStr, s);
   }
 
   static fromNum(n: number): NatNum {
-    return NatNum.fromDigits(Digits.fromNum(n));
-  }
-
-  trim(): NatNum {
-    let changed = false;
-    let { digits } = this;
-
-    if (digits.isEmpty()) return NatNum.zero;
-
-    // trim left side
-    while (digits.head() === 0) {
-      changed = true;
-      digits = digits.tail();
-      if (digits.isEmpty()) return NatNum.zero;
-    }
-
-    if (!changed) return this;
-
-    return new NatNum(digits);
+    return AbstractClass.abstractMethod(NatNum.fromNum, n);
   }
 
   isZero(): boolean {
-    return this.digits.isEmpty();
+    return this.abstractMethod(this.isZero);
   }
 
   toString(): string {
-    if (this.isZero()) return '0';
-    return this.digits.toString();
+    return this.abstractMethod(this.toString);
   }
 
   // number of base 10 digits in the number
   // 0 => 0
   size(): number {
-    return this.digits.size();
+    return this.abstractMethod(this.size);
   }
 
   // this % 10
   last(): number {
-    if (this.isZero()) return 0;
-    return this.digits.last();
+    return this.abstractMethod(this.last);
   }
 
   // this // 10
   init(): NatNum {
-    if (this.isZero()) return NatNum.zero;
-    return NatNum.fromDigits(this.digits.init());
+    return this.abstractMethod(this.init);
   }
 
   // this * 10 + x
   push(x: number): NatNum {
-    return NatNum.fromDigits(this.digits.push(x));
+    return this.abstractMethod(this.push, x);
   }
 
   // returns [this // 10^numInRight, this % 10^numInRight]
   splitRight(numInRight: number): [NatNum, NatNum] {
-    if (numInRight < 0) {
-      throw new Error('NatNum.splitRight cannot take a negative number');
-    }
-    const [leftDigs, rightDigs] = this.digits.splitRight(numInRight);
-    return [NatNum.fromDigits(leftDigs), NatNum.fromDigits(rightDigs)];
+    return this.abstractMethod(this.splitRight, numInRight);
   }
 
   // this * 10^n
@@ -114,15 +83,15 @@ export default class NatNum {
 
   // assumes this is trimmed
   equals(other: NatNum): boolean {
-    return this.digits.equals(other.digits);
+    return this.abstractMethod(this.equals, other);
   }
 
   add1(): NatNum {
-    return NatNum.fromDigits(this.digits.add1());
+    return this.abstractMethod(this.add1);
   }
 
   sub1(): NatNum {
-    return NatNum.fromDigits(this.digits.sub1());
+    return this.abstractMethod(this.sub1);
   }
 
   // returns 0 if digits have equal value
@@ -134,7 +103,13 @@ export default class NatNum {
     aRightWait: number,
     bRightWait: number,
   ): number {
-    return Digits.compare(a.digits, b.digits, aRightWait, bRightWait);
+    return AbstractClass.abstractMethod(
+      NatNum.compare,
+      a,
+      b,
+      aRightWait,
+      bRightWait,
+    );
   }
 
   // adds digits a and b aligned on the right side
@@ -146,8 +121,12 @@ export default class NatNum {
     aRightWait: number,
     bRightWait: number,
   ): NatNum {
-    return NatNum.fromDigits(
-      Digits.add(a.digits, b.digits, aRightWait, bRightWait),
+    return AbstractClass.abstractMethod(
+      NatNum.add,
+      a,
+      b,
+      aRightWait,
+      bRightWait,
     );
   }
 
@@ -161,14 +140,18 @@ export default class NatNum {
     aRightWait: number,
     bRightWait: number,
   ): NatNum {
-    return NatNum.fromDigits(
-      Digits.sub(a.digits, b.digits, aRightWait, bRightWait),
+    return AbstractClass.abstractMethod(
+      NatNum.sub,
+      a,
+      b,
+      aRightWait,
+      bRightWait,
     );
   }
 
   // multiplies digits a and b aligned on the right side
   static mult(a: NatNum, b: NatNum): NatNum {
-    return NatNum.fromDigits(Digits.mult(a.digits, b.digits));
+    return AbstractClass.abstractMethod(NatNum.mult, a, b);
   }
 }
 
