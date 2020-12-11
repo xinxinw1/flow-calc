@@ -70,6 +70,63 @@ test.each([
 );
 
 test.each([
+  [new RegularPrec(0), new RegularPrec(0), false],
+  [new RegularPrec(0), new RegularPrec(1), false],
+  [new RegularPrec(1), new RegularPrec(0), true],
+  [new RegularPrec(0), InfPrec, false],
+  [new RegularPrec(0), NegInfPrec, true],
+  [InfPrec, new RegularPrec(0), true],
+  [NegInfPrec, new RegularPrec(0), false],
+  [InfPrec, InfPrec, false],
+  [InfPrec, NegInfPrec, true],
+  [NegInfPrec, InfPrec, false],
+  [NegInfPrec, NegInfPrec, false],
+])(
+  'compares precisions %o > %o should be %p',
+  (p1: Precision, p2: Precision, res: boolean) => {
+    expect(p1.gt(p2)).toBe(res);
+  },
+);
+
+test.each([
+  [new RegularPrec(0), new RegularPrec(0), true],
+  [new RegularPrec(0), new RegularPrec(1), false],
+  [new RegularPrec(1), new RegularPrec(0), true],
+  [new RegularPrec(0), InfPrec, false],
+  [new RegularPrec(0), NegInfPrec, true],
+  [InfPrec, new RegularPrec(0), true],
+  [NegInfPrec, new RegularPrec(0), false],
+  [InfPrec, InfPrec, true],
+  [InfPrec, NegInfPrec, true],
+  [NegInfPrec, InfPrec, false],
+  [NegInfPrec, NegInfPrec, true],
+])(
+  'compares precisions %o >= %o should be %p',
+  (p1: Precision, p2: Precision, res: boolean) => {
+    expect(p1.ge(p2)).toBe(res);
+  },
+);
+
+test.each([
+  [new RegularPrec(0), new RegularPrec(0), false],
+  [new RegularPrec(0), new RegularPrec(1), true],
+  [new RegularPrec(1), new RegularPrec(0), false],
+  [new RegularPrec(0), InfPrec, true],
+  [new RegularPrec(0), NegInfPrec, false],
+  [InfPrec, new RegularPrec(0), false],
+  [NegInfPrec, new RegularPrec(0), true],
+  [InfPrec, InfPrec, false],
+  [InfPrec, NegInfPrec, false],
+  [NegInfPrec, InfPrec, true],
+  [NegInfPrec, NegInfPrec, false],
+])(
+  'compares precisions %o < %o should be %p',
+  (p1: Precision, p2: Precision, res: boolean) => {
+    expect(p1.lt(p2)).toBe(res);
+  },
+);
+
+test.each([
   [new RegularPrec(0), new RegularPrec(0), new RegularPrec(0)],
   [new RegularPrec(0), new RegularPrec(1), new RegularPrec(1)],
   [new RegularPrec(1), new RegularPrec(0), new RegularPrec(1)],

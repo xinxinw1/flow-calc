@@ -22,6 +22,18 @@ export default class ExtInteger extends AbstractClass {
     return this.abstractMethod(this.equalsSameClass, other);
   }
 
+  gt(other: ExtInteger): boolean {
+    return !this.le(other);
+  }
+
+  ge(other: ExtInteger): boolean {
+    return other.le(this);
+  }
+
+  lt(other: ExtInteger): boolean {
+    return !this.ge(other);
+  }
+
   add(other: number | ExtInteger): ExtInteger {
     return this.abstractMethod(this.equalsSameClass, other);
   }

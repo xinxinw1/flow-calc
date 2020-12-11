@@ -21,6 +21,18 @@ export default class Precision extends AbstractClass {
     return this.n.le(other.n);
   }
 
+  gt(other: Precision): boolean {
+    return this.n.gt(other.n);
+  }
+
+  ge(other: Precision): boolean {
+    return this.n.ge(other.n);
+  }
+
+  lt(other: Precision): boolean {
+    return this.n.lt(other.n);
+  }
+
   add(other: number | Precision): Precision {
     let result = new RegularInt(0);
     if (other instanceof Precision) {
