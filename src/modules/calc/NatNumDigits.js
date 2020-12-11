@@ -3,6 +3,7 @@
 import { downCast } from '../typetools';
 import NatNum from './NatNum';
 import Digits from './Digits';
+import Precision, { RegularPrec } from './Precision';
 
 export default class NatNumDigits extends NatNum {
   digits: Digits;
@@ -13,9 +14,10 @@ export default class NatNumDigits extends NatNum {
     Object.freeze(this);
   }
 
-  static zero: NatNum = new NatNumDigits(Digits.empty);
+  static zeroDigits: NatNumDigits = new NatNumDigits(Digits.empty);
+  static zero: NatNum = NatNumDigits.zeroDigits;
 
-  static fromDigits(digits: Digits): NatNum {
+  static fromDigits(digits: Digits): NatNumDigits {
     return new NatNumDigits(digits).trim();
   }
 
@@ -27,17 +29,17 @@ export default class NatNumDigits extends NatNum {
     return NatNumDigits.fromDigits(Digits.fromNum(n));
   }
 
-  trim(): NatNum {
+  trim(): NatNumDigits {
     let changed = false;
     let { digits } = this;
 
-    if (digits.isEmpty()) return NatNumDigits.zero;
+    if (digits.isEmpty()) return NatNumDigits.zeroDigits;
 
     // trim left side
     while (digits.head() === 0) {
       changed = true;
       digits = digits.tail();
-      if (digits.isEmpty()) return NatNumDigits.zero;
+      if (digits.isEmpty()) return NatNumDigits.zeroDigits;
     }
 
     if (!changed) return this;
@@ -73,7 +75,7 @@ export default class NatNumDigits extends NatNum {
   }
 
   // this * 10 + x
-  push(x: number): NatNum {
+  push(x: number): NatNumDigits {
     return NatNumDigits.fromDigits(this.digits.push(x));
   }
 
@@ -142,7 +144,7 @@ export default class NatNumDigits extends NatNum {
     bNat: NatNum,
     aRightWait: number,
     bRightWait: number,
-  ): NatNum {
+  ): NatNumDigits {
     const a = downCast(aNat, NatNumDigits);
     const b = downCast(bNat, NatNumDigits);
     return NatNumDigits.fromDigits(
@@ -151,10 +153,74 @@ export default class NatNumDigits extends NatNum {
   }
 
   // multiplies digits a and b aligned on the right side
-  static mult(aNat: NatNum, bNat: NatNum): NatNum {
+  static mult(aNat: NatNum, bNat: NatNum): NatNumDigits {
     const a = downCast(aNat, NatNumDigits);
     const b = downCast(bNat, NatNumDigits);
     return NatNumDigits.fromDigits(Digits.mult(a.digits, b.digits));
+  }
+
+  // divides digits a and b aligned on the right side
+  // with a shifted to the left by aWait and
+  // b shifted to the left by bWait
+  // returns [quot, quotExp, rem, remExp] with rem >= 0
+  // need both waits because that's how the
+  // rounding position is determined
+  static div(
+    aNat: NatNum,
+    bNat: NatNum,
+    prec: Precision,
+  ): [NatNum, number, NatNum, number] {
+    const a = downCast(aNat, NatNumDigits);
+    const b = downCast(bNat, NatNumDigits);
+
+    if (b.isZero()) {
+      throw new Error('cannot divide by zero');
+    }
+    if (a.isZero()) return [NatNumDigits.zero, 0, NatNumDigits.zero, 0];
+
+    const bMult = [NatNumDigits.zeroDigits, b];
+
+    function getBMult(n: number): NatNumDigits {
+      if (n >= bMult.length) {
+        for (let i = 2; i <= n; i += 1) {
+          bMult[i] = NatNumDigits.mult(b, NatNumDigits.fromNum(i));
+        }
+      }
+      return bMult[n];
+    }
+
+    let quot = NatNumDigits.zero;
+    let rem: NatNumDigits = NatNumDigits.zeroDigits;
+    let aLeft = a.digits;
+    let exp = a.size();
+
+    while (
+      new RegularPrec(0 - exp).lt(prec) &&
+      !(rem.isZero() && aLeft.isEmpty())
+    ) {
+      if (!aLeft.isEmpty()) {
+        rem = rem.push(aLeft.head());
+        aLeft = aLeft.tail();
+      } else {
+        rem = rem.push(0);
+      }
+      let quotDig = 0;
+      while (NatNumDigits.compare(getBMult(quotDig + 1), rem, 0, 0) <= 0) {
+        quotDig += 1;
+      }
+      rem = NatNumDigits.sub(rem, getBMult(quotDig), 0, 0);
+      quot = quot.push(quotDig);
+      exp -= 1;
+    }
+
+    if (!aLeft.isEmpty()) {
+      rem = NatNumDigits.fromDigits(rem.digits.concat(aLeft));
+    }
+
+    const quotExp = quot.isZero() ? 0 : exp;
+    const remExp = rem.isZero() ? 0 : Math.min(0, exp);
+
+    return [quot, quotExp, rem, remExp];
   }
 }
 

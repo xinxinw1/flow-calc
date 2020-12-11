@@ -1,6 +1,7 @@
 // @flow
 
 import AbstractClass from '../AbstractClass';
+import Precision from './Precision';
 
 export default class NatNum extends AbstractClass {
   constructor() {
@@ -152,6 +153,20 @@ export default class NatNum extends AbstractClass {
   // multiplies digits a and b aligned on the right side
   static mult(a: NatNum, b: NatNum): NatNum {
     return AbstractClass.abstractMethod(NatNum.mult, a, b);
+  }
+
+  // divides digits a and b aligned on the right side
+  // with a shifted to the left by aWait and
+  // b shifted to the left by bWait
+  // returns [quot, quotExp, rem, remExp] with rem >= 0
+  // need both waits because that's how the
+  // rounding position is determined
+  static div(
+    a: NatNum,
+    b: NatNum,
+    prec: Precision,
+  ): [NatNum, number, NatNum, number] {
+    return AbstractClass.abstractMethod(NatNum.div, a, b, prec);
   }
 }
 

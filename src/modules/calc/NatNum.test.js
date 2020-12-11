@@ -1,11 +1,17 @@
 // @flow
 
+import bigInt from 'big-integer';
 import fc from 'fast-check';
+
 import NatNum from './NatNum';
 import NatNumDigits from './NatNumDigits';
 import NatNumBigInt from './NatNumBigInt';
+import Precision, { RegularPrec, NegInfPrec, InfPrec } from './Precision';
 
-describe.each([[NatNumBigInt], [NatNumDigits]])(
+const impls = [NatNumBigInt, NatNumDigits];
+const implsSeq = impls.map((impl) => [impl]);
+
+describe.each(implsSeq)(
   'runs for NatNum implementation %p',
   (NatNumImpl: Class<NatNum>) => {
     test('gets zero NatNum', () => {
@@ -463,6 +469,113 @@ describe.each([[NatNumBigInt], [NatNumDigits]])(
             const aNum = NatNumImpl.fromStr(n1Str);
             const bNum = NatNumImpl.fromStr(n2Str);
             expect(NatNumImpl.mult(aNum, bNum).toString()).toBe(expResStr);
+          },
+        ),
+      );
+    });
+
+    test.each([
+      ['0', '1', new RegularPrec(0), '0', 0, '0', 0],
+      ['1', '1', new RegularPrec(0), '1', 0, '0', 0],
+      ['1', '1', NegInfPrec, '0', 0, '1', 0],
+      ['10', '3', new RegularPrec(0), '3', 0, '1', 0],
+      ['1', '3', new RegularPrec(1), '3', -1, '1', -1],
+      ['444', '2', new RegularPrec(-2), '2', 2, '44', 0],
+      ['254', '23', new RegularPrec(4), '110434', -4, '18', -4],
+      [
+        '13162096968065896181339813845834808397',
+        '17589432253425487839',
+        new RegularPrec(0),
+        '748295725434947923',
+        0,
+        '0',
+        0,
+      ],
+      ['4123', '250', InfPrec, '16492', -3, '0', 0],
+      ['4123', '250', new RegularPrec(1), '164', -1, '230', -1],
+      ['4123', '250', new RegularPrec(5), '16492', -3, '0', 0],
+      ['1', '3', new RegularPrec(-3), '0', 0, '1', 0],
+      ['990', '33', new RegularPrec(0), '30', 0, '0', 0],
+    ])(
+      'expect div(%p, %p, %o) == [%p, %p, %p, %p]',
+      (
+        a: string,
+        b: string,
+        prec: Precision,
+        quot: string,
+        quotExp: number,
+        rem: string,
+        remExp: number,
+      ) => {
+        const aNum = NatNumImpl.fromStr(a);
+        const bNum = NatNumImpl.fromStr(b);
+        const [ansQuot, ansQuotExp, ansRem, ansRemExp] = NatNumImpl.div(
+          aNum,
+          bNum,
+          prec,
+        );
+        expect(ansQuot.toString()).toBe(quot);
+        expect(ansQuotExp).toBe(quotExp);
+        expect(ansRem.toString()).toBe(rem);
+        expect(ansRemExp).toBe(remExp);
+      },
+    );
+
+    test('arbitrary div check', () => {
+      fc.assert(
+        fc.property(
+          fc.bigUintN(500),
+          fc.bigUintN(500),
+          fc.integer(-1000, 1000),
+          (n1: number, n2: number, precNum: number) => {
+            const n1Str = n1.toString();
+            const n2Str = n2.toString();
+
+            const aNum = NatNumImpl.fromStr(n1Str);
+            const bNum = NatNumImpl.fromStr(n2Str);
+            const prec = new RegularPrec(precNum);
+            const aRightWait = precNum >= 0 ? precNum : 0;
+            const bRightWait = precNum < 0 ? 0 - precNum : 0;
+
+            let n1Mod = n1;
+            let n2Mod = n2;
+            for (let i = 0; i < aRightWait; i += 1) {
+              // $FlowIgnore[bigint-unsupported]
+              n1Mod *= 10n;
+            }
+            for (let i = 0; i < bRightWait; i += 1) {
+              // $FlowIgnore[bigint-unsupported]
+              n2Mod *= 10n;
+            }
+
+            if (bNum.isZero()) {
+              expect(() => {
+                NatNumImpl.div(aNum, bNum, prec);
+              }).toThrow('cannot divide by zero');
+            } else {
+              const { quotient: quotWant, remainder: remWant } = bigInt(
+                n1Mod,
+              ).divmod(n2Mod);
+              let quotWantMod = quotWant;
+              let expWant = 0 - precNum;
+              if (remWant.equals(0) && !quotWantMod.equals(0)) {
+                while (quotWantMod.mod(10).equals(0) && expWant < 0) {
+                  quotWantMod = quotWantMod.divide(10);
+                  expWant += 1;
+                }
+              }
+              const quotExpWant = quotWant.equals(0) ? 0 : expWant;
+              const remExpWant = remWant.equals(0) ? 0 : Math.min(0, expWant);
+              const [quot, quotExp, rem, remExp] = NatNumImpl.div(
+                aNum,
+                bNum,
+                prec,
+              );
+              expect(quot.toString()).toBe(quotWantMod.toString());
+              expect(quotExp).toBe(quotExpWant);
+              expect(rem.toString()).toBe(remWant.toString());
+              expect(remExp).toBe(remExpWant);
+            }
           },
         ),
       );
