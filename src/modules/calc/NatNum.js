@@ -156,11 +156,9 @@ export default class NatNum extends AbstractClass {
   }
 
   // divides digits a and b aligned on the right side
-  // with a shifted to the left by aWait and
-  // b shifted to the left by bWait
+  // to the given precision
   // returns [quot, quotExp, rem, remExp] with rem >= 0
-  // need both waits because that's how the
-  // rounding position is determined
+  // a = quot*10^quotExp * b + rem*10^remExp
   static div(
     a: NatNum,
     b: NatNum,

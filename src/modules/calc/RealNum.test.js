@@ -498,3 +498,78 @@ test('big int mult check', () => {
     ),
   );
 });
+
+test.each([
+  ['0', '1', new RegularPrec(0), '0', '0'],
+  ['0', '-1', new RegularPrec(0), '0', '0'],
+  ['1', '1', new RegularPrec(0), '1', '0'],
+  ['1', '1', new RegularPrec(3), '1', '0'],
+  ['1', '1', new RegularPrec(-3), '0', '1'],
+  ['1', '1', InfPrec, '1', '0'],
+  ['1', '1', NegInfPrec, '0', '1'],
+  ['7', '5', new RegularPrec(0), '1', '2'],
+  ['7', '5', new RegularPrec(-1), '0', '7'],
+  ['7', '5', new RegularPrec(1), '1.4', '0'],
+  ['7', '-5', new RegularPrec(0), '-1', '2'],
+  ['7', '-5', new RegularPrec(-1), '0', '7'],
+  ['7', '-5', new RegularPrec(1), '-1.4', '0'],
+  ['-7', '5', new RegularPrec(0), '-1', '-2'],
+  ['-7', '5', new RegularPrec(-1), '0', '-7'],
+  ['-7', '5', new RegularPrec(1), '-1.4', '0'],
+  ['-7', '-5', new RegularPrec(0), '1', '-2'],
+  ['-7', '-5', new RegularPrec(-1), '0', '-7'],
+  ['-7', '-5', new RegularPrec(1), '1.4', '0'],
+  ['10', '3', new RegularPrec(0), '3', '1'],
+  ['1', '3', new RegularPrec(1), '0.3', '0.1'],
+  ['1', '3', new RegularPrec(-3), '0', '1'],
+  ['444', '2', new RegularPrec(-2), '200', '44'],
+  ['254', '23', new RegularPrec(4), '11.0434', '0.0018'],
+  [
+    '13162096968065896181339813845834808397',
+    '17589432253425487839',
+    new RegularPrec(0),
+    '748295725434947923',
+    '0',
+  ],
+  ['4123', '250', InfPrec, '16.492', '0'],
+  ['4123', '250', new RegularPrec(1), '16.4', '23'],
+  ['4123', '250', new RegularPrec(5), '16.492', '0'],
+  ['990', '33', new RegularPrec(0), '30', '0'],
+])(
+  'expect %p.div(%p, %o) == [%p, %p]',
+  (
+    s1: string,
+    s2: string,
+    prec: Precision,
+    quotAns: string,
+    remAns: string,
+  ) => {
+    const [quot, rem] = RealNum.fromStr(s1).div(RealNum.fromStr(s2), prec);
+    expect(quot.toString()).toBe(quotAns);
+    expect(rem.toString()).toBe(remAns);
+  },
+);
+
+test('big int div identity check', () => {
+  fc.assert(
+    fc.property(
+      smallerExpBigIntArb,
+      smallerExpBigIntArb,
+      fc.integer(-200, 200),
+      (n1: number, n2: number, precNum: number) => {
+        const n1Num = RealNum.fromStr(n1.toString());
+        const n2Num = RealNum.fromStr(n2.toString());
+        const prec = new RegularPrec(precNum);
+        if (!n2Num.isZero()) {
+          const [quot, rem] = n1Num.div(n2Num, prec);
+          expect(quot.mult(n2Num).add(rem).toString()).toBe(n1Num.toString());
+          expect(quot.prec().le(prec)).toBe(true);
+        } else {
+          expect(() => {
+            n1Num.div(n2Num, prec);
+          }).toThrow('cannot divide by zero');
+        }
+      },
+    ),
+  );
+});

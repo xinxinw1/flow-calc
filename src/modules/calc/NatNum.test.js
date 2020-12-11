@@ -492,6 +492,7 @@ describe.each(implsSeq)(
         0,
       ],
       ['4123', '250', InfPrec, '16492', -3, '0', 0],
+      ['4123', '25', new RegularPrec(0), '164', 0, '23', 0],
       ['4123', '250', new RegularPrec(1), '164', -1, '230', -1],
       ['4123', '250', new RegularPrec(5), '16492', -3, '0', 0],
       ['1', '3', new RegularPrec(-3), '0', 0, '1', 0],

@@ -355,6 +355,34 @@ export default class RealNum {
     const outputExp = this.exp + other.exp;
     return RealNum.fromNat(outputPos, outputNat, outputExp);
   }
+
+  // divides this / other rounded to prec precision
+  // returns [quot, rem] at that precision
+  // rem always same sign as this
+  // and is < 10^-prec
+  // this = quot * other + rem
+  // quot.prec() <= prec
+  div(other: RealNum, prec: Precision): [RealNum, RealNum] {
+    if (other.isZero()) {
+      throw new Error('cannot divide by zero');
+    }
+    if (this.isZero()) return [RealNum.zero, RealNum.zero];
+    const outputPos = this.pos === other.pos;
+    const expOffset = this.exp - other.exp;
+    const [quotNat, quotExp, remNat, remExp] = NatNumImpl.div(
+      this.nat,
+      other.nat,
+      prec.add(expOffset),
+    );
+    // this.nat = quotNat*10^quotExp * other.nat + remNat*10^remExp
+    // this.nat*10^this.exp = quotNat*10^(quotExp+this.exp) * other.nat + remNat*10^(remExp+this.exp)
+    // this = quotNat*10^(quotExp+this.exp-other.exp) * other.nat*10^other.exp + remNat*10^(remExp+this.exp)
+    // this = quotNat*10^(quotExp+this.exp-other.exp) * other + remNat*10^(remExp+this.exp)
+    return [
+      RealNum.fromNat(outputPos, quotNat, quotExp + expOffset),
+      RealNum.fromNat(this.pos, remNat, remExp + this.exp),
+    ];
+  }
 }
 
 Object.freeze(RealNum);
