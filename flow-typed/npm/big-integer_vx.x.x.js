@@ -14,7 +14,13 @@
  */
 
 declare module 'big-integer' {
-  declare export type BigInteger = {
+  declare class QuotAndRem {
+    quotient: BigInteger;
+    remainder: BigInteger;
+  }
+
+  declare export class BigInteger {
+    isEven(): boolean;
     add(number | BigInteger): BigInteger;
     subtract(number | BigInteger): BigInteger;
     prev(): BigInteger;
@@ -25,18 +31,17 @@ declare module 'big-integer' {
     divide(number | BigInteger): BigInteger;
     multiply(number | BigInteger): BigInteger;
     divide(number | BigInteger): BigInteger;
-    divmod(number | BigInteger): {
-      quotient: BigInteger,
-      remainder: BigInteger,
-    };
+    divmod(number | BigInteger): QuotAndRem;
     pow(number | BigInteger): BigInteger;
     compare(number | BigInteger): number;
+    shiftRight(number | BigInteger): BigInteger;
     toJSNumber(): number;
   }
 
-  declare export default {
-    (number | string): BigInteger;
-    zero: BigInteger;
-    one: BigInteger;
+  declare export default class bigInt {
+    static (number | string): BigInteger;
+    static zero: BigInteger;
+    static one: BigInteger;
+    static gcd(a: number | BigInteger, b: number | BigInteger): BigInteger;
   }
 }
