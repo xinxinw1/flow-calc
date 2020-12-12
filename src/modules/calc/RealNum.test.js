@@ -99,6 +99,30 @@ test('RealNum.digitAtPrec is correct', () => {
   expect(n.pos).toBe(true);
 });
 
+test('RealNum.digitWithSize is correct', () => {
+  let n: RealNum;
+
+  n = RealNum.digitWithSize(false, 0, new RegularSize(10));
+  expect(n.nat.toString()).toBe('0');
+  expect(n.exp).toBe(0);
+  expect(n.pos).toBe(true);
+
+  n = RealNum.digitWithSize(true, 1, new RegularSize(0));
+  expect(n.nat.toString()).toBe('1');
+  expect(n.exp).toBe(-1);
+  expect(n.pos).toBe(true);
+
+  n = RealNum.digitWithSize(false, 9, new RegularSize(1));
+  expect(n.nat.toString()).toBe('9');
+  expect(n.exp).toBe(0);
+  expect(n.pos).toBe(false);
+
+  n = RealNum.digitWithSize(true, 2, new RegularSize(-1));
+  expect(n.nat.toString()).toBe('2');
+  expect(n.exp).toBe(-2);
+  expect(n.pos).toBe(true);
+});
+
 test('cannot change RealNum static values', () => {
   expect(() => {
     RealNum.zero = RealNum.fromNum(1);

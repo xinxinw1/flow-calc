@@ -85,6 +85,14 @@ export default class RealNum {
     return RealNum.fromNat(pos, NatNumImpl.fromNum(dig), 0 - precNum);
   }
 
+  static digitWithSize(pos: boolean, dig: number, size: Size): RealNum {
+    if (!(size instanceof RegularSize)) {
+      throw new Error('digitWithSize must be given a regular size');
+    }
+    const sizeNum = size.size;
+    return RealNum.fromNat(pos, NatNumImpl.fromNum(dig), sizeNum - 1);
+  }
+
   trim(): RealNum {
     let changed = false;
     let { nat, exp } = this;
