@@ -567,6 +567,10 @@ type SnapshotDiffType = {
   ...
 };
 
+type CustomMatchersType = {
+  toObjEqual(other: any): void,
+};
+
 interface JestExpectType {
   not: JestExpectType &
     EnzymeMatchersType &
