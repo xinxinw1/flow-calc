@@ -130,15 +130,19 @@ test.each([
   [new RegularPrec(0), new RegularPrec(0), new RegularPrec(0)],
   [new RegularPrec(0), new RegularPrec(1), new RegularPrec(1)],
   [new RegularPrec(1), new RegularPrec(0), new RegularPrec(1)],
+  [new RegularPrec(0), 1, new RegularPrec(1)],
+  [new RegularPrec(1), 0, new RegularPrec(1)],
   [new RegularPrec(0), InfPrec, InfPrec],
   [new RegularPrec(0), NegInfPrec, NegInfPrec],
   [InfPrec, new RegularPrec(0), InfPrec],
   [NegInfPrec, new RegularPrec(0), NegInfPrec],
   [InfPrec, InfPrec, InfPrec],
   [NegInfPrec, NegInfPrec, NegInfPrec],
+  [InfPrec, 0, InfPrec],
+  [NegInfPrec, 0, NegInfPrec],
 ])(
   'adds precisions %o + %o should be %o',
-  (p1: Precision, p2: Precision, p3: Precision) => {
+  (p1: Precision, p2: number | Precision, p3: Precision) => {
     expect(p1.add(p2)).toObjEqual(p3);
   },
 );

@@ -46,20 +46,32 @@ test.each([
   [new RegularSize(0), new RegularSize(0), new RegularSize(0)],
   [new RegularSize(0), new RegularSize(1), new RegularSize(1)],
   [new RegularSize(1), new RegularSize(0), new RegularSize(1)],
+  [new RegularSize(0), 1, new RegularSize(1)],
+  [new RegularSize(1), 0, new RegularSize(1)],
   [new RegularSize(0), NegInfSize, NegInfSize],
   [NegInfSize, new RegularSize(0), NegInfSize],
   [NegInfSize, NegInfSize, NegInfSize],
-])('adds sizes %o + %o should be %o', (v1: Size, v2: Size, v3: Size) => {
-  expect(v1.add(v2)).toObjEqual(v3);
-});
+  [NegInfSize, 0, NegInfSize],
+])(
+  'adds sizes %o + %o should be %o',
+  (v1: Size, v2: number | Size, v3: Size) => {
+    expect(v1.add(v2)).toObjEqual(v3);
+  },
+);
 
 test.each([
   [new RegularSize(0), new RegularSize(0), new RegularSize(0)],
   [new RegularSize(0), new RegularSize(1), new RegularSize(1)],
   [new RegularSize(1), new RegularSize(0), new RegularSize(1)],
+  [new RegularSize(0), 1, new RegularSize(1)],
+  [new RegularSize(1), 0, new RegularSize(1)],
   [new RegularSize(0), NegInfSize, new RegularSize(0)],
   [NegInfSize, new RegularSize(0), new RegularSize(0)],
   [NegInfSize, NegInfSize, NegInfSize],
-])('max size of %o and %o should be %o', (v1: Size, v2: Size, v3: Size) => {
-  expect(v1.max(v2)).toObjEqual(v3);
-});
+  [NegInfSize, 0, new RegularSize(0)],
+])(
+  'max size of %o and %o should be %o',
+  (v1: Size, v2: number | Size, v3: Size) => {
+    expect(v1.max(v2)).toObjEqual(v3);
+  },
+);
