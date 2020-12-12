@@ -19,7 +19,7 @@ export default class ExtInteger extends AbstractClass {
   }
 
   le(other: ExtInteger): boolean {
-    return this.abstractMethod(this.equalsSameClass, other);
+    return this.abstractMethod(this.le, other);
   }
 
   gt(other: ExtInteger): boolean {
@@ -35,7 +35,11 @@ export default class ExtInteger extends AbstractClass {
   }
 
   add(other: number | ExtInteger): ExtInteger {
-    return this.abstractMethod(this.equalsSameClass, other);
+    return this.abstractMethod(this.add, other);
+  }
+
+  max(other: number | ExtInteger): ExtInteger {
+    return this.abstractMethod(this.max, other);
   }
 }
 
@@ -64,6 +68,17 @@ class InfIntType extends ExtInteger {
       if (other === NegInfInt) {
         throw new Error('cannot add inf integer with neg inf integer');
       }
+      return InfInt;
+    }
+    if (!Number.isInteger(other)) {
+      throw new Error(`number ${other} must be an integer`);
+    }
+    return InfInt;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  max(other: number | ExtInteger): ExtInteger {
+    if (other instanceof ExtInteger) {
       return InfInt;
     }
     if (!Number.isInteger(other)) {
@@ -103,6 +118,17 @@ class NegInfIntType extends ExtInteger {
       throw new Error(`number ${other} must be an integer`);
     }
     return NegInfInt;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  max(other: number | ExtInteger): ExtInteger {
+    if (other instanceof ExtInteger) {
+      return other;
+    }
+    if (!Number.isInteger(other)) {
+      throw new Error(`number ${other} must be an integer`);
+    }
+    return new RegularInt(other);
   }
 }
 
@@ -155,5 +181,24 @@ export class RegularInt extends ExtInteger {
       throw new Error(`number ${other} must be an integer`);
     }
     return new RegularInt(this.n + other);
+  }
+
+  max(other: number | ExtInteger): ExtInteger {
+    if (other instanceof ExtInteger) {
+      if (other === InfInt) {
+        return InfInt;
+      }
+      if (other === NegInfInt) {
+        return this;
+      }
+      if (other instanceof RegularInt) {
+        return new RegularInt(Math.max(this.n, other.n));
+      }
+      return unknownSubtype(other, ExtInteger);
+    }
+    if (!Number.isInteger(other)) {
+      throw new Error(`number ${other} must be an integer`);
+    }
+    return new RegularInt(Math.max(this.n, other));
   }
 }

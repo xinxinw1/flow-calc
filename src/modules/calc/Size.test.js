@@ -1,10 +1,11 @@
 // @flow
 
 import Size, { RegularSize, NegInfSize } from './Size';
+import { RegularInt } from './ExtInteger';
 
 test('creates size', () => {
   expect(() => {
-    const _ = new Size();
+    const _ = new Size(new RegularInt(5));
   }).toThrow('Size is an abstract class');
 
   const r = new RegularSize(3);
@@ -29,7 +30,9 @@ test('creates size', () => {
 test.each([
   [new RegularSize(0), new RegularSize(0), true],
   [new RegularSize(0), new RegularSize(1), false],
+  [new RegularSize(1), new RegularSize(0), false],
   [new RegularSize(0), NegInfSize, false],
+  [NegInfSize, new RegularSize(0), false],
   [NegInfSize, NegInfSize, true],
 ])('compares sizes %o == %o should be %p', (s1, s2, res) => {
   if (res) {
@@ -37,4 +40,26 @@ test.each([
   } else {
     expect(s1).not.toObjEqual(s2);
   }
+});
+
+test.each([
+  [new RegularSize(0), new RegularSize(0), new RegularSize(0)],
+  [new RegularSize(0), new RegularSize(1), new RegularSize(1)],
+  [new RegularSize(1), new RegularSize(0), new RegularSize(1)],
+  [new RegularSize(0), NegInfSize, NegInfSize],
+  [NegInfSize, new RegularSize(0), NegInfSize],
+  [NegInfSize, NegInfSize, NegInfSize],
+])('adds sizes %o + %o should be %o', (v1: Size, v2: Size, v3: Size) => {
+  expect(v1.add(v2)).toObjEqual(v3);
+});
+
+test.each([
+  [new RegularSize(0), new RegularSize(0), new RegularSize(0)],
+  [new RegularSize(0), new RegularSize(1), new RegularSize(1)],
+  [new RegularSize(1), new RegularSize(0), new RegularSize(1)],
+  [new RegularSize(0), NegInfSize, new RegularSize(0)],
+  [NegInfSize, new RegularSize(0), new RegularSize(0)],
+  [NegInfSize, NegInfSize, NegInfSize],
+])('max size of %o and %o should be %o', (v1: Size, v2: Size, v3: Size) => {
+  expect(v1.max(v2)).toObjEqual(v3);
 });
