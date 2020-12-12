@@ -168,6 +168,7 @@ export default class RealNum {
   }
 
   // assumes this is trimmed
+  // a.size() - 1 <= log(a) < a.size()
   size(): Size {
     if (this.isZero()) return NegInfSize;
     return new RegularSize(this.nat.size() + this.exp);
