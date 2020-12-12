@@ -57,6 +57,21 @@ export default class RealNum {
       }
     }
 
+    let startPos = 0;
+    while (startPos < str.length && str[startPos] === '0') {
+      startPos += 1;
+    }
+
+    str = str.substring(startPos);
+
+    let endPos = str.length;
+    while (endPos > 0 && str[endPos - 1] === '0') {
+      endPos -= 1;
+      exp += 1;
+    }
+
+    str = str.substring(0, endPos);
+
     const nat = NatNumImpl.fromStr(str);
 
     return RealNum.fromNat(pos, nat, exp);
