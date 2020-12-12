@@ -5,7 +5,7 @@ import ContinuableRealNum from './ContinuableRealNum';
 import Precision from './Precision';
 
 export default class ContinuableAdd {
-  sum: RealNum = RealNum.zero;
+  result: RealNum = RealNum.zero;
   continuableA: ContinuableRealNum = new ContinuableRealNum();
   continuableB: ContinuableRealNum = new ContinuableRealNum();
 
@@ -16,8 +16,8 @@ export default class ContinuableAdd {
     const diffAtPrec = aDiffAtPrec.add(bDiffAtPrec);
     const diffAfterPrec = aDiffAfterPrec.add(bDiffAfterPrec);
 
-    this.sum = this.sum.add(diffAtPrec).add(diffAfterPrec);
+    this.result = this.result.add(diffAtPrec).add(diffAfterPrec);
 
-    return this.sum;
+    return this.result;
   }
 }

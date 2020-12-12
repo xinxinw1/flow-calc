@@ -5,21 +5,21 @@ import RealNum from './RealNum';
 import Precision, { RegularPrec, InfPrec } from './Precision';
 
 test('initializes correctly', () => {
-  const contAdd = new ContinuableAdd();
+  const cont = new ContinuableAdd();
 
-  const n = contAdd.eval(
+  const n = cont.eval(
     RealNum.fromStr('1'),
     RealNum.fromStr('2'),
     new RegularPrec(0),
   );
   expect(n).toObjEqual(RealNum.fromStr('3'));
-  expect(contAdd.sum).toObjEqual(RealNum.fromStr('3'));
+  expect(cont.result).toObjEqual(RealNum.fromStr('3'));
 });
 
 test('throws when repeating precisions', () => {
-  const contAdd = new ContinuableAdd();
+  const cont = new ContinuableAdd();
 
-  const n = contAdd.eval(
+  const n = cont.eval(
     RealNum.fromStr('1'),
     RealNum.fromStr('2'),
     new RegularPrec(0),
@@ -27,11 +27,7 @@ test('throws when repeating precisions', () => {
   expect(n).toObjEqual(RealNum.fromStr('3'));
 
   expect(() => {
-    contAdd.eval(
-      RealNum.fromStr('1'),
-      RealNum.fromStr('2'),
-      new RegularPrec(0),
-    );
+    cont.eval(RealNum.fromStr('1'), RealNum.fromStr('2'), new RegularPrec(0));
   }).toThrow('ContinuableRealNum new prec must be > prev prec');
 });
 
@@ -76,10 +72,10 @@ const sequences = [
 test.each(sequences)(
   'works with the given sequence %#',
   (seq: Array<[string, string, Precision, string]>) => {
-    const contAdd = new ContinuableAdd();
+    const cont = new ContinuableAdd();
 
     for (const [a, b, prec, sum] of seq) {
-      const n = contAdd.eval(RealNum.fromStr(a), RealNum.fromStr(b), prec);
+      const n = cont.eval(RealNum.fromStr(a), RealNum.fromStr(b), prec);
       expect(n.toString()).toBe(sum);
     }
   },
