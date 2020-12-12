@@ -16,6 +16,7 @@ export interface RealEvaluator {
   // will never change its sign
   eval(prec: Precision): [RealNum, boolean];
 
-  // return max size that the evaluated number can be
+  // return max size that the final full precision number can be
+  // the evaluated size can be temporarily higher due to rounding
   maxSize(): Size;
 }

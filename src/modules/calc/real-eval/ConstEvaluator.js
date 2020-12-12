@@ -18,7 +18,6 @@ export default class ConstEvaluator extends RealGenClassEvaluator {
   }
 
   maxSize(): Size {
-    // add 1 because of possible rounding at the start
-    return this.v.size().add(1);
+    return this.v.size();
   }
 }
