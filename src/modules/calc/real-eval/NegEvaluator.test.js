@@ -28,6 +28,7 @@ test.each(evalSequences)(
       const [val, done] = evaluator.eval(prec);
       expect(val.toString()).toBe(expVal);
       expect(done).toBe(expDone);
+      expect(val.size().le(evaluator.maxSize())).toBe(true);
     }
   },
 );

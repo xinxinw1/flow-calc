@@ -5,6 +5,7 @@ import RealGenClassEvaluator from './RealGenClassEvaluator';
 import { type RealEvaluator } from './RealEvaluator';
 import { type RealGenerator } from '../RealGenerator';
 import ContinuableAdd from '../ContinuableAdd';
+import Size from '../Size';
 
 export default class AddEvaluator extends RealGenClassEvaluator {
   aEval: RealEvaluator;
@@ -65,5 +66,9 @@ export default class AddEvaluator extends RealGenClassEvaluator {
 
     // eslint-disable-next-line no-unreachable
     return RealNum.zero;
+  }
+
+  maxSize(): Size {
+    return this.aEval.maxSize().max(this.bEval.maxSize()).add(1);
   }
 }

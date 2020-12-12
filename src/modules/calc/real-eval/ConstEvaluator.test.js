@@ -16,6 +16,21 @@ const evalSequences = [
       [NegInfPrec, '0', false],
     ],
   ],
+  [
+    '5.3',
+    [
+      [new RegularPrec(-1), '10', false],
+      [new RegularPrec(0), '5', false],
+      [new RegularPrec(1), '5.3', true],
+    ],
+  ],
+  [
+    '0',
+    [
+      [new RegularPrec(-1), '0', true],
+      [NegInfPrec, '0', true],
+    ],
+  ],
 ];
 
 test.each(evalSequences)(
@@ -27,6 +42,7 @@ test.each(evalSequences)(
       const [val, done] = evaluator.eval(prec);
       expect(val.toString()).toBe(expVal);
       expect(done).toBe(expDone);
+      expect(val.size().le(evaluator.maxSize())).toBe(true);
     }
   },
 );

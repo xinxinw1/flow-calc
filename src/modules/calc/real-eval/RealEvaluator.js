@@ -2,6 +2,7 @@
 
 import RealNum from '../RealNum';
 import Precision from '../Precision';
+import Size from '../Size';
 
 export interface RealEvaluator {
   // returns [value, done]
@@ -14,4 +15,7 @@ export interface RealEvaluator {
   // calculating to a higher prec
   // will never change its sign
   eval(prec: Precision): [RealNum, boolean];
+
+  // return max size that the evaluated number can be
+  maxSize(): Size;
 }
