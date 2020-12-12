@@ -3,6 +3,7 @@
 import RealNum from '../RealNum';
 import Precision, { RegularPrec, InfPrec, NegInfPrec } from '../Precision';
 import ConstEvaluator from './ConstEvaluator';
+import { checkEvaluatorSeq } from './RealEvaluator.test-helpers';
 
 const evalSequences = [
   [
@@ -37,12 +38,6 @@ test.each(evalSequences)(
   'evaluates with the given sequence %#',
   (a, seq: Array<[Precision, string, boolean]>) => {
     const evaluator = new ConstEvaluator(RealNum.fromStr(a));
-
-    for (const [prec, expVal, expDone] of seq) {
-      const [val, done] = evaluator.eval(prec);
-      expect(val.toString()).toBe(expVal);
-      expect(done).toBe(expDone);
-      expect(val.size().le(evaluator.maxSize())).toBe(true);
-    }
+    checkEvaluatorSeq(evaluator, seq);
   },
 );

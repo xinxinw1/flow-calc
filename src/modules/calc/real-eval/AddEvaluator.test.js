@@ -4,6 +4,7 @@ import AddEvaluator from './AddEvaluator';
 import RealNum from '../RealNum';
 import Precision, { RegularPrec, InfPrec } from '../Precision';
 import ConstEvaluator from './ConstEvaluator';
+import { checkEvaluatorSeq } from './RealEvaluator.test-helpers';
 
 const evalSequences = [
   [
@@ -73,12 +74,6 @@ test.each(evalSequences)(
     const aEval = new ConstEvaluator(RealNum.fromStr(a));
     const bEval = new ConstEvaluator(RealNum.fromStr(b));
     const evaluator = new AddEvaluator(aEval, bEval);
-
-    for (const [prec, expVal, expDone] of seq) {
-      const [val, done] = evaluator.eval(prec);
-      expect(val.toString()).toBe(expVal);
-      expect(done).toBe(expDone);
-      expect(val.size().le(evaluator.maxSize())).toBe(true);
-    }
+    checkEvaluatorSeq(evaluator, seq);
   },
 );

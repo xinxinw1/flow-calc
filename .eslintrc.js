@@ -47,10 +47,11 @@ module.exports = {
       'always',
       { annotationStyle: 'line' },
     ],
+    'import/prefer-default-export': 'off',
   },
   overrides: [
     {
-      files: ['**/*.test.js', 'setupTests.js'],
+      files: ['**/*.test.js', '**/*.test-helpers.js', 'setupTests.js'],
       env: {
         'jest/globals': true,
       },
