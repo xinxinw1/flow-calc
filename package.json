@@ -36,6 +36,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test --watchAll=false",
     "jest": "react-scripts test --watchAll=false",
+    "prof-test": "rm -f isolate*.log && node node_modules/.bin/react-scripts  --prof --log-internal-timer-events test --runInBand --watchAll=false",
+    "flamebearer": "node --prof-process --preprocess -j isolate*.log | flamebearer",
     "eject": "react-scripts eject",
     "flow": "flow",
     "flow-typed": "flow-typed",
