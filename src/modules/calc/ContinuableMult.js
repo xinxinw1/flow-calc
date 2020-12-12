@@ -11,9 +11,9 @@ export default class ContinuableMult {
   continuableA: ContinuableRealNum = new ContinuableRealNum();
   continuableB: ContinuableRealNum = new ContinuableRealNum();
 
-  eval(a: RealNum, b: RealNum, prec: Precision): RealNum {
-    const [aDiffAtPrec, aDiffAfterPrec] = this.continuableA.cont(a, prec);
-    const [bDiffAtPrec, bDiffAfterPrec] = this.continuableB.cont(b, prec);
+  eval(a: RealNum, b: RealNum, aPrec: Precision, bPrec: Precision): RealNum {
+    const [aDiffAtPrec, aDiffAfterPrec] = this.continuableA.cont(a, aPrec);
+    const [bDiffAtPrec, bDiffAfterPrec] = this.continuableB.cont(b, bPrec);
 
     const aDiff = aDiffAtPrec.add(aDiffAfterPrec);
     const bDiff = bDiffAtPrec.add(bDiffAfterPrec);
