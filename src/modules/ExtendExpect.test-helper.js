@@ -1,47 +1,27 @@
 // @flow
 
-type OrigExpect = typeof expect;
+type OldExpect = typeof expect;
+type OldExpectValue = $Call<OldExpect, mixed>;
+type OldJestExpectTypeNot = $PropertyType<OldExpectValue, 'not'>;
+type OldJestExpectType = $PropertyType<OldExpectValue, 'resolves'>;
 
-type OldExpectValue<OldExpect> = $Call<OldExpect, mixed>;
+type NewJestExpectTypeNot<NewMatcherType> = NewJestExpectType<NewMatcherType> &
+  OldJestExpectTypeNot;
 
-type OldJestExpectTypeNot<OldExpect> = $PropertyType<
-  OldExpectValue<OldExpect>,
-  'not',
->;
+type NewJestExpectType<NewMatcherType> = NewMatcherType & {
+  not: NewJestExpectTypeNot<NewMatcherType>,
+} & OldJestExpectType;
 
-type OldJestExpectType<OldExpect> = $PropertyType<
-  OldExpectValue<OldExpect>,
-  'resolves',
->;
-
-type NewJestExpectTypeNot<OldExpect, NewMatcherType> = NewJestExpectType<
-  OldExpect,
-  NewMatcherType,
-> &
-  OldJestExpectTypeNot<OldExpect>;
-
-type NewJestExpectType<OldExpect, NewMatcherType> = NewMatcherType & {
-  not: NewJestExpectTypeNot<OldExpect, NewMatcherType>,
-} & OldJestExpectType<OldExpect>;
-
-type NewJestPromiseType<OldExpect, NewMatcherType> = {
-  rejects: NewJestExpectType<OldExpect, NewMatcherType>,
-  resolves: NewJestExpectType<OldExpect, NewMatcherType>,
+type NewJestPromiseType<NewMatcherType> = {
+  rejects: NewJestExpectType<NewMatcherType>,
+  resolves: NewJestExpectType<NewMatcherType>,
 };
 
-type NewExpectValue<OldExpect, NewMatcherType> = NewJestExpectType<
-  OldExpect,
-  NewMatcherType,
-> &
-  NewJestPromiseType<OldExpect, NewMatcherType> &
-  OldExpectValue<OldExpect>;
+type NewExpectValue<NewMatcherType> = NewJestExpectType<NewMatcherType> &
+  NewJestPromiseType<NewMatcherType> &
+  OldExpectValue;
 
-type ExtendExpectGen<OldExpect, NewMatcherType> = {
+export type ExtendExpect<NewMatcherType> = {
   // $FlowIgnore[unclear-type]
-  (value: any): NewExpectValue<OldExpect, NewMatcherType>,
+  (value: any): NewExpectValue<NewMatcherType>,
 } & OldExpect;
-
-export type ExtendExpect<NewMatcherType> = ExtendExpectGen<
-  OrigExpect,
-  NewMatcherType,
->;
