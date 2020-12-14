@@ -6,6 +6,11 @@ import { RegularPrec } from '../Precision';
 import ConstExpr from './ConstExpr';
 import NegExpr from './NegExpr';
 
+import _, { type ObjEqualMatcher } from '../toObjEqual.test-helper';
+import { type ExtendExpect } from '../../ExtendExpect.test-helper';
+
+declare var expect: ExtendExpect<ObjEqualMatcher>;
+
 test('expr can make evaluator', () => {
   const expr = new NegExpr(new ConstExpr(RealNum.fromStr('4.3')));
   const env = new Environment({ precMargin: 0 });

@@ -3,6 +3,11 @@
 import Precision, { RegularPrec, InfPrec, NegInfPrec } from './Precision';
 import { RegularInt } from './ExtInteger';
 
+import _, { type ObjEqualMatcher } from './toObjEqual.test-helper';
+import { type ExtendExpect } from '../ExtendExpect.test-helper';
+
+declare var expect: ExtendExpect<ObjEqualMatcher>;
+
 test('creates precision', () => {
   expect(() => {
     const _ = new Precision(new RegularInt(5));

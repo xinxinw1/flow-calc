@@ -8,6 +8,11 @@ import NatNumDigits from './NatNumDigits';
 import NatNumBigInt from './NatNumBigInt';
 import Precision, { RegularPrec, NegInfPrec, InfPrec } from './Precision';
 
+import _, { type ObjEqualMatcher } from './toObjEqual.test-helper';
+import { type ExtendExpect } from '../ExtendExpect.test-helper';
+
+declare var expect: ExtendExpect<ObjEqualMatcher>;
+
 const impls = [NatNumBigInt, NatNumDigits];
 const implsSeq = impls.map((impl) => [impl]);
 

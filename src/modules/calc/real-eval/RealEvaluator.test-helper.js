@@ -4,6 +4,11 @@ import RealNum from '../RealNum';
 import Precision from '../Precision';
 import { type RealEvaluator } from './RealEvaluator';
 
+import _, { type ObjEqualMatcher } from '../toObjEqual.test-helper';
+import { type ExtendExpect } from '../../ExtendExpect.test-helper';
+
+declare var expect: ExtendExpect<ObjEqualMatcher>;
+
 export function checkEvaluatorSeq(
   evaluator: RealEvaluator,
   seq: Array<[Precision, string, boolean]>,

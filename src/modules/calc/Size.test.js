@@ -3,6 +3,11 @@
 import Size, { RegularSize, NegInfSize } from './Size';
 import { RegularInt } from './ExtInteger';
 
+import _, { type ObjEqualMatcher } from './toObjEqual.test-helper';
+import { type ExtendExpect } from '../ExtendExpect.test-helper';
+
+declare var expect: ExtendExpect<ObjEqualMatcher>;
+
 test('creates size', () => {
   expect(() => {
     const _ = new Size(new RegularInt(5));
