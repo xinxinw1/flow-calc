@@ -20,10 +20,15 @@ export default class AddEvaluator extends RealGenClassEvaluator {
   // evaluating inputs to 1 more decimal place
   // e_out = (a + e_a) + (b + e_b) - (a + b) + e_r
   // = e_a + e_b + e_r
-  // want e_out < 1/10^outputPrec
-  // use e_a, e_b < 0.25*1/10^outputPrec
-  // and e_r <= 0.5*1/10^outputPrec
-  // e_a, e_b < 1/10^(outputPrec + 1) satisfies that
+  // want |e_out| < 0.9*1/10^outputPrec
+  // use |e_a|, |e_b| < 0.2*1/10^outputPrec
+  // and |e_r| <= 0.5*1/10^outputPrec
+  // we have |e_a| < 0.9*1/10^p_a
+  // so need 0.9*1/10^p_a <= 0.2*1/10^outputPrec
+  // 1/10^p_a <= 0.2/0.9*1/10^outputPrec
+  // p_a >= -log(0.2/0.9) + outputPrec
+  // = outputPrec + 0.6532...
+  // use p_a, p_b >= outputPrec + 1
   *makeOutputGenerator(): RealGenerator {
     let outputPrec = yield RealNum.zero;
 

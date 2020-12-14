@@ -20,15 +20,16 @@ export default class MultEvaluator extends RealGenClassEvaluator {
 
   // e_out = (a + e_a) * (b + e_b) - (a * b) + e_r
   // = a * e_b + b * e_a + e_r
-  // want e_out < 1/10^outputPrec
-  // use b*e_a, a*e_b < 0.25*1/10^outputPrec
-  // and e_r <= 0.5*1/10^outputPrec
-  // b*e_a < 0.25*1/10^outputPrec
-  // we'll have e_a, e_b < 1/10^inputPrec
-  // so b*e_a < b*1/10^p_a
-  // we'll need b*1/10^p_a <= 0.25*1/10^outputPrec
-  // p_a - log(b) >= outputPrec - log(0.25)
-  // p_a >= outputPrec + log(b) - log(0.25)
+  // want |e_out| < 0.9*1/10^outputPrec
+  // use |b*e_a|, |a*e_b| < 0.2*1/10^outputPrec
+  // and |e_r| <= 0.5*1/10^outputPrec
+  // |b*e_a| < 0.2*1/10^outputPrec
+  // we'll have |e_a| < 0.9*1/10^p_a
+  // so |b*e_a| < |b|*0.9*1/10^p_a
+  // we'll need |b|*0.9*1/10^p_a <= 0.2*1/10^outputPrec
+  // 1/10^p_a <= 1/|b|*0.2/0.9*1/10^outputPrec
+  // p_a >= outputPrec + log(|b|) - log(0.2/0.9)
+  // = outputPrec + log(|b|) + 0.6532...
   // use p_a = outputPrec + b.maxSize() + 1
   // use p_b = outputPrec + a.maxSize() + 1
   *makeOutputGenerator(): RealGenerator {
