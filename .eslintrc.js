@@ -48,6 +48,7 @@ module.exports = {
       { annotationStyle: 'line' },
     ],
     'import/prefer-default-export': 'off',
+    'no-shadow': ['error', { allow: ['_'] }],
   },
   overrides: [
     {
