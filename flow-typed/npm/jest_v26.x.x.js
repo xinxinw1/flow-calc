@@ -567,10 +567,6 @@ type SnapshotDiffType = {
   ...
 };
 
-type CustomMatchersType = {
-  toObjEqual(other: any): void,
-};
-
 interface JestExpectType {
   not: JestExpectType &
     EnzymeMatchersType &
@@ -578,7 +574,6 @@ interface JestExpectType {
     JestJQueryMatchersType &
     JestStyledComponentsMatchersType &
     JestExtendedMatchersType &
-    CustomMatchersType &
     SnapshotDiffType;
   /**
    * If you have a mock function, you can use .lastCalledWith to test what
@@ -1171,7 +1166,6 @@ declare var expect: {
     JestJQueryMatchersType &
     JestStyledComponentsMatchersType &
     JestExtendedMatchersType &
-    CustomMatchersType &
     SnapshotDiffType,
   /** Add additional Jasmine matchers to Jest's roster */
   extend(matchers: { [name: string]: JestMatcher, ... }): void,
