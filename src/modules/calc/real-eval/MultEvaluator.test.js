@@ -4,7 +4,7 @@ import MultEvaluator from './MultEvaluator';
 import RealNum from '../RealNum';
 import Precision, { RegularPrec, InfPrec } from '../Precision';
 import ConstEvaluator from './ConstEvaluator';
-import { checkEvaluatorSeq } from './RealEvaluator.test-helpers';
+import { checkEvaluatorSeq } from './RealEvaluator.test-helper';
 
 const evalSequences = [
   [
