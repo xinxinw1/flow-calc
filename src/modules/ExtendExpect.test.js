@@ -2,7 +2,7 @@
 
 /* eslint-disable prefer-promise-reject-errors */
 
-import type { OrigExpect, ExtendExpect } from './ExtendExpect.test-helper';
+import type { ExtendExpect } from './ExtendExpect.test-helper';
 
 function doTest(num, received, other) {
   if (received === other) {
@@ -30,16 +30,15 @@ const addedMethods = {
 
 expect.extend(addedMethods);
 
-export type ExpectWithTest1<OldExpect> = ExtendExpect<
-  OldExpect,
-  {
-    // $FlowIgnore[unclear-type]
-    toTest1(other: any): void,
-  },
->;
+type Test1Matcher = {
+  // $FlowIgnore[unclear-type]
+  toTest1(other: any): void,
+};
+
+type ExpectWithTest1 = ExtendExpect<Test1Matcher>;
 
 // $FlowIgnore[unclear-type]
-const expect1: ExpectWithTest1<OrigExpect> = (expect: any);
+const expect1: ExpectWithTest1 = (expect: any);
 
 test('expect with test1 has no type errors', async () => {
   const a = expect1(true);
@@ -85,26 +84,15 @@ test('expect with test1 has no type errors', async () => {
   await expect1(Promise.reject(true)).rejects.not.toBe(false);
 });
 
-export type ExpectWithTest2<OldExpect> = ExtendExpect<
-  OldExpect,
-  {
-    // $FlowIgnore[unclear-type]
-    toTest2(other: any): void,
-  },
->;
+type Test2Matcher = {
+  // $FlowIgnore[unclear-type]
+  toTest2(other: any): void,
+};
 
-// this is broken due to this bug:
-// https://github.com/facebook/flow/issues/8558
-// declare var expect: ExpectWithTest2<ExpectWithTest1<OrigExpect>>;
-declare var expect: ExtendExpect<
-  OrigExpect,
-  {
-    // $FlowIgnore[unclear-type]
-    toTest1(other: any): void,
-    // $FlowIgnore[unclear-type]
-    toTest2(other: any): void,
-  },
->;
+declare var expect: ExtendExpect<{
+  ...Test1Matcher,
+  ...Test2Matcher,
+}>;
 
 test('expect with multiple additions has no type errors', async () => {
   const a = expect(true);

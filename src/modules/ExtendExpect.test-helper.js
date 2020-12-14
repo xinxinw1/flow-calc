@@ -1,6 +1,6 @@
 // @flow
 
-export type OrigExpect = typeof expect;
+type OrigExpect = typeof expect;
 
 type OldExpectValue<OldExpect> = $Call<OldExpect, mixed>;
 
@@ -36,7 +36,12 @@ type NewExpectValue<OldExpect, NewMatcherType> = NewJestExpectType<
   NewJestPromiseType<OldExpect, NewMatcherType> &
   OldExpectValue<OldExpect>;
 
-export type ExtendExpect<OldExpect, NewMatcherType> = {
+type ExtendExpectGen<OldExpect, NewMatcherType> = {
   // $FlowIgnore[unclear-type]
   (value: any): NewExpectValue<OldExpect, NewMatcherType>,
 } & OldExpect;
+
+export type ExtendExpect<NewMatcherType> = ExtendExpectGen<
+  OrigExpect,
+  NewMatcherType,
+>;
