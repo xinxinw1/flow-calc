@@ -1,16 +1,14 @@
 // @flow
 
 import RealNum from '../RealNum';
-import RealClassEvaluator from './RealClassEvaluator';
 import { type RealEvaluator } from './RealEvaluator';
 import Precision from '../Precision';
 import Size from '../Size';
 
-export default class NegEvaluator extends RealClassEvaluator {
+export default class NegEvaluator implements RealEvaluator {
   aEval: RealEvaluator;
 
   constructor(aEval: RealEvaluator) {
-    super();
     this.aEval = aEval;
   }
 
