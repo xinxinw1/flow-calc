@@ -2,7 +2,6 @@
 
 const reportWebVitals = (onPerfEntry?: () => void) => {
   if (onPerfEntry && onPerfEntry instanceof Function) {
-    // flowlint-next-line untyped-import:off
     import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
       getCLS(onPerfEntry);
       getFID(onPerfEntry);

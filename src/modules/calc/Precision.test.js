@@ -16,7 +16,7 @@ test('creates precision', () => {
   const r = new RegularPrec(3);
 
   expect(r).toBeInstanceOf(Precision);
-  expect(r.prec).toEqual(3);
+  expect(r.prec).toBe(3);
 
   expect(() => {
     r.prec = 4;
@@ -28,7 +28,7 @@ test('creates precision', () => {
 
   if (s instanceof RegularPrec) {
     // check that flow type inference works here
-    expect(s.prec).toEqual(3);
+    expect(s.prec).toBe(3);
   }
 });
 

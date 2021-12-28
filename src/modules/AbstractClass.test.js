@@ -14,7 +14,7 @@ test('ensure abstract class cannot be instantiated', () => {
     }
 
     test(): boolean {
-      return this.abstractMethod(this.test);
+      return this.abstractMethod('test');
     }
   }
 

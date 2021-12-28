@@ -559,9 +559,8 @@ describe.each(implsSeq)(
                 NatNumImpl.div(aNum, bNum, prec);
               }).toThrow('cannot divide by zero');
             } else {
-              const { quotient: quotWant, remainder: remWant } = bigInt(
-                n1Mod,
-              ).divmod(n2Mod);
+              const { quotient: quotWant, remainder: remWant } =
+                bigInt(n1Mod).divmod(n2Mod);
               let quotWantMod = quotWant;
               let expWant = 0 - precNum;
               if (remWant.equals(0) && !quotWantMod.equals(0)) {

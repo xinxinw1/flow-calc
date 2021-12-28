@@ -10,13 +10,13 @@ test('creates FingerTree', () => {
   };
 
   const tree = FingerTree.empty(measure);
-  expect(tree.empty()).toBe(true);
+  expect(tree.isEmpty()).toBe(true);
   expect(() => {
     tree.head();
   }).toThrow('cannot call head on Empty');
 
   const tree2 = FingerTree.from(measure, ['1', '2', '3', '4', '5']);
-  expect(tree2.empty()).toBe(false);
+  expect(tree2.isEmpty()).toBe(false);
   expect(tree2.head()).toBe('1');
   expect([...tree2]).toStrictEqual(['1', '2', '3', '4', '5']);
   expect([...tree2.init()]).toStrictEqual(['1', '2', '3', '4']);

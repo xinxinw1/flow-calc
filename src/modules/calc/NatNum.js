@@ -12,45 +12,45 @@ export default class NatNum extends AbstractClass {
   static zero: NatNum;
 
   static fromStr(s: string): NatNum {
-    return AbstractClass.abstractMethod(NatNum.fromStr, s);
+    return AbstractClass.abstractMethod('fromStr', s);
   }
 
   static fromNum(n: number): NatNum {
-    return AbstractClass.abstractMethod(NatNum.fromNum, n);
+    return AbstractClass.abstractMethod('fromNum', n);
   }
 
   isZero(): boolean {
-    return this.abstractMethod(this.isZero);
+    return this.abstractMethod('isZero');
   }
 
   toString(): string {
-    return this.abstractMethod(this.toString);
+    return this.abstractMethod('toString');
   }
 
   // number of base 10 digits in the number
   // 0 => 0
   size(): number {
-    return this.abstractMethod(this.size);
+    return this.abstractMethod('size');
   }
 
   // this % 10
   last(): number {
-    return this.abstractMethod(this.last);
+    return this.abstractMethod('last');
   }
 
   // this // 10
   init(): NatNum {
-    return this.abstractMethod(this.init);
+    return this.abstractMethod('init');
   }
 
   // this * 10 + x
   push(x: number): NatNum {
-    return this.abstractMethod(this.push, x);
+    return this.abstractMethod('push', x);
   }
 
   // returns [this // 10^numInRight, this % 10^numInRight]
   splitRight(numInRight: number): [NatNum, NatNum] {
-    return this.abstractMethod(this.splitRight, numInRight);
+    return this.abstractMethod('splitRight', numInRight);
   }
 
   // this * 10^n
@@ -84,15 +84,15 @@ export default class NatNum extends AbstractClass {
 
   // assumes this is trimmed
   equals(other: NatNum): boolean {
-    return this.abstractMethod(this.equals, other);
+    return this.abstractMethod('equals', other);
   }
 
   add1(): NatNum {
-    return this.abstractMethod(this.add1);
+    return this.abstractMethod('add1');
   }
 
   sub1(): NatNum {
-    return this.abstractMethod(this.sub1);
+    return this.abstractMethod('sub1');
   }
 
   // returns 0 if digits have equal value
@@ -105,7 +105,7 @@ export default class NatNum extends AbstractClass {
     bRightWait: number,
   ): number {
     return AbstractClass.abstractMethod(
-      NatNum.compare,
+      'compare',
       a,
       b,
       aRightWait,
@@ -122,13 +122,7 @@ export default class NatNum extends AbstractClass {
     aRightWait: number,
     bRightWait: number,
   ): NatNum {
-    return AbstractClass.abstractMethod(
-      NatNum.add,
-      a,
-      b,
-      aRightWait,
-      bRightWait,
-    );
+    return AbstractClass.abstractMethod('add', a, b, aRightWait, bRightWait);
   }
 
   // subtracts digits a and b aligned on the right side
@@ -141,18 +135,12 @@ export default class NatNum extends AbstractClass {
     aRightWait: number,
     bRightWait: number,
   ): NatNum {
-    return AbstractClass.abstractMethod(
-      NatNum.sub,
-      a,
-      b,
-      aRightWait,
-      bRightWait,
-    );
+    return AbstractClass.abstractMethod('sub', a, b, aRightWait, bRightWait);
   }
 
   // multiplies digits a and b aligned on the right side
   static mult(a: NatNum, b: NatNum): NatNum {
-    return AbstractClass.abstractMethod(NatNum.mult, a, b);
+    return AbstractClass.abstractMethod('mult', a, b);
   }
 
   // divides digits a and b aligned on the right side
@@ -164,7 +152,7 @@ export default class NatNum extends AbstractClass {
     b: NatNum,
     prec: Precision,
   ): [NatNum, number, NatNum, number] {
-    return AbstractClass.abstractMethod(NatNum.div, a, b, prec);
+    return AbstractClass.abstractMethod('div', a, b, prec);
   }
 }
 

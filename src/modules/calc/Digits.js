@@ -50,7 +50,7 @@ export default class Digits {
   }
 
   isEmpty(): boolean {
-    return this.digitTree.empty();
+    return this.digitTree.isEmpty();
   }
 
   size(): number {

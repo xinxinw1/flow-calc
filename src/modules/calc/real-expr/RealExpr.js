@@ -11,10 +11,10 @@ export default class RealExpr extends AbstractClass {
   }
 
   uniqString(): string {
-    return this.abstractMethod(this.uniqString);
+    return this.abstractMethod('uniqString');
   }
 
   makeEvaluator(env: Environment): RealEvaluator {
-    return this.abstractMethod(this.makeEvaluator, env);
+    return this.abstractMethod('makeEvaluator', env);
   }
 }

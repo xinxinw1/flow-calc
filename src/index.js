@@ -2,17 +2,28 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import nullthrows from 'nullthrows';
 
 import './index.scss';
 
 import App from './components/App';
+import HomePage from './components/home/HomePage';
+import CalcPage from './components/calc/CalcPage';
+
 import reportWebVitals from './modules/reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<App />}>
+          <Route index element={<HomePage />} />
+          <Route path="/calc" element={<CalcPage />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   </React.StrictMode>,
   nullthrows(document.getElementById('root')),
 );

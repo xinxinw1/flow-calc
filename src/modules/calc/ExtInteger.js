@@ -10,16 +10,18 @@ export default class ExtInteger extends AbstractClass {
   }
 
   equals(other: ExtInteger): boolean {
+    /* $FlowIgnore[method-unbinding] comparing constructors
+         seems to be the recommended way to do this */
     if (this.constructor !== other.constructor) return false;
     return this.equalsSameClass(other);
   }
 
   equalsSameClass(other: ExtInteger): boolean {
-    return this.abstractMethod(this.equalsSameClass, other);
+    return this.abstractMethod('equalsSameClass', other);
   }
 
   le(other: ExtInteger): boolean {
-    return this.abstractMethod(this.le, other);
+    return this.abstractMethod('le', other);
   }
 
   gt(other: ExtInteger): boolean {
@@ -35,11 +37,11 @@ export default class ExtInteger extends AbstractClass {
   }
 
   add(other: number | ExtInteger): ExtInteger {
-    return this.abstractMethod(this.add, other);
+    return this.abstractMethod('add', other);
   }
 
   max(other: number | ExtInteger): ExtInteger {
-    return this.abstractMethod(this.max, other);
+    return this.abstractMethod('max', other);
   }
 }
 

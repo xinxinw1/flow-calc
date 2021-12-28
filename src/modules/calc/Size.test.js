@@ -16,7 +16,7 @@ test('creates size', () => {
   const r = new RegularSize(3);
 
   expect(r).toBeInstanceOf(Size);
-  expect(r.size).toEqual(3);
+  expect(r.size).toBe(3);
 
   expect(() => {
     r.size = 4;
@@ -28,7 +28,7 @@ test('creates size', () => {
 
   if (s instanceof RegularSize) {
     // check that flow type inference works here
-    expect(s.size).toEqual(3);
+    expect(s.size).toBe(3);
   }
 });
 

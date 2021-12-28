@@ -16,20 +16,18 @@ export default class AbstractClass {
   }
 
   abstractMethod(
-    // $FlowIgnore[unclear-type]
-    f: (...args: Array<any>) => mixed,
+    fName: string,
     ..._args: Array<mixed>
   ): // $FlowIgnore[unclear-type]
   any {
-    throw new Error(`${f.name} is an abstract method and can't be called`);
+    throw new Error(`${fName} is an abstract method and can't be called`);
   }
 
   static abstractMethod(
-    // $FlowIgnore[unclear-type]
-    f: (...args: Array<any>) => mixed,
+    fName: string,
     ..._args: Array<mixed>
   ): // $FlowIgnore[unclear-type]
   any {
-    throw new Error(`${f.name} is an abstract method and can't be called`);
+    throw new Error(`${fName} is an abstract method and can't be called`);
   }
 }

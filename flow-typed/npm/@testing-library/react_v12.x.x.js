@@ -1,98 +1,214 @@
-// flow-typed signature: 22edda8a9d63305e5aed4cd94ee90e95
-// flow-typed version: 0663320449/@testing-library/react_v11.x.x/flow_>=v0.104.x
+// flow-typed signature: a9fafdffa723cd2b3a57636e9e813630
+// flow-typed version: 9f17ca11b4/@testing-library/react_v12.x.x/flow_>=v0.104.x
+
+/**
+ * A local copy from:
+ * https://github.com/A11yance/aria-query/blob/2e6a3011a0d8987655f3a14853934fe3df38a8d8/flow/aria.js
+ */
+declare module '@@aria-query' {
+  declare export type ARIAAbstractRole =
+    | 'command'
+    | 'composite'
+    | 'input'
+    | 'landmark'
+    | 'range'
+    | 'roletype'
+    | 'section'
+    | 'sectionhead'
+    | 'select'
+    | 'structure'
+    | 'widget'
+    | 'window';
+
+  declare export type ARIAWidgetRole =
+    | 'button'
+    | 'checkbox'
+    | 'gridcell'
+    | 'link'
+    | 'menuitem'
+    | 'menuitemcheckbox'
+    | 'menuitemradio'
+    | 'option'
+    | 'progressbar'
+    | 'radio'
+    | 'scrollbar'
+    | 'searchbox'
+    | 'slider'
+    | 'spinbutton'
+    | 'switch'
+    | 'tab'
+    | 'tabpanel'
+    | 'textbox'
+    | 'treeitem';
+
+  declare export type ARIACompositeWidgetRole =
+    | 'combobox'
+    | 'grid'
+    | 'listbox'
+    | 'menu'
+    | 'menubar'
+    | 'radiogroup'
+    | 'tablist'
+    | 'tree'
+    | 'treegrid';
+
+  declare export type ARIADocumentStructureRole =
+    | 'application'
+    | 'article'
+    | 'blockquote'
+    | 'caption'
+    | 'cell'
+    | 'columnheader'
+    | 'definition'
+    | 'deletion'
+    | 'directory'
+    | 'document'
+    | 'emphasis'
+    | 'feed'
+    | 'figure'
+    | 'generic'
+    | 'group'
+    | 'heading'
+    | 'img'
+    | 'insertion'
+    | 'list'
+    | 'listitem'
+    | 'math'
+    | 'meter'
+    | 'none'
+    | 'note'
+    | 'paragraph'
+    | 'presentation'
+    | 'row'
+    | 'rowgroup'
+    | 'rowheader'
+    | 'separator'
+    | 'strong'
+    | 'subscript'
+    | 'superscript'
+    | 'table'
+    | 'term'
+    | 'time'
+    | 'toolbar'
+    | 'tooltip';
+
+  declare export type ARIALandmarkRole =
+    | 'banner'
+    | 'complementary'
+    | 'contentinfo'
+    | 'form'
+    | 'main'
+    | 'navigation'
+    | 'region'
+    | 'search';
+
+  declare export type ARIALiveRegionRole =
+    | 'alert'
+    | 'log'
+    | 'marquee'
+    | 'status'
+    | 'timer';
+
+  declare export type ARIAWindowRole = 'alertdialog' | 'dialog';
+
+  declare export type ARIAUncategorizedRole = 'code';
+
+  declare export type ARIADPubRole =
+    | 'doc-abstract'
+    | 'doc-acknowledgments'
+    | 'doc-afterword'
+    | 'doc-appendix'
+    | 'doc-backlink'
+    | 'doc-biblioentry'
+    | 'doc-bibliography'
+    | 'doc-biblioref'
+    | 'doc-chapter'
+    | 'doc-colophon'
+    | 'doc-conclusion'
+    | 'doc-cover'
+    | 'doc-credit'
+    | 'doc-credits'
+    | 'doc-dedication'
+    | 'doc-endnote'
+    | 'doc-endnotes'
+    | 'doc-epigraph'
+    | 'doc-epilogue'
+    | 'doc-errata'
+    | 'doc-example'
+    | 'doc-footnote'
+    | 'doc-foreword'
+    | 'doc-glossary'
+    | 'doc-glossref'
+    | 'doc-index'
+    | 'doc-introduction'
+    | 'doc-noteref'
+    | 'doc-notice'
+    | 'doc-pagebreak'
+    | 'doc-pagelist'
+    | 'doc-part'
+    | 'doc-preface'
+    | 'doc-prologue'
+    | 'doc-pullquote'
+    | 'doc-qna'
+    | 'doc-subtitle'
+    | 'doc-tip'
+    | 'doc-toc';
+
+  declare export type ARIARole =
+    | ARIAWidgetRole
+    | ARIACompositeWidgetRole
+    | ARIADocumentStructureRole
+    | ARIALandmarkRole
+    | ARIALiveRegionRole
+    | ARIAWindowRole
+    | ARIAUncategorizedRole;
+}
 
 declare module '@testing-library/react' {
-  // This type comes from
-  // https://github.com/facebook/flow/blob/v0.104.0/lib/react-dom.js#L64
-  declare type ReactDOMTestUtilsThenable = {
+  import type { ARIARole } from '@@aria-query';
+
+  // This type comes from react-dom_v17.x.x.js
+  declare interface ReactDOMTestUtilsThenable {
     then(resolve: () => mixed, reject?: () => mixed): mixed,
-    ...
-  };
-  // This type comes from
-  // https://github.com/facebook/flow/blob/v0.104.0/lib/react-dom.js#L116
+  }
+
+  // This type comes from react-dom_v17.x.x.js
   declare type ReactDOMTestUtilsAct = (
     callback: () => void | ReactDOMTestUtilsThenable
   ) => ReactDOMTestUtilsThenable;
 
-  declare type WaitForElementOptions = {|
+  declare type WaitForOptions = {|
     container?: HTMLElement,
     timeout?: number,
+    interval?: number,
+    onTimeout?: (error: Error) => Error,
     mutationObserverOptions?: MutationObserverInit,
   |};
 
-  declare type TextMatch =
-    | string
-    | RegExp
-    | ((content: string, element: HTMLElement) => boolean);
+  declare type MatcherFunction = (
+    content: string,
+    element: ?Element
+  ) => boolean;
 
-  declare type TextMatchOptions = {
+  declare type Matcher = MatcherFunction | RegExp | string | number;
+
+  declare type ByRoleMatcher = ARIARole | MatcherFunction;
+
+  declare type NormalizerFn = (text: string) => string;
+
+  declare type MatcherOptions = {|
     exact?: boolean,
+    /** Use normalizer with getDefaultNormalizer instead */
     trim?: boolean,
+    /** Use normalizer with getDefaultNormalizer instead */
     collapseWhitespace?: boolean,
-    normalizer?: (text: string) => string,
-    ...
-  };
+    normalizer?: NormalizerFn,
+    /** suppress suggestions for a specific query */
+    suggest?: boolean,
+  |};
 
-  declare type SelectorMatchOptions = {
-    selector?: string,
-    ...
-  } & TextMatchOptions;
-
-  declare type QueryByBoundAttribute = (
-    text: TextMatch,
-    options?: TextMatchOptions
-  ) => ?HTMLElement;
-
-  declare type AllByBoundAttribute = (
-    text: TextMatch,
-    options?: TextMatchOptions
-  ) => Array<HTMLElement>;
-
-  declare type FindAllByBoundAttribute = (
-    text: TextMatch,
-    options?: TextMatchOptions,
-    waitForElementOptions?: WaitForElementOptions
-  ) => Promise<HTMLElement[]>;
-
-  declare type GetByBoundAttribute = (
-    text: TextMatch,
-    options?: TextMatchOptions
-  ) => HTMLElement;
-
-  declare type FindByBoundAttribute = (
-    text: TextMatch,
-    options?: TextMatchOptions,
-    waitForElementOptions?: WaitForElementOptions
-  ) => Promise<HTMLElement>;
-
-  declare type QueryByText = (
-    text: TextMatch,
-    options?: SelectorMatchOptions
-  ) => ?HTMLElement;
-
-  declare type AllByText = (
-    text: TextMatch,
-    options?: SelectorMatchOptions
-  ) => Array<HTMLElement>;
-
-  declare type FindAllByText = (
-    text: TextMatch,
-    options?: SelectorMatchOptions,
-    waitForElementOptions?: WaitForElementOptions
-  ) => Promise<HTMLElement[]>;
-
-  declare type GetByText = (
-    text: TextMatch,
-    options?: SelectorMatchOptions
-  ) => HTMLElement;
-
-  declare type FindByText = (
-    text: TextMatch,
-    options?: SelectorMatchOptions,
-    waitForElementOptions?: WaitForElementOptions
-  ) => Promise<HTMLElement>;
-
-  declare type ByRoleOptions = {
+  declare type ByRoleOptions = {|
+    ...MatcherOptions,
     /**
      * If true includes elements in the query set that are usually excluded from
      * the accessibility tree. `role="none"` or `role="presentation"` are included
@@ -115,6 +231,11 @@ declare module '@testing-library/react' {
      */
     pressed?: boolean,
     /**
+     * If true only includes elements in the query set that are marked as
+     * expanded in the accessibility tree, i.e., `aria-expanded="true"`
+     */
+    expanded?: boolean,
+    /**
      * Includes elements with the `"heading"` role matching the indicated level,
      * either by the semantic HTML heading elements `<h1>-<h6>` or matching
      * the `aria-level` attribute.
@@ -132,34 +253,93 @@ declare module '@testing-library/react' {
       | string
       | RegExp
       | ((accessibleName: string, element: Element) => boolean),
-    ...
-  } & TextMatchOptions;
+  |};
+
+  declare type SelectorMatcherOptions = {|
+    ...MatcherOptions,
+    selector?: string,
+    ignore?: string | boolean
+  |};
+
+  declare type QueryByBoundAttribute = (
+    text: Matcher,
+    options?: MatcherOptions
+  ) => ?HTMLElement;
+
+  declare type AllByBoundAttribute = (
+    text: Matcher,
+    options?: MatcherOptions
+  ) => Array<HTMLElement>;
+
+  declare type FindAllByBoundAttribute = (
+    text: Matcher,
+    options?: MatcherOptions,
+    waitForElementOptions?: WaitForOptions
+  ) => Promise<HTMLElement[]>;
+
+  declare type GetByBoundAttribute = (
+    text: Matcher,
+    options?: MatcherOptions
+  ) => HTMLElement;
+
+  declare type FindByBoundAttribute = (
+    text: Matcher,
+    options?: MatcherOptions,
+    waitForElementOptions?: WaitForOptions
+  ) => Promise<HTMLElement>;
+
+  declare type QueryByText = (
+    text: Matcher,
+    options?: SelectorMatcherOptions
+  ) => ?HTMLElement;
+
+  declare type AllByText = (
+    text: Matcher,
+    options?: SelectorMatcherOptions
+  ) => Array<HTMLElement>;
+
+  declare type FindAllByText = (
+    text: Matcher,
+    options?: SelectorMatcherOptions,
+    waitForElementOptions?: WaitForOptions
+  ) => Promise<HTMLElement[]>;
+
+  declare type GetByText = (
+    text: Matcher,
+    options?: SelectorMatcherOptions
+  ) => HTMLElement;
+
+  declare type FindByText = (
+    text: Matcher,
+    options?: SelectorMatcherOptions,
+    waitForElementOptions?: WaitForOptions
+  ) => Promise<HTMLElement>;
 
   declare type AllByRole = (
-    role: TextMatch,
+    role: ByRoleMatcher,
     options?: ByRoleOptions
   ) => HTMLElement[];
 
   declare type GetByRole = (
-    role: TextMatch,
+    role: ByRoleMatcher,
     options?: ByRoleOptions
   ) => HTMLElement;
 
   declare type QueryByRole = (
-    role: TextMatch,
+    role: ByRoleMatcher,
     options?: ByRoleOptions
   ) => HTMLElement | null;
 
   declare type FindByRole = (
-    role: TextMatch,
+    role: ByRoleMatcher,
     options?: ByRoleOptions,
-    waitForElementOptions?: WaitForElementOptions
+    waitForElementOptions?: WaitForOptions
   ) => Promise<HTMLElement>;
 
   declare type FindAllByRole = (
-    role: Matcher,
+    role: ByRoleMatcher,
     options?: ByRoleOptions,
-    waitForElementOptions?: WaitForElementOptions
+    waitForElementOptions?: WaitForOptions
   ) => Promise<HTMLElement[]>;
 
   declare type GetsAndQueries = {|
@@ -268,7 +448,7 @@ declare module '@testing-library/react' {
     container?: HTMLElement,
     baseElement?: HTMLElement,
     hydrate?: boolean,
-    wrapper?: React.ComponentType,
+    wrapper?: React$ComponentType<any>,
   |};
 
   declare export type RenderOptionsWithCustomQueries<
@@ -278,17 +458,17 @@ declare module '@testing-library/react' {
     container?: HTMLElement,
     baseElement?: HTMLElement,
     hydrate?: boolean,
-    wrapper?: React.ComponentType,
+    wrapper?: React$ComponentType<any>,
   |};
 
   declare export function render(
-    ui: React.ReactElement<any>,
+    ui: React$Element<any>,
     options?: RenderOptionsWithoutCustomQueries
   ): RenderResult<>;
   declare export function render<
     CustomQueries: { [string]: (...args: Array<any>) => any, ... }
   >(
-    ui: React.ReactElement<any>,
+    ui: React$Element<any>,
     options: RenderOptionsWithCustomQueries<CustomQueries>
   ): RenderResult<CustomQueries>;
 
@@ -313,46 +493,6 @@ declare module '@testing-library/react' {
       interval?: number,
       mutationObserverOptions?: MutationObserverInit,
     |}
-  ): Promise<T>;
-
-  /**
-   * @deprecated `wait` has been deprecated and replaced by `waitFor` instead.
-   * In most cases you should be able to find/replace `wait` with `waitFor`.
-   * Learn more: https://testing-library.com/docs/dom-testing-library/api-async#waitfor.
-   */
-  declare export function wait(
-    callback?: () => void,
-    options?: {
-      timeout?: number,
-      interval?: number,
-      ...
-    }
-  ): Promise<void>;
-
-  /**
-   * @deprecated `waitForDomChange` has been deprecated.
-   * Use `waitFor` instead: https://testing-library.com/docs/dom-testing-library/api-async#waitfor.
-   */
-  declare export function waitForDomChange<T>(options?: {
-    container?: HTMLElement,
-    timeout?: number,
-    mutationObserverOptions?: MutationObserverInit,
-    ...
-  }): Promise<T>;
-
-  /**
-   * @deprecated `waitForElement` has been deprecated.
-   * Use a `find*` query (preferred: https://testing-library.com/docs/dom-testing-library/api-queries#findby)
-   * or use `waitFor` instead: https://testing-library.com/docs/dom-testing-library/api-async#waitfor
-   */
-  declare export function waitForElement<T>(
-    callback?: () => T,
-    options?: {
-      container?: HTMLElement,
-      timeout?: number,
-      mutationObserverOptions?: MutationObserverInit,
-      ...
-    }
   ): Promise<T>;
 
   declare export function within(
@@ -436,53 +576,53 @@ declare module '@testing-library/react' {
   // dom-testing-library re-declares
   declare export function queryByTestId(
     container: HTMLElement,
-    id: TextMatch,
-    options?: TextMatchOptions
+    id: Matcher,
+    options?: MatcherOptions
   ): ?HTMLElement;
   declare export function getByTestId(
     container: HTMLElement,
-    id: TextMatch,
-    options?: TextMatchOptions
+    id: Matcher,
+    options?: MatcherOptions
   ): HTMLElement;
   declare export function queryByText(
     container: HTMLElement,
-    text: TextMatch,
-    options?: TextMatchOptions
+    text: Matcher,
+    options?: MatcherOptions
   ): ?HTMLElement;
   declare export function getByText(
     container: HTMLElement,
-    text: TextMatch,
-    options?: { selector?: string, ... } & TextMatchOptions
+    text: Matcher,
+    options?: { selector?: string, ... } & MatcherOptions
   ): HTMLElement;
   declare export function queryByPlaceholderText(
     container: HTMLElement,
-    text: TextMatch,
-    options?: TextMatchOptions
+    text: Matcher,
+    options?: MatcherOptions
   ): ?HTMLElement;
   declare export function getByPlaceholderText(
     container: HTMLElement,
-    text: TextMatch,
-    options?: TextMatchOptions
+    text: Matcher,
+    options?: MatcherOptions
   ): HTMLElement;
   declare export function queryByLabelText(
     container: HTMLElement,
-    text: TextMatch,
-    options?: TextMatchOptions
+    text: Matcher,
+    options?: MatcherOptions
   ): ?HTMLElement;
   declare export function getByLabelText(
     container: HTMLElement,
-    text: TextMatch,
-    options?: { selector?: string, ... } & TextMatchOptions
+    text: Matcher,
+    options?: { selector?: string, ... } & MatcherOptions
   ): HTMLElement;
   declare export function queryByAltText(
     container: HTMLElement,
-    text: TextMatch,
-    options?: TextMatchOptions
+    text: Matcher,
+    options?: MatcherOptions
   ): ?HTMLElement;
   declare export function getByAltText(
     container: HTMLElement,
-    text: TextMatch,
-    options?: TextMatchOptions
+    text: Matcher,
+    options?: MatcherOptions
   ): HTMLElement;
   declare export function getNodeText(node: HTMLElement): string;
   declare export var screen: Screen<>;

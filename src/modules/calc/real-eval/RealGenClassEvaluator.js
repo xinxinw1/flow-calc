@@ -12,7 +12,8 @@ import Size from '../Size';
 // that defines makeOutputGenerator()
 export default class RealGenClassEvaluator
   extends AbstractClass
-  implements RealEvaluator {
+  implements RealEvaluator
+{
   realGenState: ?RealGeneratorState;
 
   constructor() {
@@ -22,7 +23,7 @@ export default class RealGenClassEvaluator
 
   // must satisfy the input conditions for RealEvaluator
   makeOutputGenerator(): RealGenerator {
-    return this.abstractMethod(this.makeOutputGenerator);
+    return this.abstractMethod('makeOutputGenerator');
   }
 
   // will satisfy the output conditions for RealEvaluator.eval
@@ -36,6 +37,6 @@ export default class RealGenClassEvaluator
   }
 
   maxSize(): Size {
-    return this.abstractMethod(this.maxSize);
+    return this.abstractMethod('maxSize');
   }
 }

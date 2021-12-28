@@ -59,16 +59,7 @@ test('Digits operations', () => {
 
   const digits2 = Digits.fromStr('98765');
   expect([...digits.concat(digits2)]).toStrictEqual([
-    1,
-    2,
-    3,
-    4,
-    5,
-    9,
-    8,
-    7,
-    6,
-    5,
+    1, 2, 3, 4, 5, 9, 8, 7, 6, 5,
   ]);
 });
 

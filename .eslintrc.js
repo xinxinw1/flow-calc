@@ -11,11 +11,11 @@ module.exports = {
     'plugin:flowtype/recommended',
     'airbnb',
     'plugin:prettier/recommended',
-    'prettier/flowtype',
-    'prettier/react',
+    'prettier',
   ],
-  parser: 'babel-eslint',
+  parser: '@babel/eslint-parser',
   parserOptions: {
+    requireConfigFile: false,
     ecmaFeatures: {
       jsx: true,
     },
