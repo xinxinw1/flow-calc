@@ -1,15 +1,25 @@
 // @flow
 
-import nullthrows from 'nullthrows';
+import assert from 'assert';
+import util from 'util';
 
+import { absurd } from '../typetools';
 import RealNum from './RealNum';
-import { type Precision, InfPrec, NegInfPrec } from './Precision';
+import {
+  type RealEvalResult,
+  RealRegularResult,
+  RealDivisionByZeroResult,
+} from './RealEvalResult';
+import { type Precision, NegInfPrec } from './Precision';
 import { type RealGenerator } from './RealGenerator';
 
 export default class RealGeneratorState {
   gen: RealGenerator;
-  currNum: RealNum = RealNum.zero;
-  currPrec: Precision = new NegInfPrec();
+  currRes: RealEvalResult = new RealRegularResult(
+    RealNum.zero,
+    new NegInfPrec(),
+  );
+
   initialized: boolean = false;
 
   // gen must take at least one input before it returns
@@ -38,18 +48,47 @@ export default class RealGeneratorState {
 
   updatePrecValue(prec: Precision) {
     this.initializeGen();
-    if (prec.le(this.currPrec)) return;
+    if (prec.le(this.currRes.precision)) return;
     const { value, done } = this.gen.next(prec);
-    this.currNum = nullthrows(value);
-    this.currPrec = done ? new InfPrec() : prec;
+    if (!value) {
+      throw new Error('Value must not be null');
+    } else if (value instanceof RealNum) {
+      if (!done) {
+        throw new Error('RealNum can only be returned when done is true');
+      }
+      this.currRes = new RealRegularResult(value);
+    } else {
+      (value: RealEvalResult);
+      if (!value.precision.ge(prec)) {
+        throw new Error(
+          `value ${util.inspect(
+            value,
+          )} has lower precision than given ${util.inspect(prec)}`,
+        );
+      }
+      this.currRes = value;
+    }
   }
 
   // will satisfy the output conditions for RealEvaluator.eval
-  eval(prec: Precision): [RealNum, boolean] {
+  eval(prec: Precision): RealEvalResult {
     this.updatePrecValue(prec);
-    if (this.currPrec instanceof InfPrec && this.currNum.prec().le(prec)) {
-      return [this.currNum, true];
+    const { currRes } = this;
+    assert(currRes.precision.ge(prec));
+    if (currRes instanceof RealRegularResult) {
+      if (currRes.value.prec().le(prec)) {
+        return currRes;
+      } else {
+        return new RealRegularResult(
+          currRes.value.round(prec),
+          prec,
+          currRes.assumedDiscontinuity,
+        );
+      }
+    } else if (currRes instanceof RealDivisionByZeroResult) {
+      return currRes;
+    } else {
+      return absurd(currRes);
     }
-    return [this.currNum.round(prec), false];
   }
 }

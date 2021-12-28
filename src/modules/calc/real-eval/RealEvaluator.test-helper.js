@@ -1,6 +1,7 @@
 // @flow
 
 import RealNum from '../RealNum';
+import { RealRegularResult } from '../RealEvalResult';
 import { type Precision } from '../Precision';
 import { type RealEvaluator } from './RealEvaluator';
 
@@ -14,13 +15,17 @@ export function checkEvaluatorSeq(
   seq: Array<[Precision, string, boolean]>,
 ) {
   for (const [prec, expVal, expDone] of seq) {
-    const [val, done] = evaluator.eval(prec);
-    expect(val.toString()).toBe(expVal);
-    expect(done).toBe(expDone);
-    if (!val.size().le(evaluator.maxSize())) {
-      expect(val).toObjEqual(
-        RealNum.digitWithSize(val.pos, 1, evaluator.maxSize().add(1)),
-      );
+    const res = evaluator.eval(prec);
+    expect(res instanceof RealRegularResult);
+    if (res instanceof RealRegularResult) {
+      expect(res.value.toString()).toBe(expVal);
+      expect(res.precision.ge(prec)).toBe(true);
+      expect(res.isDone()).toBe(expDone);
+      if (!res.value.size().le(evaluator.maxSize())) {
+        expect(res.value).toObjEqual(
+          RealNum.digitWithSize(res.value.pos, 1, evaluator.maxSize().add(1)),
+        );
+      }
     }
   }
 }

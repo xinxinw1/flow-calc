@@ -22,6 +22,10 @@ class PrecBase {
     }
   }
 
+  isInf(): boolean {
+    return this.n instanceof InfInt;
+  }
+
   equals(other: Precision): boolean {
     return this.n.equals(other.n);
   }

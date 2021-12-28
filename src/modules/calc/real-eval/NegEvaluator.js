@@ -1,6 +1,10 @@
 // @flow
 
-import RealNum from '../RealNum';
+import {
+  type RealEvalResult,
+  RealRegularResult,
+  RealDivisionByZeroResult,
+} from '../RealEvalResult';
 import { type RealEvaluator } from './RealEvaluator';
 import { type Precision } from '../Precision';
 import { type Size } from '../Size';
@@ -12,9 +16,18 @@ export default class NegEvaluator implements RealEvaluator {
     this.aEval = aEval;
   }
 
-  eval(prec: Precision): [RealNum, boolean] {
-    const [a, aDone] = this.aEval.eval(prec);
-    return [a.neg(), aDone];
+  eval(prec: Precision): RealEvalResult {
+    const aRes = this.aEval.eval(prec);
+    if (aRes instanceof RealDivisionByZeroResult) {
+      return aRes;
+    } else {
+      (aRes: RealRegularResult);
+      return new RealRegularResult(
+        aRes.value.neg(),
+        aRes.precision,
+        aRes.assumedDiscontinuity,
+      );
+    }
   }
 
   maxSize(): Size {

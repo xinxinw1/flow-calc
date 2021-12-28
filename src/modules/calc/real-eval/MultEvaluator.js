@@ -1,11 +1,10 @@
 // @flow
 
-import { downCast } from '../../typetools';
 import RealNum from '../RealNum';
+import { RealRegularResult, RealDivisionByZeroResult } from '../RealEvalResult';
 import GeneratorEvaluator from './GeneratorEvaluator';
 import { type RealEvaluator } from './RealEvaluator';
 import { type RealGenerator } from '../RealGenerator';
-import ContinuableMult from '../ContinuableMult';
 import { type Size, RegularSize, NegInfSize } from '../Size';
 
 export default class MultEvaluator extends GeneratorEvaluator {
@@ -33,7 +32,7 @@ export default class MultEvaluator extends GeneratorEvaluator {
   // use p_a = outputPrec + b.maxSize() + 1
   // use p_b = outputPrec + a.maxSize() + 1
   *makeEvalGenerator(): RealGenerator {
-    let outputPrec = yield RealNum.zero;
+    let outputPrec = yield;
 
     const aSize = this.aEval.maxSize();
     const bSize = this.bEval.maxSize();
@@ -42,43 +41,38 @@ export default class MultEvaluator extends GeneratorEvaluator {
       return RealNum.zero;
     }
 
-    const aSizeNum = downCast(aSize, RegularSize).size;
-    const bSizeNum = downCast(bSize, RegularSize).size;
+    (aSize: RegularSize);
+    (bSize: RegularSize);
+    const aSizeNum = aSize.size;
+    const bSizeNum = bSize.size;
 
     for (;;) {
       const aInputPrec = outputPrec.add(bSizeNum + 1);
       const bInputPrec = outputPrec.add(aSizeNum + 1);
-      const [a, aDone] = this.aEval.eval(aInputPrec);
-      const [b, bDone] = this.bEval.eval(bInputPrec);
-      if (a.isZero() && aDone) {
-        return RealNum.zero;
-      }
-      if (b.isZero() && bDone) {
-        return RealNum.zero;
-      }
-      if (a.isZero() || b.isZero()) {
-        outputPrec = yield RealNum.zero;
+      const aRes = this.aEval.eval(aInputPrec);
+      const bRes = this.bEval.eval(bInputPrec);
+      if (aRes instanceof RealDivisionByZeroResult) {
+        outputPrec = yield aRes.withOutputPrec(outputPrec);
+      } else if (bRes instanceof RealDivisionByZeroResult) {
+        outputPrec = yield bRes.withOutputPrec(outputPrec);
       } else {
-        break;
+        (aRes: RealRegularResult);
+        (bRes: RealRegularResult);
+        if (aRes.value.isZero() && aRes.isDone()) {
+          return RealNum.zero;
+        }
+        if (bRes.value.isZero() && bRes.isDone()) {
+          return RealNum.zero;
+        }
+        const prod = aRes.value.mult(bRes.value);
+        if (aRes.isDone() && bRes.isDone()) {
+          return prod;
+        }
+        outputPrec = yield new RealRegularResult(
+          prod.round(outputPrec),
+          outputPrec,
+        ).withDiscontinuities(aRes, bRes);
       }
-    }
-
-    // now a and b are both non-zero so
-    // can use ContinuableMult
-
-    const continuableMult = new ContinuableMult();
-
-    for (;;) {
-      const aInputPrec = outputPrec.add(bSizeNum + 1);
-      const bInputPrec = outputPrec.add(aSizeNum + 1);
-      const [a, aDone] = this.aEval.eval(aInputPrec);
-      const [b, bDone] = this.bEval.eval(bInputPrec);
-
-      const result = continuableMult.eval(a, b, aInputPrec, bInputPrec);
-
-      if (aDone && bDone) return result;
-
-      outputPrec = yield result.round(outputPrec);
     }
 
     // eslint-disable-next-line no-unreachable

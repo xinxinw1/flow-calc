@@ -1,5 +1,6 @@
 // @flow
 import RealNum from './RealNum';
+import { RealRegularResult } from './RealEvalResult';
 import { RegularPrec, InfPrec, NegInfPrec } from './Precision';
 import RealGeneratorState from './RealGeneratorState';
 import { makeContinuousGen, makeInstantGen } from './RealGenerator';
@@ -23,9 +24,13 @@ test('generator state eval works correctly with instant gen', () => {
   ];
 
   for (const [prec, expVal, expDone] of seq) {
-    const [val, done] = genState.eval(prec);
-    expect(val.toString()).toBe(expVal);
-    expect(done).toBe(expDone);
+    const res = genState.eval(prec);
+    expect(res instanceof RealRegularResult);
+    if (res instanceof RealRegularResult) {
+      expect(res.value.toString()).toBe(expVal);
+      expect(res.precision.ge(prec)).toBe(true);
+      expect(res.isDone()).toBe(expDone);
+    }
   }
 });
 
@@ -47,8 +52,12 @@ test('generator state eval works correctly with regular gen', () => {
   ];
 
   for (const [prec, expVal, expDone] of seq) {
-    const [val, done] = genState.eval(prec);
-    expect(val.toString()).toBe(expVal);
-    expect(done).toBe(expDone);
+    const res = genState.eval(prec);
+    expect(res instanceof RealRegularResult);
+    if (res instanceof RealRegularResult) {
+      expect(res.value.toString()).toBe(expVal);
+      expect(res.precision.ge(prec)).toBe(true);
+      expect(res.isDone()).toBe(expDone);
+    }
   }
 });

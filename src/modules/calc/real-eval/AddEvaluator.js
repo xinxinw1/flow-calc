@@ -1,10 +1,10 @@
 // @flow
 
 import RealNum from '../RealNum';
+import { RealRegularResult, RealDivisionByZeroResult } from '../RealEvalResult';
 import GeneratorEvaluator from './GeneratorEvaluator';
 import { type RealEvaluator } from './RealEvaluator';
 import { type RealGenerator } from '../RealGenerator';
-import ContinuableAdd from '../ContinuableAdd';
 import { type Size } from '../Size';
 
 export default class AddEvaluator extends GeneratorEvaluator {
@@ -30,43 +30,28 @@ export default class AddEvaluator extends GeneratorEvaluator {
   // = outputPrec + 0.6532...
   // use p_a, p_b >= outputPrec + 1
   *makeEvalGenerator(): RealGenerator {
-    let outputPrec = yield RealNum.zero;
+    let outputPrec = yield;
 
     for (;;) {
       const inputPrec = outputPrec.add(1);
-      const [a, aDone] = this.aEval.eval(inputPrec);
-      const [b, bDone] = this.bEval.eval(inputPrec);
-      if (a.isZero()) {
-        if (b.isZero()) {
-          if (aDone && bDone) return RealNum.zero;
-          outputPrec = yield RealNum.zero;
-        } else {
-          if (aDone && bDone) return b;
-          outputPrec = yield b.round(outputPrec);
-        }
-      } else if (b.isZero()) {
-        if (aDone && bDone) return a;
-        outputPrec = yield a.round(outputPrec);
+      const aRes = this.aEval.eval(inputPrec);
+      const bRes = this.bEval.eval(inputPrec);
+      if (aRes instanceof RealDivisionByZeroResult) {
+        outputPrec = yield aRes.withOutputPrec(outputPrec);
+      } else if (bRes instanceof RealDivisionByZeroResult) {
+        outputPrec = yield bRes.withOutputPrec(outputPrec);
       } else {
-        break;
+        (aRes: RealRegularResult);
+        (bRes: RealRegularResult);
+        const sum = aRes.value.add(bRes.value);
+        if (aRes.isDone() && bRes.isDone()) {
+          return sum;
+        }
+        outputPrec = yield new RealRegularResult(
+          sum.round(outputPrec),
+          outputPrec,
+        ).withDiscontinuities(aRes, bRes);
       }
-    }
-
-    // now a and b are both non-zero so
-    // can use ContinuableAdd
-
-    const continuableAdd = new ContinuableAdd();
-
-    for (;;) {
-      const inputPrec = outputPrec.add(1);
-      const [a, aDone] = this.aEval.eval(inputPrec);
-      const [b, bDone] = this.bEval.eval(inputPrec);
-
-      const sum = continuableAdd.eval(a, b, inputPrec);
-
-      if (aDone && bDone) return sum;
-
-      outputPrec = yield sum.round(outputPrec);
     }
 
     // eslint-disable-next-line no-unreachable

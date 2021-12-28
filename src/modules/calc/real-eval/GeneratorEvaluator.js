@@ -4,7 +4,7 @@ import { type RealGenerator } from '../RealGenerator';
 import { type RealEvaluator } from './RealEvaluator';
 import AbstractClass from '../../AbstractClass';
 import RealGeneratorState from '../RealGeneratorState';
-import RealNum from '../RealNum';
+import { type RealEvalResult } from '../RealEvalResult';
 import { type Precision } from '../Precision';
 import { type Size } from '../Size';
 
@@ -31,7 +31,7 @@ export default class GeneratorEvaluator
   }
 
   // will satisfy the output conditions for RealEvaluator.eval
-  eval(prec: Precision): [RealNum, boolean] {
+  eval(prec: Precision): RealEvalResult {
     if (!this.realGenState) {
       // can't call this in constructor because
       // subclass instance vars aren't ready yet
