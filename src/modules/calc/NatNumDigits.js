@@ -3,7 +3,7 @@
 import { downCast } from '../typetools';
 import NatNum from './NatNum';
 import Digits from './Digits';
-import Precision, { RegularPrec } from './Precision';
+import { type Precision, RegularPrec } from './Precision';
 
 export default class NatNumDigits extends NatNum {
   digits: Digits;

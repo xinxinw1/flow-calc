@@ -1,146 +1,11 @@
 // @flow
 
-import { downCast, unknownSubtype } from '../typetools';
-import AbstractClass from '../AbstractClass';
+import { absurd } from '../typetools';
 
-export default class ExtInteger extends AbstractClass {
-  constructor() {
-    super();
-    this.abstractClass(ExtInteger);
-  }
-
-  equals(other: ExtInteger): boolean {
-    /* $FlowIgnore[method-unbinding] comparing constructors
-         seems to be the recommended way to do this */
-    if (this.constructor !== other.constructor) return false;
-    return this.equalsSameClass(other);
-  }
-
-  equalsSameClass(other: ExtInteger): boolean {
-    return this.abstractMethod('equalsSameClass', other);
-  }
-
-  le(other: ExtInteger): boolean {
-    return this.abstractMethod('le', other);
-  }
-
-  gt(other: ExtInteger): boolean {
-    return !this.le(other);
-  }
-
-  ge(other: ExtInteger): boolean {
-    return other.le(this);
-  }
-
-  lt(other: ExtInteger): boolean {
-    return !this.ge(other);
-  }
-
-  add(other: number | ExtInteger): ExtInteger {
-    return this.abstractMethod('add', other);
-  }
-
-  max(other: number | ExtInteger): ExtInteger {
-    return this.abstractMethod('max', other);
-  }
-}
-
-class InfIntType extends ExtInteger {
-  constructor() {
-    super();
-    Object.freeze(this);
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  equalsSameClass(_other: ExtInteger): boolean {
-    return true;
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  le(other: ExtInteger): boolean {
-    if (other instanceof InfIntType) {
-      return true;
-    }
-    return false;
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  add(other: number | ExtInteger): ExtInteger {
-    if (other instanceof ExtInteger) {
-      if (other === NegInfInt) {
-        throw new Error('cannot add inf integer with neg inf integer');
-      }
-      return InfInt;
-    }
-    if (!Number.isInteger(other)) {
-      throw new Error(`number ${other} must be an integer`);
-    }
-    return InfInt;
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  max(other: number | ExtInteger): ExtInteger {
-    if (other instanceof ExtInteger) {
-      return InfInt;
-    }
-    if (!Number.isInteger(other)) {
-      throw new Error(`number ${other} must be an integer`);
-    }
-    return InfInt;
-  }
-}
-
-export const InfInt: InfIntType = new InfIntType();
-
-class NegInfIntType extends ExtInteger {
-  constructor() {
-    super();
-    Object.freeze(this);
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  equalsSameClass(_other: ExtInteger): boolean {
-    return true;
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  le(_other: ExtInteger): boolean {
-    return true;
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  add(other: number | ExtInteger): ExtInteger {
-    if (other instanceof ExtInteger) {
-      if (other === InfInt) {
-        throw new Error('cannot add inf integer with neg inf integer');
-      }
-      return NegInfInt;
-    }
-    if (!Number.isInteger(other)) {
-      throw new Error(`number ${other} must be an integer`);
-    }
-    return NegInfInt;
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  max(other: number | ExtInteger): ExtInteger {
-    if (other instanceof ExtInteger) {
-      return other;
-    }
-    if (!Number.isInteger(other)) {
-      throw new Error(`number ${other} must be an integer`);
-    }
-    return new RegularInt(other);
-  }
-}
-
-export const NegInfInt: NegInfIntType = new NegInfIntType();
-
-export class RegularInt extends ExtInteger {
+export class RegularInt {
   n: number;
 
   constructor(n: number) {
-    super();
     if (!Number.isInteger(n)) {
       throw new Error(`Number ${n} must be an integer`);
     }
@@ -148,59 +13,191 @@ export class RegularInt extends ExtInteger {
     Object.freeze(this);
   }
 
-  equalsSameClass(other: ExtInteger): boolean {
-    const otherCasted = downCast(other, RegularInt);
-    return this.n === otherCasted.n;
+  equals(other: ExtInteger): boolean {
+    return ExtIntegers.equals(this, other);
   }
 
   le(other: ExtInteger): boolean {
-    if (other instanceof RegularInt) {
-      return this.n <= other.n;
-    }
-    if (other === InfInt) {
-      return true;
-    }
-    if (other === NegInfInt) {
-      return false;
-    }
-    return unknownSubtype(other, ExtInteger);
+    return ExtIntegers.le(this, other);
+  }
+
+  gt(other: ExtInteger): boolean {
+    return ExtIntegers.gt(this, other);
+  }
+
+  ge(other: ExtInteger): boolean {
+    return ExtIntegers.ge(this, other);
+  }
+
+  lt(other: ExtInteger): boolean {
+    return ExtIntegers.lt(this, other);
   }
 
   add(other: number | ExtInteger): ExtInteger {
-    if (other instanceof ExtInteger) {
-      if (other === InfInt) {
-        return InfInt;
-      }
-      if (other === NegInfInt) {
-        return NegInfInt;
-      }
-      if (other instanceof RegularInt) {
-        return new RegularInt(this.n + other.n);
-      }
-      return unknownSubtype(other, ExtInteger);
-    }
-    if (!Number.isInteger(other)) {
-      throw new Error(`number ${other} must be an integer`);
-    }
-    return new RegularInt(this.n + other);
+    return ExtIntegers.add(this, other);
   }
 
   max(other: number | ExtInteger): ExtInteger {
-    if (other instanceof ExtInteger) {
-      if (other === InfInt) {
-        return InfInt;
-      }
-      if (other === NegInfInt) {
-        return this;
-      }
-      if (other instanceof RegularInt) {
-        return new RegularInt(Math.max(this.n, other.n));
-      }
-      return unknownSubtype(other, ExtInteger);
+    return ExtIntegers.max(this, other);
+  }
+}
+
+export class InfInt {
+  equals(other: ExtInteger): boolean {
+    return ExtIntegers.equals(this, other);
+  }
+
+  le(other: ExtInteger): boolean {
+    return ExtIntegers.le(this, other);
+  }
+
+  gt(other: ExtInteger): boolean {
+    return ExtIntegers.gt(this, other);
+  }
+
+  ge(other: ExtInteger): boolean {
+    return ExtIntegers.ge(this, other);
+  }
+
+  lt(other: ExtInteger): boolean {
+    return ExtIntegers.lt(this, other);
+  }
+
+  add(other: number | ExtInteger): ExtInteger {
+    return ExtIntegers.add(this, other);
+  }
+
+  max(other: number | ExtInteger): ExtInteger {
+    return ExtIntegers.max(this, other);
+  }
+}
+
+export class NegInfInt {
+  equals(other: ExtInteger): boolean {
+    return ExtIntegers.equals(this, other);
+  }
+
+  le(other: ExtInteger): boolean {
+    return ExtIntegers.le(this, other);
+  }
+
+  gt(other: ExtInteger): boolean {
+    return ExtIntegers.gt(this, other);
+  }
+
+  ge(other: ExtInteger): boolean {
+    return ExtIntegers.ge(this, other);
+  }
+
+  lt(other: ExtInteger): boolean {
+    return ExtIntegers.lt(this, other);
+  }
+
+  add(other: number | ExtInteger): ExtInteger {
+    return ExtIntegers.add(this, other);
+  }
+
+  max(other: number | ExtInteger): ExtInteger {
+    return ExtIntegers.max(this, other);
+  }
+}
+
+export type ExtInteger = RegularInt | InfInt | NegInfInt;
+
+class ExtIntegers {
+  static equals(a: ExtInteger, b: ExtInteger): boolean {
+    if (a instanceof RegularInt) {
+      return b instanceof RegularInt && a.n === b.n;
+    } else if (a instanceof InfInt) {
+      return b instanceof InfInt;
+    } else if (a instanceof NegInfInt) {
+      return b instanceof NegInfInt;
+    } else {
+      return absurd(a);
     }
-    if (!Number.isInteger(other)) {
-      throw new Error(`number ${other} must be an integer`);
+  }
+
+  static le(a: ExtInteger, b: ExtInteger): boolean {
+    if (a instanceof RegularInt) {
+      if (b instanceof RegularInt) {
+        return a.n <= b.n;
+      } else if (b instanceof InfInt) {
+        return true;
+      } else if (b instanceof NegInfInt) {
+        return false;
+      } else {
+        return absurd(b);
+      }
+    } else if (a instanceof InfInt) {
+      return b instanceof InfInt;
+    } else if (a instanceof NegInfInt) {
+      return true;
+    } else {
+      return absurd(a);
     }
-    return new RegularInt(Math.max(this.n, other));
+  }
+
+  static gt(a: ExtInteger, b: ExtInteger): boolean {
+    return !ExtIntegers.le(a, b);
+  }
+
+  static ge(a: ExtInteger, b: ExtInteger): boolean {
+    return ExtIntegers.le(b, a);
+  }
+
+  static lt(a: ExtInteger, b: ExtInteger): boolean {
+    return !ExtIntegers.ge(a, b);
+  }
+
+  static add(a: ExtInteger, b: number | ExtInteger): ExtInteger {
+    if (a instanceof RegularInt) {
+      if (typeof b === 'number') {
+        return new RegularInt(a.n + b);
+      } else if (b instanceof RegularInt) {
+        return new RegularInt(a.n + b.n);
+      } else {
+        return b;
+      }
+    } else if (a instanceof InfInt) {
+      if (b instanceof NegInfInt) {
+        throw new Error('cannot add inf integer with neg inf integer');
+      } else {
+        return a;
+      }
+    } else if (a instanceof NegInfInt) {
+      if (b instanceof InfInt) {
+        throw new Error('cannot add inf integer with neg inf integer');
+      } else {
+        return a;
+      }
+    } else {
+      return absurd(a);
+    }
+  }
+
+  static max(a: ExtInteger, b: number | ExtInteger): ExtInteger {
+    if (a instanceof RegularInt) {
+      if (typeof b === 'number') {
+        return new RegularInt(Math.max(a.n, b));
+      } else if (b instanceof RegularInt) {
+        return new RegularInt(Math.max(a.n, b.n));
+      } else if (b instanceof InfInt) {
+        return b;
+      } else if (b instanceof NegInfInt) {
+        return a;
+      } else {
+        return absurd(b);
+      }
+    } else if (a instanceof InfInt) {
+      return a;
+    } else if (a instanceof NegInfInt) {
+      if (typeof b === 'number') {
+        return new RegularInt(b);
+      } else {
+        return b;
+      }
+    } else {
+      return absurd(a);
+    }
   }
 }

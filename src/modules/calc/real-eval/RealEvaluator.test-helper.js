@@ -1,7 +1,7 @@
 // @flow
 
 import RealNum from '../RealNum';
-import Precision from '../Precision';
+import { type Precision } from '../Precision';
 import { type RealEvaluator } from './RealEvaluator';
 
 import _, { type ObjEqualMatcher } from '../toObjEqual.test-helper';

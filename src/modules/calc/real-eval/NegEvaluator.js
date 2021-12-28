@@ -2,8 +2,8 @@
 
 import RealNum from '../RealNum';
 import { type RealEvaluator } from './RealEvaluator';
-import Precision from '../Precision';
-import Size from '../Size';
+import { type Precision } from '../Precision';
+import { type Size } from '../Size';
 
 export default class NegEvaluator implements RealEvaluator {
   aEval: RealEvaluator;

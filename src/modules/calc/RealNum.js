@@ -5,8 +5,8 @@ import nullthrows from 'nullthrows';
 import { downCast } from '../typetools';
 import NatNum from './NatNum';
 import NatNumDigits from './NatNumDigits';
-import Size, { RegularSize, NegInfSize } from './Size';
-import Precision, { RegularPrec, NegInfPrec } from './Precision';
+import { type Size, RegularSize, NegInfSize } from './Size';
+import { type Precision, RegularPrec, NegInfPrec } from './Precision';
 
 const NatNumImpl = NatNumDigits;
 
@@ -178,7 +178,7 @@ export default class RealNum {
   // assumes this is trimmed
   // a.size() - 1 <= log(|a|) < a.size()
   size(): Size {
-    if (this.isZero()) return NegInfSize;
+    if (this.isZero()) return new NegInfSize();
     return new RegularSize(this.nat.size() + this.exp);
   }
 
@@ -193,7 +193,7 @@ export default class RealNum {
 
   // assumes this is trimmed
   prec(): Precision {
-    if (this.isZero()) return NegInfPrec;
+    if (this.isZero()) return new NegInfPrec();
     return new RegularPrec(0 - this.exp);
   }
 
@@ -241,7 +241,7 @@ export default class RealNum {
     shouldRoundAwayFromZero: (d: number, pos: boolean) => boolean,
   ): RealNum {
     if (this.isZero()) return RealNum.zero;
-    if (prec === NegInfPrec) {
+    if (prec instanceof NegInfPrec) {
       // deciding number is certainly 0 here
       const roundAway = shouldRoundAwayFromZero(0, this.pos);
       if (roundAway) {

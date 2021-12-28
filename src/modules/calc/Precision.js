@@ -1,16 +1,25 @@
 // @flow
 
-import { unknownSubtype } from '../typetools';
-import AbstractClass from '../AbstractClass';
-import ExtInteger, { RegularInt, InfInt, NegInfInt } from './ExtInteger';
+import { absurd } from '../typetools';
+import { type ExtInteger, RegularInt, InfInt, NegInfInt } from './ExtInteger';
 
-export default class Precision extends AbstractClass {
+class PrecBase {
   n: ExtInteger;
 
   constructor(n: ExtInteger) {
-    super();
     this.n = n;
-    this.abstractClass(Precision);
+  }
+
+  static makePrec(n: ExtInteger): Precision {
+    if (n instanceof RegularInt) {
+      return new RegularPrec(n.n);
+    } else if (n instanceof InfInt) {
+      return new InfPrec();
+    } else if (n instanceof NegInfInt) {
+      return new NegInfPrec();
+    } else {
+      return absurd(n);
+    }
   }
 
   equals(other: Precision): boolean {
@@ -34,40 +43,12 @@ export default class Precision extends AbstractClass {
   }
 
   add(other: number | Precision): Precision {
-    let result = new RegularInt(0);
-    if (other instanceof Precision) {
-      result = this.n.add(other.n);
-    } else {
-      result = this.n.add(other);
-    }
-    if (result === InfInt) return InfPrec;
-    if (result === NegInfInt) return NegInfPrec;
-    if (result instanceof RegularInt) {
-      return new RegularPrec(result.n);
-    }
-    return unknownSubtype(result, ExtInteger);
+    const otherInt = typeof other === 'number' ? other : other.n;
+    return PrecBase.makePrec(this.n.add(otherInt));
   }
 }
 
-class InfPrecType extends Precision {
-  constructor() {
-    super(InfInt);
-    Object.freeze(this);
-  }
-}
-
-export const InfPrec: InfPrecType = new InfPrecType();
-
-class NegInfPrecType extends Precision {
-  constructor() {
-    super(NegInfInt);
-    Object.freeze(this);
-  }
-}
-
-export const NegInfPrec: NegInfPrecType = new NegInfPrecType();
-
-export class RegularPrec extends Precision {
+export class RegularPrec extends PrecBase {
   prec: number;
 
   constructor(prec: number) {
@@ -76,3 +57,19 @@ export class RegularPrec extends Precision {
     Object.freeze(this);
   }
 }
+
+export class InfPrec extends PrecBase {
+  constructor() {
+    super(new InfInt());
+    Object.freeze(this);
+  }
+}
+
+export class NegInfPrec extends PrecBase {
+  constructor() {
+    super(new NegInfInt());
+    Object.freeze(this);
+  }
+}
+
+export type Precision = RegularPrec | InfPrec | NegInfPrec;

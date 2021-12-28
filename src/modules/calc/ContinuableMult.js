@@ -2,7 +2,7 @@
 
 import RealNum from './RealNum';
 import ContinuableRealNum from './ContinuableRealNum';
-import Precision from './Precision';
+import { type Precision } from './Precision';
 
 export default class ContinuableMult {
   result: RealNum = RealNum.zero;

@@ -6,7 +6,7 @@ import RealGenClassEvaluator from './RealGenClassEvaluator';
 import { type RealEvaluator } from './RealEvaluator';
 import { type RealGenerator } from '../RealGenerator';
 import ContinuableMult from '../ContinuableMult';
-import Size, { RegularSize, NegInfSize } from '../Size';
+import { type Size, RegularSize, NegInfSize } from '../Size';
 
 export default class MultEvaluator extends RealGenClassEvaluator {
   aEval: RealEvaluator;
@@ -38,7 +38,7 @@ export default class MultEvaluator extends RealGenClassEvaluator {
     const aSize = this.aEval.maxSize();
     const bSize = this.bEval.maxSize();
 
-    if (aSize === NegInfSize || bSize === NegInfSize) {
+    if (aSize instanceof NegInfSize || bSize instanceof NegInfSize) {
       return RealNum.zero;
     }
 

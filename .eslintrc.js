@@ -42,6 +42,7 @@ module.exports = {
       'WithStatement',
     ],
     'no-use-before-define': 'off',
+    'no-else-return': 'off',
     'flowtype/require-valid-file-annotation': [
       2,
       'always',

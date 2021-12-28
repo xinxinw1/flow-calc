@@ -1,7 +1,7 @@
 // @flow
 
 import RealNum from './RealNum';
-import Precision, { RegularPrec, InfPrec } from './Precision';
+import { type Precision, RegularPrec, InfPrec } from './Precision';
 
 export default class ContinuableRealNum {
   initialized: boolean = false;
@@ -46,7 +46,7 @@ export default class ContinuableRealNum {
 
     this.prevPrec = prec;
 
-    if (prec !== InfPrec) {
+    if (!(prec instanceof InfPrec)) {
       this.prevLastDig = a.getDigitAtPrec(prec);
     }
 

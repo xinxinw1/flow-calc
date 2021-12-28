@@ -5,7 +5,7 @@ import RealGenClassEvaluator from './RealGenClassEvaluator';
 import { type RealEvaluator } from './RealEvaluator';
 import { type RealGenerator } from '../RealGenerator';
 import ContinuableAdd from '../ContinuableAdd';
-import Size from '../Size';
+import { type Size } from '../Size';
 
 export default class AddEvaluator extends RealGenClassEvaluator {
   aEval: RealEvaluator;

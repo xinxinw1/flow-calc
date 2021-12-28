@@ -3,13 +3,13 @@
 import nullthrows from 'nullthrows';
 
 import RealNum from './RealNum';
-import Precision, { InfPrec, NegInfPrec } from './Precision';
+import { type Precision, InfPrec, NegInfPrec } from './Precision';
 import { type RealGenerator } from './RealGenerator';
 
 export default class RealGeneratorState {
   gen: RealGenerator;
   currNum: RealNum = RealNum.zero;
-  currPrec: Precision = NegInfPrec;
+  currPrec: Precision = new NegInfPrec();
 
   // gen must take at least one input before it returns
   // yields from the generator must already be rounded to the input precision
@@ -34,13 +34,13 @@ export default class RealGeneratorState {
     if (prec.le(this.currPrec)) return;
     const { value, done } = this.gen.next(prec);
     this.currNum = nullthrows(value);
-    this.currPrec = done ? InfPrec : prec;
+    this.currPrec = done ? new InfPrec() : prec;
   }
 
   // will satisfy the output conditions for RealEvaluator.eval
   eval(prec: Precision): [RealNum, boolean] {
     this.updatePrecValue(prec);
-    if (this.currPrec === InfPrec && this.currNum.prec().le(prec)) {
+    if (this.currPrec instanceof InfPrec && this.currNum.prec().le(prec)) {
       return [this.currNum, true];
     }
     return [this.currNum.round(prec), false];

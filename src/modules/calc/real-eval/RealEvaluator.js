@@ -1,8 +1,8 @@
 // @flow
 
 import RealNum from '../RealNum';
-import Precision from '../Precision';
-import Size from '../Size';
+import { type Precision } from '../Precision';
+import { type Size } from '../Size';
 
 export interface RealEvaluator {
   // returns [value, done]

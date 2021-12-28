@@ -3,8 +3,8 @@
 import fc from 'fast-check';
 import RealNum from './RealNum';
 
-import Size, { RegularSize, NegInfSize } from './Size';
-import Precision, { RegularPrec, InfPrec, NegInfPrec } from './Precision';
+import { type Size, RegularSize, NegInfSize } from './Size';
+import { type Precision, RegularPrec, InfPrec, NegInfPrec } from './Precision';
 
 import _, { type ObjEqualMatcher } from './toObjEqual.test-helper';
 import { type ExtendExpect } from '../ExtendExpect.test-helper';
@@ -164,7 +164,7 @@ test('can negate', () => {
 
 test.each([
   [1, new RegularSize(1)],
-  [0, NegInfSize],
+  [0, new NegInfSize()],
   [0.1, new RegularSize(0)],
   [9.999, new RegularSize(1)],
   [102, new RegularSize(3)],
@@ -178,7 +178,7 @@ test.each([
 
 test.each([
   [1, new RegularPrec(0)],
-  [0, NegInfPrec],
+  [0, new NegInfPrec()],
   [0.1, new RegularPrec(1)],
   [9.999, new RegularPrec(3)],
   [102, new RegularPrec(0)],
@@ -312,16 +312,16 @@ test.each([
   ['0', new RegularPrec(0), '0'],
   ['0', new RegularPrec(20), '0'],
   ['0', new RegularPrec(-20), '0'],
-  ['0', InfPrec, '0'],
-  ['0', NegInfPrec, '0'],
+  ['0', new InfPrec(), '0'],
+  ['0', new NegInfPrec(), '0'],
   ['-0.0004352', new RegularPrec(0), '0'],
   ['-0.0004352', new RegularPrec(-20), '0'],
   ['-0.0004352', new RegularPrec(4), '-0.0004'],
   ['-0.0004952', new RegularPrec(5), '-0.0005'],
   ['-0.0004952', new RegularPrec(7), '-0.0004952'],
   ['-0.0004952', new RegularPrec(20), '-0.0004952'],
-  ['-0.0004952', InfPrec, '-0.0004952'],
-  ['-0.0004952', NegInfPrec, '0'],
+  ['-0.0004952', new InfPrec(), '-0.0004952'],
+  ['-0.0004952', new NegInfPrec(), '0'],
   ['99956.99499', new RegularPrec(0), '99957'],
   ['99956.99499', new RegularPrec(-1), '99960'],
   ['99956.99499', new RegularPrec(-5), '100000'],
@@ -340,23 +340,23 @@ test.each([
   ['0', new RegularPrec(0), '0'],
   ['0', new RegularPrec(20), '0'],
   ['0', new RegularPrec(-20), '0'],
-  ['0', InfPrec, '0'],
-  ['0', NegInfPrec, '0'],
+  ['0', new InfPrec(), '0'],
+  ['0', new NegInfPrec(), '0'],
   ['-0.0004352', new RegularPrec(0), '0'],
   ['-0.0004352', new RegularPrec(-20), '0'],
   ['-0.0004352', new RegularPrec(4), '-0.0004'],
   ['-0.0004952', new RegularPrec(5), '-0.00049'],
   ['-0.0004952', new RegularPrec(7), '-0.0004952'],
   ['-0.0004952', new RegularPrec(20), '-0.0004952'],
-  ['-0.0004952', InfPrec, '-0.0004952'],
-  ['-0.0004952', NegInfPrec, '0'],
+  ['-0.0004952', new InfPrec(), '-0.0004952'],
+  ['-0.0004952', new NegInfPrec(), '0'],
   ['0.0004352', new RegularPrec(0), '1'],
   ['0.0004352', new RegularPrec(-3), '1000'],
   ['0.0004352', new RegularPrec(4), '0.0005'],
   ['0.0004952', new RegularPrec(5), '0.0005'],
   ['0.0004952', new RegularPrec(7), '0.0004952'],
   ['0.0004952', new RegularPrec(20), '0.0004952'],
-  ['0.0004952', InfPrec, '0.0004952'],
+  ['0.0004952', new InfPrec(), '0.0004952'],
   ['99956.99499', new RegularPrec(0), '99957'],
   ['99956.99499', new RegularPrec(-1), '99960'],
   ['99956.99499', new RegularPrec(-5), '100000'],
@@ -373,7 +373,7 @@ test.each([
 
 test('expect ceil with neg inf prec of pos number to give error', () => {
   expect(() => {
-    RealNum.fromStr('1').ceil(NegInfPrec);
+    RealNum.fromStr('1').ceil(new NegInfPrec());
   }).toThrow('Cannot infinitely round 1 away from zero');
 });
 
@@ -534,8 +534,8 @@ test.each([
   ['1', '1', new RegularPrec(0), '1', '0'],
   ['1', '1', new RegularPrec(3), '1', '0'],
   ['1', '1', new RegularPrec(-3), '0', '1'],
-  ['1', '1', InfPrec, '1', '0'],
-  ['1', '1', NegInfPrec, '0', '1'],
+  ['1', '1', new InfPrec(), '1', '0'],
+  ['1', '1', new NegInfPrec(), '0', '1'],
   ['7', '5', new RegularPrec(0), '1', '2'],
   ['7', '5', new RegularPrec(-1), '0', '7'],
   ['7', '5', new RegularPrec(1), '1.4', '0'],
@@ -560,7 +560,7 @@ test.each([
     '748295725434947923',
     '0',
   ],
-  ['4123', '250', InfPrec, '16.492', '0'],
+  ['4123', '250', new InfPrec(), '16.492', '0'],
   ['4123', '250', new RegularPrec(1), '16.4', '23'],
   ['4123', '250', new RegularPrec(5), '16.492', '0'],
   ['990', '33', new RegularPrec(0), '30', '0'],

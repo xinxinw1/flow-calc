@@ -1,7 +1,7 @@
 // @flow
 
 import AbstractClass from '../AbstractClass';
-import Precision from './Precision';
+import { type Precision } from './Precision';
 
 export default class NatNum extends AbstractClass {
   constructor() {

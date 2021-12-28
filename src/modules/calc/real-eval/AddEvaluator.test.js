@@ -2,11 +2,13 @@
 
 import AddEvaluator from './AddEvaluator';
 import RealNum from '../RealNum';
-import Precision, { RegularPrec, InfPrec } from '../Precision';
+import { type Precision, RegularPrec, InfPrec } from '../Precision';
 import ConstEvaluator from './ConstEvaluator';
 import { checkEvaluatorSeq } from './RealEvaluator.test-helper';
 
-const evalSequences = [
+type SeqTuple = [Precision, string, boolean];
+
+const evalSequences: Array<[string, string, Array<SeqTuple>]> = [
   [
     '0.4891',
     '1.5950001',
@@ -19,7 +21,7 @@ const evalSequences = [
       [new RegularPrec(5), '2.0841', false],
       [new RegularPrec(6), '2.0841', false],
       [new RegularPrec(7), '2.0841001', true],
-      [InfPrec, '2.0841001', true],
+      [new InfPrec(), '2.0841001', true],
       [new RegularPrec(5), '2.0841', false],
     ],
   ],
@@ -43,7 +45,7 @@ const evalSequences = [
       [new RegularPrec(2), '-2', false],
       [new RegularPrec(5), '-2.00498', true],
       [new RegularPrec(2), '-2', false],
-      [InfPrec, '-2.00498', true],
+      [new InfPrec(), '-2.00498', true],
     ],
   ],
   [
@@ -63,14 +65,14 @@ const evalSequences = [
       [new RegularPrec(7), '0.0000004', false],
       [new RegularPrec(6), '0', false],
       [new RegularPrec(8), '0.00000041', true],
-      [InfPrec, '0.00000041', true],
+      [new InfPrec(), '0.00000041', true],
     ],
   ],
 ];
 
 test.each(evalSequences)(
   'evaluates with the given sequence %#',
-  (a, b, seq: Array<[Precision, string, boolean]>) => {
+  (a: string, b: string, seq: Array<SeqTuple>) => {
     const aEval = new ConstEvaluator(RealNum.fromStr(a));
     const bEval = new ConstEvaluator(RealNum.fromStr(b));
     const evaluator = new AddEvaluator(aEval, bEval);

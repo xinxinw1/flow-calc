@@ -2,7 +2,7 @@
 
 import ContinuableMult from './ContinuableMult';
 import RealNum from './RealNum';
-import Precision, { RegularPrec, InfPrec } from './Precision';
+import { type Precision, RegularPrec, InfPrec } from './Precision';
 
 import _, { type ObjEqualMatcher } from './toObjEqual.test-helper';
 import { type ExtendExpect } from '../ExtendExpect.test-helper';
@@ -43,7 +43,9 @@ test('throws when repeating precisions', () => {
   }).toThrow('ContinuableRealNum new prec must be > prev prec');
 });
 
-const sequences = [
+type SeqTuple = [string, string, Precision, Precision, string];
+
+const sequences: Array<[Array<SeqTuple>]> = [
   [
     [
       ['1', '2', new RegularPrec(0), new RegularPrec(0), '2'],
@@ -52,7 +54,7 @@ const sequences = [
       ['0.49', '1.595', new RegularPrec(3), new RegularPrec(3), '0.78155'],
       ['0.4891', '1.595', new RegularPrec(4), new RegularPrec(4), '0.7801145'],
       ['0.4891', '1.595', new RegularPrec(5), new RegularPrec(5), '0.7801145'],
-      ['0.4891', '1.5950001', InfPrec, InfPrec, '0.78011454891'],
+      ['0.4891', '1.5950001', new InfPrec(), new InfPrec(), '0.78011454891'],
     ],
   ],
   [
@@ -63,44 +65,44 @@ const sequences = [
       ['0.4891', '1.595', new RegularPrec(4), new RegularPrec(3), '0.7801145'],
       ['0.4891', '1.595', new RegularPrec(5), new RegularPrec(4), '0.7801145'],
       ['0.4891', '1.595', new RegularPrec(6), new RegularPrec(5), '0.7801145'],
-      ['0.4891', '1.5950001', InfPrec, InfPrec, '0.78011454891'],
+      ['0.4891', '1.5950001', new InfPrec(), new InfPrec(), '0.78011454891'],
     ],
   ],
   [
     [
       ['0.4891', '1.595', new RegularPrec(5), new RegularPrec(5), '0.7801145'],
-      ['0.4891', '1.5950001', InfPrec, InfPrec, '0.78011454891'],
+      ['0.4891', '1.5950001', new InfPrec(), new InfPrec(), '0.78011454891'],
     ],
   ],
   [
     [
       ['1', '1', new RegularPrec(0), new RegularPrec(0), '1'],
-      ['0.01', '0.01', InfPrec, InfPrec, '0.0001'],
+      ['0.01', '0.01', new InfPrec(), new InfPrec(), '0.0001'],
     ],
   ],
   [
     [
       ['1', '1', new RegularPrec(0), new RegularPrec(0), '1'],
-      ['0.09', '0.09', InfPrec, InfPrec, '0.0081'],
+      ['0.09', '0.09', new InfPrec(), new InfPrec(), '0.0081'],
     ],
   ],
   [
     [
       ['-1', '-2', new RegularPrec(0), new RegularPrec(0), '2'],
-      ['-0.4', '-1.5', InfPrec, InfPrec, '0.6'],
+      ['-0.4', '-1.5', new InfPrec(), new InfPrec(), '0.6'],
     ],
   ],
   [
     [
       ['1', '-2', new RegularPrec(0), new RegularPrec(0), '-2'],
-      ['0.4', '-1.5', InfPrec, InfPrec, '-0.6'],
+      ['0.4', '-1.5', new InfPrec(), new InfPrec(), '-0.6'],
     ],
   ],
 ];
 
 test.each(sequences)(
   'works with the given sequence %#',
-  (seq: Array<[string, string, Precision, Precision, string]>) => {
+  (seq: Array<SeqTuple>) => {
     const cont = new ContinuableMult();
 
     for (const [a, b, aPrec, bPrec, res] of seq) {

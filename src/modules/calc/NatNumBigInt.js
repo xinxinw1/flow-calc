@@ -4,7 +4,7 @@ import bigInt, { type BigInteger } from 'big-integer';
 
 import { downCast } from '../typetools';
 import NatNum from './NatNum';
-import Precision, { RegularPrec, NegInfPrec, InfPrec } from './Precision';
+import { type Precision, RegularPrec, NegInfPrec, InfPrec } from './Precision';
 
 export default class NatNumBigInt extends NatNum {
   num: BigInteger;
@@ -165,7 +165,7 @@ export default class NatNumBigInt extends NatNum {
     }
     if (a.isZero()) return [NatNumBigInt.zero, 0, NatNumBigInt.zero, 0];
 
-    if (prec === NegInfPrec) {
+    if (prec instanceof NegInfPrec) {
       return [NatNumBigInt.zero, 0, aNat, 0];
     }
 
@@ -186,7 +186,7 @@ export default class NatNumBigInt extends NatNum {
     }
 
     let actualPrec: number;
-    if (prec === InfPrec) {
+    if (prec instanceof InfPrec) {
       if (!bCheck.equals(1)) {
         throw new Error('cannot infinitely divide');
       }

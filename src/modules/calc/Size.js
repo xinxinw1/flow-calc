@@ -1,19 +1,25 @@
 // @flow
 
-import { unknownSubtype } from '../typetools';
-import AbstractClass from '../AbstractClass';
-import ExtInteger, { RegularInt, InfInt, NegInfInt } from './ExtInteger';
+import { absurd } from '../typetools';
+import { type ExtInteger, RegularInt, InfInt, NegInfInt } from './ExtInteger';
 
-export default class Size extends AbstractClass {
+class SizeBase {
   n: ExtInteger;
 
   constructor(n: ExtInteger) {
-    super();
-    if (n === InfInt) {
-      throw new Error('Size cannot be infinite');
-    }
     this.n = n;
-    this.abstractClass(Size);
+  }
+
+  static makeSize(n: ExtInteger): Size {
+    if (n instanceof RegularInt) {
+      return new RegularSize(n.n);
+    } else if (n instanceof InfInt) {
+      throw new Error('Size cannot be infinite');
+    } else if (n instanceof NegInfInt) {
+      return new NegInfSize();
+    } else {
+      return absurd(n);
+    }
   }
 
   equals(other: Size): boolean {
@@ -37,44 +43,17 @@ export default class Size extends AbstractClass {
   }
 
   add(other: number | Size): Size {
-    let result: ExtInteger;
-    if (other instanceof Size) {
-      result = this.n.add(other.n);
-    } else {
-      result = this.n.add(other);
-    }
-    if (result === NegInfInt) return NegInfSize;
-    if (result instanceof RegularInt) {
-      return new RegularSize(result.n);
-    }
-    return unknownSubtype(result, ExtInteger);
+    const otherInt = typeof other === 'number' ? other : other.n;
+    return SizeBase.makeSize(this.n.add(otherInt));
   }
 
   max(other: number | Size): Size {
-    let result: ExtInteger;
-    if (other instanceof Size) {
-      result = this.n.max(other.n);
-    } else {
-      result = this.n.max(other);
-    }
-    if (result === NegInfInt) return NegInfSize;
-    if (result instanceof RegularInt) {
-      return new RegularSize(result.n);
-    }
-    return unknownSubtype(result, ExtInteger);
+    const otherInt = typeof other === 'number' ? other : other.n;
+    return SizeBase.makeSize(this.n.max(otherInt));
   }
 }
 
-class NegInfSizeType extends Size {
-  constructor() {
-    super(NegInfInt);
-    Object.freeze(this);
-  }
-}
-
-export const NegInfSize: NegInfSizeType = new NegInfSizeType();
-
-export class RegularSize extends Size {
+export class RegularSize extends SizeBase {
   size: number;
 
   constructor(size: number) {
@@ -83,3 +62,12 @@ export class RegularSize extends Size {
     Object.freeze(this);
   }
 }
+
+export class NegInfSize extends SizeBase {
+  constructor() {
+    super(new NegInfInt());
+    Object.freeze(this);
+  }
+}
+
+export type Size = RegularSize | NegInfSize;

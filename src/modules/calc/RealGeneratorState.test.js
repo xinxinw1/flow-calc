@@ -10,16 +10,16 @@ test('generator state eval works correctly with instant gen', () => {
   );
 
   const seq = [
-    [NegInfPrec, '0', false],
+    [new NegInfPrec(), '0', false],
     [new RegularPrec(0), '4', false],
     [new RegularPrec(1), '4.4', false],
     [new RegularPrec(2), '4.45', false],
     // expected to be the same since result is already known
     // internally to full precision
     [new RegularPrec(1), '4.4', false],
-    [InfPrec, '4.449', true],
+    [new InfPrec(), '4.449', true],
     [new RegularPrec(1), '4.4', false],
-    [NegInfPrec, '0', false],
+    [new NegInfPrec(), '0', false],
   ];
 
   for (const [prec, expVal, expDone] of seq) {

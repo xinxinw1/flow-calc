@@ -2,6 +2,10 @@
 
 /* eslint-disable import/prefer-default-export */
 
+export function absurd<T>(_: empty): T {
+  throw new Error('Absurd value found');
+}
+
 export function assumeNoNull<T>(v: ?T): T {
   // $FlowIgnore[unclear-type]
   return ((v: any): T);

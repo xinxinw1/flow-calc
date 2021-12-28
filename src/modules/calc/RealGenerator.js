@@ -1,7 +1,7 @@
 // @flow
 
 import RealNum from './RealNum';
-import type Precision from './Precision';
+import { type Precision } from './Precision';
 
 export type RealGenerator = Generator<RealNum, RealNum, Precision>;
 

@@ -6,7 +6,7 @@ import fc from 'fast-check';
 import NatNum from './NatNum';
 import NatNumDigits from './NatNumDigits';
 import NatNumBigInt from './NatNumBigInt';
-import Precision, { RegularPrec, NegInfPrec, InfPrec } from './Precision';
+import { type Precision, RegularPrec, NegInfPrec, InfPrec } from './Precision';
 
 import _, { type ObjEqualMatcher } from './toObjEqual.test-helper';
 import { type ExtendExpect } from '../ExtendExpect.test-helper';
@@ -479,30 +479,32 @@ describe.each(implsSeq)(
       );
     });
 
-    test.each([
-      ['0', '1', new RegularPrec(0), '0', 0, '0', 0],
-      ['1', '1', new RegularPrec(0), '1', 0, '0', 0],
-      ['1', '1', NegInfPrec, '0', 0, '1', 0],
-      ['10', '3', new RegularPrec(0), '3', 0, '1', 0],
-      ['1', '3', new RegularPrec(1), '3', -1, '1', -1],
-      ['444', '2', new RegularPrec(-2), '2', 2, '44', 0],
-      ['254', '23', new RegularPrec(4), '110434', -4, '18', -4],
-      [
-        '13162096968065896181339813845834808397',
-        '17589432253425487839',
-        new RegularPrec(0),
-        '748295725434947923',
-        0,
-        '0',
-        0,
-      ],
-      ['4123', '250', InfPrec, '16492', -3, '0', 0],
-      ['4123', '25', new RegularPrec(0), '164', 0, '23', 0],
-      ['4123', '250', new RegularPrec(1), '164', -1, '230', -1],
-      ['4123', '250', new RegularPrec(5), '16492', -3, '0', 0],
-      ['1', '3', new RegularPrec(-3), '0', 0, '1', 0],
-      ['990', '33', new RegularPrec(0), '30', 0, '0', 0],
-    ])(
+    test.each(
+      ([
+        ['0', '1', new RegularPrec(0), '0', 0, '0', 0],
+        ['1', '1', new RegularPrec(0), '1', 0, '0', 0],
+        ['1', '1', new NegInfPrec(), '0', 0, '1', 0],
+        ['10', '3', new RegularPrec(0), '3', 0, '1', 0],
+        ['1', '3', new RegularPrec(1), '3', -1, '1', -1],
+        ['444', '2', new RegularPrec(-2), '2', 2, '44', 0],
+        ['254', '23', new RegularPrec(4), '110434', -4, '18', -4],
+        [
+          '13162096968065896181339813845834808397',
+          '17589432253425487839',
+          new RegularPrec(0),
+          '748295725434947923',
+          0,
+          '0',
+          0,
+        ],
+        ['4123', '250', new InfPrec(), '16492', -3, '0', 0],
+        ['4123', '25', new RegularPrec(0), '164', 0, '23', 0],
+        ['4123', '250', new RegularPrec(1), '164', -1, '230', -1],
+        ['4123', '250', new RegularPrec(5), '16492', -3, '0', 0],
+        ['1', '3', new RegularPrec(-3), '0', 0, '1', 0],
+        ['990', '33', new RegularPrec(0), '30', 0, '0', 0],
+      ]: Array<[string, string, Precision, string, number, string, number]>),
+    )(
       'expect div(%p, %p, %o) == [%p, %p, %p, %p]',
       (
         a: string,

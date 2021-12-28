@@ -3,7 +3,7 @@
 import RealGenClassEvaluator from './RealGenClassEvaluator';
 import RealNum from '../RealNum';
 import { type RealGenerator, makeInstantGen } from '../RealGenerator';
-import Size from '../Size';
+import { type Size } from '../Size';
 
 export default class ConstEvaluator extends RealGenClassEvaluator {
   v: RealNum;
