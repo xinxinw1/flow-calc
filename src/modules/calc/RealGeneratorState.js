@@ -10,6 +10,7 @@ export default class RealGeneratorState {
   gen: RealGenerator;
   currNum: RealNum = RealNum.zero;
   currPrec: Precision = new NegInfPrec();
+  initialized: boolean = false;
 
   // gen must take at least one input before it returns
   // yields from the generator must already be rounded to the input precision
@@ -22,15 +23,21 @@ export default class RealGeneratorState {
   // input precisions will always be > than the previous ones
   constructor(gen: RealGenerator) {
     this.gen = gen;
+  }
+
+  initializeGen() {
+    if (this.initialized) return;
     const { done } = this.gen.next();
     if (done) {
       throw new Error(
         'Generator passed to RealGenEvaluator must get a prec before returning',
       );
     }
+    this.initialized = true;
   }
 
   updatePrecValue(prec: Precision) {
+    this.initializeGen();
     if (prec.le(this.currPrec)) return;
     const { value, done } = this.gen.next(prec);
     this.currNum = nullthrows(value);
