@@ -13,11 +13,13 @@ export interface RealEvaluator {
   // (< 0.4*1/10^prec before rounding)
   // this means if output value is non-zero,
   // calculating to a higher prec will
-  // 1. never change its sign, and
-  // 2. only decrease its size by at most 1
+  // 1. never increase the final digit,
+  // 2. never change the result's sign,
+  // 3. never increase its size, and
+  // 4. only decrease its size by at most 1
   eval(prec: Precision): [RealNum, boolean];
 
   // return max size that the final full precision number can be
-  // the evaluated size can be temporarily higher due to rounding
+  // the evaluated size can be temporarily higher by 1 due to rounding
   maxSize(): Size;
 }
