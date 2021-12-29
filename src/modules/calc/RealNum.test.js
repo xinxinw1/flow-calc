@@ -191,6 +191,17 @@ test.each([
 });
 
 test.each([
+  [1, 1],
+  [0, 0],
+  [0.1, 1],
+  [9.999, 4],
+  [102, 3],
+  [124000, 3],
+])('num digits of %p should be %o', (v: number, digits: number) => {
+  expect(RealNum.fromNum(v).numDigits()).toBe(digits);
+});
+
+test.each([
   ['0'],
   ['-1'],
   ['1000'],

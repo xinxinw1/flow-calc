@@ -207,6 +207,10 @@ export default class RealNum {
     return 0 - this.exp;
   }
 
+  numDigits(): number {
+    return this.nat.size();
+  }
+
   // assumes this is trimmed
   toString(): string {
     if (this.isZero()) return '0';
