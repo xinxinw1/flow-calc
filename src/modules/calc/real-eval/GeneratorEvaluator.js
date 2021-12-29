@@ -50,8 +50,9 @@ export default class GeneratorEvaluator extends BaseEvaluator {
   }
 
   testZeroness(prec: Precision): ZeroTestResult {
-    const additionalZeroTestPrec = 25;
-    const res = this.eval(prec.add(additionalZeroTestPrec));
+    const res = this.eval(
+      prec.add(this.env.options.zeroTestAdditionalPrecLimit),
+    );
     if (res instanceof RealDivisionByZeroResult) {
       return new DivisionByZeroResult(res.assumedDiscontinuity);
     } else {
