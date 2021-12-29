@@ -29,6 +29,10 @@ export default class MultEvaluator extends GeneratorEvaluator {
   // 1/10^p_a <= 1/|b|*0.2/0.9*1/10^outputPrec
   // p_a >= outputPrec + log(|b|) - log(0.2/0.9)
   // = outputPrec + log(|b|) + 0.6532...
+  // outputPrec + log(|b|) + 0.6532...
+  // < outputPrec + b.size() + 0.6532...
+  // < outputPrec + b.size() + 1
+  // <= outputPrec + b.maxSize() + 1
   // use p_a = outputPrec + b.maxSize() + 1
   // use p_b = outputPrec + a.maxSize() + 1
   *makeEvalGenerator(): RealGenerator {
@@ -79,14 +83,14 @@ export default class MultEvaluator extends GeneratorEvaluator {
     return RealNum.zero;
   }
 
-  // Need maxSize(a*b) >= (a*b).size()
+  // Need (a*b).maxSize() >= (a*b).size()
   // (a*b).size() <= log(|a*b|) + 1
   // = log(|a|) + log(|b|) + 1
   // < a.size() + b.size() + 1
   // Since sizes are integers,
   // (a*b).size() <= a.size() + b.size()
-  // <= maxSize(a) + maxSize(b)
-  // Choose maxSize(a*b) = maxSize(a) + maxSize(b)
+  // <= a.maxSize() + b.maxSize()
+  // Choose (a*b).maxSize() = a.maxSize() + b.maxSize()
   maxSize(): Size {
     return this.aEval.maxSize().add(this.bEval.maxSize());
   }
