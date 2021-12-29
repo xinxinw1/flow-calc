@@ -18,13 +18,17 @@ expect.extend({
     if (pass) {
       return {
         message: () =>
-          `expected ${received.toString()} to not .equals() ${other.toString()}`,
+          `expected ${util.inspect(received)} to not .equals() ${util.inspect(
+            other,
+          )}`,
         pass: true,
       };
     }
     return {
       message: () =>
-        `expected ${received.toString()} to .equals() ${other.toString()}`,
+        `expected ${util.inspect(received)} to .equals() ${util.inspect(
+          other,
+        )}`,
       pass: false,
     };
   },
