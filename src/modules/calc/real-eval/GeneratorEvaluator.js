@@ -2,9 +2,9 @@
 
 import assert from 'assert';
 
+import CalcEnvironment from '../CalcEnvironment';
 import { type RealGenerator } from '../RealGenerator';
-import { type RealEvaluator } from './RealEvaluator';
-import AbstractClass from '../../AbstractClass';
+import BaseEvaluator from './BaseEvaluator';
 import RealGeneratorState from '../RealGeneratorState';
 import {
   type RealEvalResult,
@@ -18,7 +18,6 @@ import {
   DivisionByZeroResult,
 } from '../ZeroTestResult';
 import { type Precision } from '../Precision';
-import { type Size } from '../Size';
 
 // Creates a RealEvaluator from a makeEvalGenerator() method.
 // The generator can't be passed in as a constructor parameter
@@ -26,14 +25,11 @@ import { type Size } from '../Size';
 // Note that even if the generator could be passed in as a
 // parameter, it still needs to be abstract because
 // the generator isn't enough to define maxSize()
-export default class GeneratorEvaluator
-  extends AbstractClass
-  implements RealEvaluator
-{
+export default class GeneratorEvaluator extends BaseEvaluator {
   realGenState: ?RealGeneratorState;
 
-  constructor() {
-    super();
+  constructor(env: CalcEnvironment) {
+    super(env);
     this.abstractClass(GeneratorEvaluator);
   }
 
@@ -50,10 +46,6 @@ export default class GeneratorEvaluator
       this.realGenState = new RealGeneratorState(this.makeEvalGenerator());
     }
     return this.realGenState.eval(prec);
-  }
-
-  maxSize(): Size {
-    return this.abstractMethod('maxSize');
   }
 
   testZeroness(prec: Precision): ZeroTestResult {

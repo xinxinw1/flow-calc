@@ -1,6 +1,7 @@
 // @flow
 
 import MultEvaluator from './MultEvaluator';
+import CalcEnvironment from '../CalcEnvironment';
 import RealNum from '../RealNum';
 import { type Precision, RegularPrec, InfPrec } from '../Precision';
 import ConstEvaluator from './ConstEvaluator';
@@ -84,9 +85,10 @@ const evalSequences: Array<[string, string, Array<SeqTuple>]> = [
 test.each(evalSequences)(
   'evaluates with the given sequence %#',
   (a: string, b: string, seq: Array<SeqTuple>) => {
-    const aEval = new ConstEvaluator(RealNum.fromStr(a));
-    const bEval = new ConstEvaluator(RealNum.fromStr(b));
-    const evaluator = new MultEvaluator(aEval, bEval);
+    const env = new CalcEnvironment({ zeroTestAdditionalPrecLimit: 0 });
+    const aEval = new ConstEvaluator(env, RealNum.fromStr(a));
+    const bEval = new ConstEvaluator(env, RealNum.fromStr(b));
+    const evaluator = new MultEvaluator(env, aEval, bEval);
     checkEvaluatorSeq(evaluator, seq);
   },
 );

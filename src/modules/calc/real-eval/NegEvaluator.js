@@ -1,5 +1,6 @@
 // @flow
 
+import CalcEnvironment from '../CalcEnvironment';
 import {
   type RealEvalResult,
   RealRegularResult,
@@ -14,11 +15,16 @@ import {
 import { type RealEvaluator } from './RealEvaluator';
 import { type Precision } from '../Precision';
 import { type Size } from '../Size';
+import BaseEvaluator from './BaseEvaluator';
 
-export default class NegEvaluator implements RealEvaluator {
+export default class NegEvaluator
+  extends BaseEvaluator
+  implements RealEvaluator
+{
   aEval: RealEvaluator;
 
-  constructor(aEval: RealEvaluator) {
+  constructor(env: CalcEnvironment, aEval: RealEvaluator) {
+    super(env);
     this.aEval = aEval;
   }
 

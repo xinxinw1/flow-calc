@@ -1,6 +1,8 @@
 // @flow
 
+import CalcEnvironment from '../CalcEnvironment';
 import GeneratorEvaluator from './GeneratorEvaluator';
+import { type RealEvaluator } from './RealEvaluator';
 import RealNum from '../RealNum';
 import {
   type ZeroTestResult,
@@ -11,11 +13,14 @@ import { type RealGenerator, makeInstantGen } from '../RealGenerator';
 import { type Precision } from '../Precision';
 import { type Size } from '../Size';
 
-export default class ConstEvaluator extends GeneratorEvaluator {
+export default class ConstEvaluator
+  extends GeneratorEvaluator
+  implements RealEvaluator
+{
   v: RealNum;
 
-  constructor(v: RealNum) {
-    super();
+  constructor(env: CalcEnvironment, v: RealNum) {
+    super(env);
     this.v = v;
   }
 

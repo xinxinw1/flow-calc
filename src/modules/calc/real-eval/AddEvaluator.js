@@ -1,5 +1,6 @@
 // @flow
 
+import CalcEnvironment from '../CalcEnvironment';
 import RealNum from '../RealNum';
 import { RealRegularResult, RealDivisionByZeroResult } from '../RealEvalResult';
 import GeneratorEvaluator from './GeneratorEvaluator';
@@ -7,12 +8,19 @@ import { type RealEvaluator } from './RealEvaluator';
 import { type RealGenerator } from '../RealGenerator';
 import { type Size } from '../Size';
 
-export default class AddEvaluator extends GeneratorEvaluator {
+export default class AddEvaluator
+  extends GeneratorEvaluator
+  implements RealEvaluator
+{
   aEval: RealEvaluator;
   bEval: RealEvaluator;
 
-  constructor(aEval: RealEvaluator, bEval: RealEvaluator) {
-    super();
+  constructor(
+    env: CalcEnvironment,
+    aEval: RealEvaluator,
+    bEval: RealEvaluator,
+  ) {
+    super(env);
     this.aEval = aEval;
     this.bEval = bEval;
   }

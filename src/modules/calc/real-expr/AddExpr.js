@@ -3,7 +3,7 @@
 import RealExpr from './RealExpr';
 import { type RealEvaluator } from '../real-eval/RealEvaluator';
 import AddEvaluator from '../real-eval/AddEvaluator';
-import type Environment from '../Environment';
+import type CalcEnvironment from '../CalcEnvironment';
 
 export default class AddExpr extends RealExpr {
   a: RealExpr;
@@ -22,8 +22,9 @@ export default class AddExpr extends RealExpr {
     return `Add(${strs.join(',')})`;
   }
 
-  makeEvaluator(env: Environment): RealEvaluator {
+  makeEvaluator(env: CalcEnvironment): RealEvaluator {
     return new AddEvaluator(
+      env,
       env.getRealEvaluator(this.a),
       env.getRealEvaluator(this.b),
     );

@@ -2,7 +2,7 @@
 
 import RealNum from '../RealNum';
 import { RealRegularResult } from '../RealEvalResult';
-import Environment from '../Environment';
+import CalcEnvironment from '../CalcEnvironment';
 import { RegularPrec, InfPrec } from '../Precision';
 import ConstExpr from './ConstExpr';
 
@@ -13,7 +13,7 @@ declare var expect: ExtendExpect<ObjEqualMatcher>;
 
 test('expr can make evaluator', () => {
   const expr = new ConstExpr(RealNum.fromStr('4.3'));
-  const env = new Environment({ precMargin: 0 });
+  const env = new CalcEnvironment({ zeroTestAdditionalPrecLimit: 0 });
   const evaluator = expr.makeEvaluator(env);
 
   const res = evaluator.eval(new RegularPrec(1));

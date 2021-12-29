@@ -3,7 +3,7 @@
 import RealExpr from './RealExpr';
 import { type RealEvaluator } from '../real-eval/RealEvaluator';
 import NegEvaluator from '../real-eval/NegEvaluator';
-import type Environment from '../Environment';
+import type CalcEnvironment from '../CalcEnvironment';
 
 export default class NegExpr extends RealExpr {
   a: RealExpr;
@@ -18,7 +18,7 @@ export default class NegExpr extends RealExpr {
     return `Neg(${this.a.uniqString()})`;
   }
 
-  makeEvaluator(env: Environment): RealEvaluator {
-    return new NegEvaluator(env.getRealEvaluator(this.a));
+  makeEvaluator(env: CalcEnvironment): RealEvaluator {
+    return new NegEvaluator(env, env.getRealEvaluator(this.a));
   }
 }

@@ -3,21 +3,16 @@
 import type RealExpr from './real-expr/RealExpr';
 import { type RealEvaluator } from './real-eval/RealEvaluator';
 
-export type EnvOptions = {
-  precMargin: number,
+export type CalcEnvOptions = {
+  zeroTestAdditionalPrecLimit: number,
 };
 
-export default class Environment {
+export default class CalcEnvironment {
   realExprCache: Map<string, RealEvaluator> = new Map();
-  precMargin: number;
+  options: CalcEnvOptions;
 
-  constructor(options: EnvOptions) {
-    if (options.precMargin < 0 || !Number.isInteger(options.precMargin)) {
-      throw new Error(
-        `precMargin ${options.precMargin} must be a natural number`,
-      );
-    }
-    this.precMargin = options.precMargin;
+  constructor(options: CalcEnvOptions) {
+    this.options = options;
     Object.freeze(this);
   }
 

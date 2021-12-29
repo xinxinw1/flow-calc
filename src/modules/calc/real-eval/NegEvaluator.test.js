@@ -1,6 +1,7 @@
 // @flow
 
 import RealNum from '../RealNum';
+import CalcEnvironment from '../CalcEnvironment';
 import {
   type ZeroTestResult,
   ZeroResult,
@@ -34,7 +35,11 @@ const evalSequences: Array<[string, Array<SeqTuple>]> = [
 test.each(evalSequences)(
   'evaluates with the given sequence %#',
   (a: string, seq: Array<SeqTuple>) => {
-    const evaluator = new NegEvaluator(new ConstEvaluator(RealNum.fromStr(a)));
+    const env = new CalcEnvironment({ zeroTestAdditionalPrecLimit: 0 });
+    const evaluator = new NegEvaluator(
+      env,
+      new ConstEvaluator(env, RealNum.fromStr(a)),
+    );
     checkEvaluatorSeq(evaluator, seq);
   },
 );
@@ -74,7 +79,11 @@ const zeroSequences: Array<[string, Array<ZeroTuple>]> = [
 test.each(zeroSequences)(
   'tests zeroness with the given sequence %#',
   (a: string, seq: Array<ZeroTuple>) => {
-    const evaluator = new NegEvaluator(new ConstEvaluator(RealNum.fromStr(a)));
+    const env = new CalcEnvironment({ zeroTestAdditionalPrecLimit: 0 });
+    const evaluator = new NegEvaluator(
+      env,
+      new ConstEvaluator(env, RealNum.fromStr(a)),
+    );
     checkZeronessSeq(evaluator, seq);
   },
 );

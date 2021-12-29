@@ -2,10 +2,15 @@
 
 import { type RealEvalResult } from '../RealEvalResult';
 import { type ZeroTestResult } from '../ZeroTestResult';
+import CalcEnvironment from '../CalcEnvironment';
 import { type Precision } from '../Precision';
 import { type Size } from '../Size';
 
 export interface RealEvaluator {
+  // Gets the current environment.
+  // This ensures all Evaluators extend BaseEvaluator
+  getEnv(): CalcEnvironment;
+
   // Evaluate the represented value to the given precision
   // result.precision must be >= the given prec
   // If there is a value, result.value.prec() must be <= the given prec

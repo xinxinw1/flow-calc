@@ -2,7 +2,7 @@
 
 import AbstractClass from '../../AbstractClass';
 import { type RealEvaluator } from '../real-eval/RealEvaluator';
-import type Environment from '../Environment';
+import type CalcEnvironment from '../CalcEnvironment';
 
 export default class RealExpr extends AbstractClass {
   constructor() {
@@ -14,7 +14,7 @@ export default class RealExpr extends AbstractClass {
     return this.abstractMethod('uniqString');
   }
 
-  makeEvaluator(env: Environment): RealEvaluator {
+  makeEvaluator(env: CalcEnvironment): RealEvaluator {
     return this.abstractMethod('makeEvaluator', env);
   }
 }
