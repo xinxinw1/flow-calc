@@ -1,11 +1,11 @@
 // @flow
 
-import RealGenClassEvaluator from './RealGenClassEvaluator';
+import GeneratorEvaluator from './GeneratorEvaluator';
 import RealNum from '../RealNum';
 import { type RealGenerator, makeInstantGen } from '../RealGenerator';
 import { type Size } from '../Size';
 
-export default class ConstEvaluator extends RealGenClassEvaluator {
+export default class ConstEvaluator extends GeneratorEvaluator {
   v: RealNum;
 
   constructor(v: RealNum) {
@@ -13,7 +13,7 @@ export default class ConstEvaluator extends RealGenClassEvaluator {
     this.v = v;
   }
 
-  makeOutputGenerator(): RealGenerator {
+  makeEvalGenerator(): RealGenerator {
     return makeInstantGen(this.v);
   }
 

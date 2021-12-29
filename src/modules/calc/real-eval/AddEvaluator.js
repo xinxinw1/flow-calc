@@ -1,13 +1,13 @@
 // @flow
 
 import RealNum from '../RealNum';
-import RealGenClassEvaluator from './RealGenClassEvaluator';
+import GeneratorEvaluator from './GeneratorEvaluator';
 import { type RealEvaluator } from './RealEvaluator';
 import { type RealGenerator } from '../RealGenerator';
 import ContinuableAdd from '../ContinuableAdd';
 import { type Size } from '../Size';
 
-export default class AddEvaluator extends RealGenClassEvaluator {
+export default class AddEvaluator extends GeneratorEvaluator {
   aEval: RealEvaluator;
   bEval: RealEvaluator;
 
@@ -29,7 +29,7 @@ export default class AddEvaluator extends RealGenClassEvaluator {
   // p_a >= -log(0.2/0.9) + outputPrec
   // = outputPrec + 0.6532...
   // use p_a, p_b >= outputPrec + 1
-  *makeOutputGenerator(): RealGenerator {
+  *makeEvalGenerator(): RealGenerator {
     let outputPrec = yield RealNum.zero;
 
     for (;;) {

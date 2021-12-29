@@ -8,9 +8,13 @@ import RealNum from '../RealNum';
 import { type Precision } from '../Precision';
 import { type Size } from '../Size';
 
-// Creates a RealEvaluator from a class definition
-// that defines makeOutputGenerator()
-export default class RealGenClassEvaluator
+// Creates a RealEvaluator from a makeEvalGenerator() method.
+// The generator can't be passed in as a constructor parameter
+// because we want to be able to define it as a class method.
+// Note that even if the generator could be passed in as a
+// parameter, it still needs to be abstract because
+// the generator isn't enough to define maxSize()
+export default class GeneratorEvaluator
   extends AbstractClass
   implements RealEvaluator
 {
@@ -18,12 +22,12 @@ export default class RealGenClassEvaluator
 
   constructor() {
     super();
-    this.abstractClass(RealGenClassEvaluator);
+    this.abstractClass(GeneratorEvaluator);
   }
 
   // must satisfy the input conditions for RealEvaluator
-  makeOutputGenerator(): RealGenerator {
-    return this.abstractMethod('makeOutputGenerator');
+  makeEvalGenerator(): RealGenerator {
+    return this.abstractMethod('makeEvalGenerator');
   }
 
   // will satisfy the output conditions for RealEvaluator.eval
@@ -31,7 +35,7 @@ export default class RealGenClassEvaluator
     if (!this.realGenState) {
       // can't call this in constructor because
       // subclass instance vars aren't ready yet
-      this.realGenState = new RealGeneratorState(this.makeOutputGenerator());
+      this.realGenState = new RealGeneratorState(this.makeEvalGenerator());
     }
     return this.realGenState.eval(prec);
   }
