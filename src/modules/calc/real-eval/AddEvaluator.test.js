@@ -1,15 +1,16 @@
 // @flow
 
-import AddEvaluator from './AddEvaluator';
 import CalcEnvironment from '../CalcEnvironment';
+import { type Precision, RegularPrec, InfPrec, NegInfPrec } from '../Precision';
 import RealNum from '../RealNum';
+import { RegularSize } from '../Size';
 import {
   type ZeroTestResult,
   ZeroResult,
   NonZeroResult,
 } from '../ZeroTestResult';
-import { type Precision, RegularPrec, InfPrec, NegInfPrec } from '../Precision';
-import { RegularSize } from '../Size';
+
+import AddEvaluator from './AddEvaluator';
 import ConstEvaluator from './ConstEvaluator';
 import {
   checkEvaluatorSeq,

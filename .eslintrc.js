@@ -49,6 +49,16 @@ module.exports = {
       { annotationStyle: 'line' },
     ],
     'import/prefer-default-export': 'off',
+    'import/order': [
+      'error',
+      {
+        groups: ['builtin', 'external', 'parent', 'sibling', 'index'],
+        'newlines-between': 'always',
+        alphabetize: {
+          order: 'asc',
+        },
+      },
+    ],
     'no-shadow': ['error', { allow: ['_'] }],
   },
   overrides: [

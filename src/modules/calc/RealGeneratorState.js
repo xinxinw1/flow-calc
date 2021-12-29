@@ -4,14 +4,15 @@ import assert from 'assert';
 import util from 'util';
 
 import { absurd } from '../typetools';
-import RealNum from './RealNum';
+
+import { type Precision, NegInfPrec } from './Precision';
 import {
   type RealEvalResult,
   RealRegularResult,
   RealDivisionByZeroResult,
 } from './RealEvalResult';
-import { type Precision, NegInfPrec } from './Precision';
 import { type RealGenerator } from './RealGenerator';
+import RealNum from './RealNum';
 
 export default class RealGeneratorState {
   gen: RealGenerator;

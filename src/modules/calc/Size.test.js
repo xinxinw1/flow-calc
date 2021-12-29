@@ -1,9 +1,9 @@
 // @flow
 
-import { type Size, RegularSize, NegInfSize } from './Size';
-
-import _, { type ObjEqualMatcher } from './toObjEqual.test-helper';
 import { type ExtendExpect } from '../ExtendExpect.test-helper';
+
+import { type Size, RegularSize, NegInfSize } from './Size';
+import _, { type ObjEqualMatcher } from './toObjEqual.test-helper';
 
 declare var expect: ExtendExpect<ObjEqualMatcher>;
 

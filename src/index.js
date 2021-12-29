@@ -1,17 +1,15 @@
 // @flow
 
+import nullthrows from 'nullthrows';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-import nullthrows from 'nullthrows';
-
 import './index.scss';
 
 import App from './components/App';
-import HomePage from './components/home/HomePage';
 import CalcPage from './components/calc/CalcPage';
-
+import HomePage from './components/home/HomePage';
 import reportWebVitals from './modules/reportWebVitals';
 
 ReactDOM.render(

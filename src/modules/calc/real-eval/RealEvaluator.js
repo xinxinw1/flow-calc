@@ -1,10 +1,10 @@
 // @flow
 
-import { type RealEvalResult } from '../RealEvalResult';
-import { type ZeroTestResult } from '../ZeroTestResult';
 import CalcEnvironment from '../CalcEnvironment';
 import { type Precision } from '../Precision';
+import { type RealEvalResult } from '../RealEvalResult';
 import { type Size } from '../Size';
+import { type ZeroTestResult } from '../ZeroTestResult';
 
 export interface RealEvaluator {
   // Gets the current environment.

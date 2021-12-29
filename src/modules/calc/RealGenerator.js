@@ -1,8 +1,8 @@
 // @flow
 
-import RealNum from './RealNum';
-import { type RealEvalResult, RealRegularResult } from './RealEvalResult';
 import { type Precision } from './Precision';
+import { type RealEvalResult, RealRegularResult } from './RealEvalResult';
+import RealNum from './RealNum';
 
 /**
  * A RealGenerator is a generator that takes in

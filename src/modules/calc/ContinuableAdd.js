@@ -1,8 +1,8 @@
 // @flow
 
-import RealNum from './RealNum';
 import ContinuableRealNum from './ContinuableRealNum';
 import { type Precision } from './Precision';
+import RealNum from './RealNum';
 
 export default class ContinuableAdd {
   result: RealNum = RealNum.zero;

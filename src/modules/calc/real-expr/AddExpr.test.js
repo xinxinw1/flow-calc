@@ -1,14 +1,14 @@
 // @flow
 
-import RealNum from '../RealNum';
-import { RealRegularResult } from '../RealEvalResult';
+import { type ExtendExpect } from '../../ExtendExpect.test-helper';
 import CalcEnvironment from '../CalcEnvironment';
 import { RegularPrec, InfPrec } from '../Precision';
-import ConstExpr from './ConstExpr';
-import AddExpr from './AddExpr';
-
+import { RealRegularResult } from '../RealEvalResult';
+import RealNum from '../RealNum';
 import _, { type ObjEqualMatcher } from '../toObjEqual.test-helper';
-import { type ExtendExpect } from '../../ExtendExpect.test-helper';
+
+import AddExpr from './AddExpr';
+import ConstExpr from './ConstExpr';
 
 declare var expect: ExtendExpect<ObjEqualMatcher>;
 

@@ -1,10 +1,11 @@
 // @flow
 
-import MultEvaluator from './MultEvaluator';
 import CalcEnvironment from '../CalcEnvironment';
-import RealNum from '../RealNum';
 import { type Precision, RegularPrec, InfPrec } from '../Precision';
+import RealNum from '../RealNum';
+
 import ConstEvaluator from './ConstEvaluator';
+import MultEvaluator from './MultEvaluator';
 import { checkEvaluatorSeq } from './RealEvaluator.test-helper';
 
 type SeqTuple = [Precision, string, boolean];

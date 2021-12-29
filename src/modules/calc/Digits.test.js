@@ -1,10 +1,11 @@
 // @flow
 
 import fc from 'fast-check';
-import Digits from './Digits';
 
-import _, { type ObjEqualMatcher } from './toObjEqual.test-helper';
 import { type ExtendExpect } from '../ExtendExpect.test-helper';
+
+import Digits from './Digits';
+import _, { type ObjEqualMatcher } from './toObjEqual.test-helper';
 
 declare var expect: ExtendExpect<ObjEqualMatcher>;
 

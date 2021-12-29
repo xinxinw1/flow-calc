@@ -2,8 +2,8 @@
 
 import assert from 'assert';
 
-import RealNum from './RealNum';
 import { type Precision, InfPrec } from './Precision';
+import RealNum from './RealNum';
 
 /**
  * Represents the result of an evaluation.

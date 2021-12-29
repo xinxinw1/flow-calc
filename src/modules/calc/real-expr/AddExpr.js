@@ -1,9 +1,10 @@
 // @flow
 
-import RealExpr from './RealExpr';
-import { type RealEvaluator } from '../real-eval/RealEvaluator';
-import AddEvaluator from '../real-eval/AddEvaluator';
 import type CalcEnvironment from '../CalcEnvironment';
+import AddEvaluator from '../real-eval/AddEvaluator';
+import { type RealEvaluator } from '../real-eval/RealEvaluator';
+
+import RealExpr from './RealExpr';
 
 export default class AddExpr extends RealExpr {
   a: RealExpr;

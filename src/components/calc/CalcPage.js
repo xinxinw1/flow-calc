@@ -1,9 +1,9 @@
 // @flow
 
+import util from 'util';
+
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-
-import util from 'util';
 
 import RealNum from '../../modules/calc/RealNum';
 

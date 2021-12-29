@@ -1,9 +1,9 @@
 // @flow
 
-import { type Precision, RegularPrec, InfPrec, NegInfPrec } from './Precision';
-
-import _, { type ObjEqualMatcher } from './toObjEqual.test-helper';
 import { type ExtendExpect } from '../ExtendExpect.test-helper';
+
+import { type Precision, RegularPrec, InfPrec, NegInfPrec } from './Precision';
+import _, { type ObjEqualMatcher } from './toObjEqual.test-helper';
 
 declare var expect: ExtendExpect<ObjEqualMatcher>;
 

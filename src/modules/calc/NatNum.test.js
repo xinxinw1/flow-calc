@@ -3,13 +3,13 @@
 import bigInt from 'big-integer';
 import fc from 'fast-check';
 
-import NatNum from './NatNum';
-import NatNumDigits from './NatNumDigits';
-import NatNumBigInt from './NatNumBigInt';
-import { type Precision, RegularPrec, NegInfPrec, InfPrec } from './Precision';
-
-import _, { type ObjEqualMatcher } from './toObjEqual.test-helper';
 import { type ExtendExpect } from '../ExtendExpect.test-helper';
+
+import NatNum from './NatNum';
+import NatNumBigInt from './NatNumBigInt';
+import NatNumDigits from './NatNumDigits';
+import { type Precision, RegularPrec, NegInfPrec, InfPrec } from './Precision';
+import _, { type ObjEqualMatcher } from './toObjEqual.test-helper';
 
 declare var expect: ExtendExpect<ObjEqualMatcher>;
 

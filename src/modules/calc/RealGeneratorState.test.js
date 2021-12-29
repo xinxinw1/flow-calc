@@ -1,9 +1,9 @@
 // @flow
-import RealNum from './RealNum';
-import { RealRegularResult } from './RealEvalResult';
 import { RegularPrec, InfPrec, NegInfPrec } from './Precision';
-import RealGeneratorState from './RealGeneratorState';
+import { RealRegularResult } from './RealEvalResult';
 import { makeContinuousGen, makeInstantGen } from './RealGenerator';
+import RealGeneratorState from './RealGeneratorState';
+import RealNum from './RealNum';
 
 test('generator state eval works correctly with instant gen', () => {
   const genState = new RealGeneratorState(

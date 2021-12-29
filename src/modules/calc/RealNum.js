@@ -3,10 +3,11 @@
 import nullthrows from 'nullthrows';
 
 import { downCast } from '../typetools';
+
 import NatNum from './NatNum';
 import NatNumDigits from './NatNumDigits';
-import { type Size, RegularSize, NegInfSize } from './Size';
 import { type Precision, RegularPrec, NegInfPrec } from './Precision';
+import { type Size, RegularSize, NegInfSize } from './Size';
 
 const NatNumImpl = NatNumDigits;
 

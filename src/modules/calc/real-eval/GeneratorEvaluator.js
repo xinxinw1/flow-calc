@@ -3,21 +3,22 @@
 import assert from 'assert';
 
 import CalcEnvironment from '../CalcEnvironment';
-import { type RealGenerator } from '../RealGenerator';
-import BaseEvaluator from './BaseEvaluator';
-import RealGeneratorState from '../RealGeneratorState';
+import { type Precision } from '../Precision';
 import {
   type RealEvalResult,
   RealDivisionByZeroResult,
   RealRegularResult,
 } from '../RealEvalResult';
+import { type RealGenerator } from '../RealGenerator';
+import RealGeneratorState from '../RealGeneratorState';
 import {
   type ZeroTestResult,
   ZeroResult,
   NonZeroResult,
   DivisionByZeroResult,
 } from '../ZeroTestResult';
-import { type Precision } from '../Precision';
+
+import BaseEvaluator from './BaseEvaluator';
 
 // Creates a RealEvaluator from a makeEvalGenerator() method.
 // The generator can't be passed in as a constructor parameter

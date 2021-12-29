@@ -1,13 +1,13 @@
 // @flow
 
-import RealNum from '../RealNum';
-import { RealRegularResult } from '../RealEvalResult';
-import { type ZeroTestResult } from '../ZeroTestResult';
-import { type Precision } from '../Precision';
-import { type RealEvaluator } from './RealEvaluator';
-
-import _, { type ObjEqualMatcher } from '../toObjEqual.test-helper';
 import { type ExtendExpect } from '../../ExtendExpect.test-helper';
+import { type Precision } from '../Precision';
+import { RealRegularResult } from '../RealEvalResult';
+import RealNum from '../RealNum';
+import { type ZeroTestResult } from '../ZeroTestResult';
+import _, { type ObjEqualMatcher } from '../toObjEqual.test-helper';
+
+import { type RealEvaluator } from './RealEvaluator';
 
 declare var expect: ExtendExpect<ObjEqualMatcher>;
 

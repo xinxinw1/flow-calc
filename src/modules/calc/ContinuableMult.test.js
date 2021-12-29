@@ -1,11 +1,11 @@
 // @flow
 
-import ContinuableMult from './ContinuableMult';
-import RealNum from './RealNum';
-import { type Precision, RegularPrec, InfPrec } from './Precision';
-
-import _, { type ObjEqualMatcher } from './toObjEqual.test-helper';
 import { type ExtendExpect } from '../ExtendExpect.test-helper';
+
+import ContinuableMult from './ContinuableMult';
+import { type Precision, RegularPrec, InfPrec } from './Precision';
+import RealNum from './RealNum';
+import _, { type ObjEqualMatcher } from './toObjEqual.test-helper';
 
 declare var expect: ExtendExpect<ObjEqualMatcher>;
 

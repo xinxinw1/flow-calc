@@ -1,10 +1,11 @@
 // @flow
 
-import RealExpr from './RealExpr';
-import RealNum from '../RealNum';
-import { type RealEvaluator } from '../real-eval/RealEvaluator';
-import ConstEvaluator from '../real-eval/ConstEvaluator';
 import type CalcEnvironment from '../CalcEnvironment';
+import RealNum from '../RealNum';
+import ConstEvaluator from '../real-eval/ConstEvaluator';
+import { type RealEvaluator } from '../real-eval/RealEvaluator';
+
+import RealExpr from './RealExpr';
 
 export default class ConstExpr extends RealExpr {
   v: RealNum;

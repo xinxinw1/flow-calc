@@ -3,6 +3,7 @@
 import bigInt, { type BigInteger } from 'big-integer';
 
 import { downCast } from '../typetools';
+
 import NatNum from './NatNum';
 import { type Precision, RegularPrec, NegInfPrec, InfPrec } from './Precision';
 

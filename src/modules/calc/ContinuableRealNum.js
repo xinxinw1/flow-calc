@@ -1,7 +1,7 @@
 // @flow
 
-import RealNum from './RealNum';
 import { type Precision, RegularPrec, InfPrec } from './Precision';
+import RealNum from './RealNum';
 
 export default class ContinuableRealNum {
   initialized: boolean = false;

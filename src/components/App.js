@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { Outlet } from 'react-router-dom';
+
 import logo from '../images/logo.svg';
 import './App.scss';
 

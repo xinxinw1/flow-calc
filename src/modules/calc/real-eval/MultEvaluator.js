@@ -1,12 +1,13 @@
 // @flow
 
 import CalcEnvironment from '../CalcEnvironment';
-import RealNum from '../RealNum';
 import { RealRegularResult, RealDivisionByZeroResult } from '../RealEvalResult';
+import { type RealGenerator } from '../RealGenerator';
+import RealNum from '../RealNum';
+import { type Size, RegularSize, NegInfSize } from '../Size';
+
 import GeneratorEvaluator from './GeneratorEvaluator';
 import { type RealEvaluator } from './RealEvaluator';
-import { type RealGenerator } from '../RealGenerator';
-import { type Size, RegularSize, NegInfSize } from '../Size';
 
 export default class MultEvaluator
   extends GeneratorEvaluator

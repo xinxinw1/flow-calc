@@ -1,13 +1,13 @@
 // @flow
 
 import fc from 'fast-check';
-import RealNum from './RealNum';
 
-import { type Size, RegularSize, NegInfSize } from './Size';
-import { type Precision, RegularPrec, InfPrec, NegInfPrec } from './Precision';
-
-import _, { type ObjEqualMatcher } from './toObjEqual.test-helper';
 import { type ExtendExpect } from '../ExtendExpect.test-helper';
+
+import { type Precision, RegularPrec, InfPrec, NegInfPrec } from './Precision';
+import RealNum from './RealNum';
+import { type Size, RegularSize, NegInfSize } from './Size';
+import _, { type ObjEqualMatcher } from './toObjEqual.test-helper';
 
 declare var expect: ExtendExpect<ObjEqualMatcher>;
 

@@ -1,10 +1,11 @@
 // @flow
 
 import assert from 'assert';
+
 import nullthrows from 'nullthrows';
 
-import { zip, reversed } from '../itertools';
 import FingerTree from '../FingerTree';
+import { zip, reversed } from '../itertools';
 
 type DigitTree = FingerTree.Tree<number, number>;
 

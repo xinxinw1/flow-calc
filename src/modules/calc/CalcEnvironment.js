@@ -1,7 +1,7 @@
 // @flow
 
-import type RealExpr from './real-expr/RealExpr';
 import { type RealEvaluator } from './real-eval/RealEvaluator';
+import type RealExpr from './real-expr/RealExpr';
 
 export type CalcEnvOptions = {
   zeroTestAdditionalPrecLimit: number,

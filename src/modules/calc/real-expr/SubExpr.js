@@ -1,10 +1,11 @@
 // @flow
 
-import RealExpr from './RealExpr';
+import type CalcEnvironment from '../CalcEnvironment';
+import { type RealEvaluator } from '../real-eval/RealEvaluator';
+
 import AddExpr from './AddExpr';
 import NegExpr from './NegExpr';
-import { type RealEvaluator } from '../real-eval/RealEvaluator';
-import type CalcEnvironment from '../CalcEnvironment';
+import RealExpr from './RealExpr';
 
 export default class SubExpr extends RealExpr {
   a: RealExpr;

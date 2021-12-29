@@ -1,8 +1,9 @@
 // @flow
 
 import { downCast } from '../typetools';
-import NatNum from './NatNum';
+
 import Digits from './Digits';
+import NatNum from './NatNum';
 import { type Precision, RegularPrec } from './Precision';
 
 export default class NatNumDigits extends NatNum {

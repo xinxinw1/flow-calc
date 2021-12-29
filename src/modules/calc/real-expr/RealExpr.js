@@ -1,8 +1,8 @@
 // @flow
 
 import AbstractClass from '../../AbstractClass';
-import { type RealEvaluator } from '../real-eval/RealEvaluator';
 import type CalcEnvironment from '../CalcEnvironment';
+import { type RealEvaluator } from '../real-eval/RealEvaluator';
 
 export default class RealExpr extends AbstractClass {
   constructor() {

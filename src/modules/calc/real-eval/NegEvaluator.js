@@ -1,21 +1,22 @@
 // @flow
 
 import CalcEnvironment from '../CalcEnvironment';
+import { type Precision } from '../Precision';
 import {
   type RealEvalResult,
   RealRegularResult,
   RealDivisionByZeroResult,
 } from '../RealEvalResult';
+import { type Size } from '../Size';
 import {
   type ZeroTestResult,
   ZeroResult,
   NonZeroResult,
   DivisionByZeroResult,
 } from '../ZeroTestResult';
-import { type RealEvaluator } from './RealEvaluator';
-import { type Precision } from '../Precision';
-import { type Size } from '../Size';
+
 import BaseEvaluator from './BaseEvaluator';
+import { type RealEvaluator } from './RealEvaluator';
 
 export default class NegEvaluator
   extends BaseEvaluator

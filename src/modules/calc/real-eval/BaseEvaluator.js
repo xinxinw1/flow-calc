@@ -1,7 +1,7 @@
 // @flow
 
-import CalcEnvironment from '../CalcEnvironment';
 import AbstractClass from '../../AbstractClass';
+import CalcEnvironment from '../CalcEnvironment';
 
 // Base class for Real evaluators.
 // Adds variable for the calc environment

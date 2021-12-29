@@ -1,7 +1,7 @@
 // @flow
 
-import RealNum from './RealNum';
 import CalcEnvironment from './CalcEnvironment';
+import RealNum from './RealNum';
 import ConstExpr from './real-expr/ConstExpr';
 
 test('CalcEnvironment can get an eval object', () => {

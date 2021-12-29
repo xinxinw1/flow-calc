@@ -1,6 +1,7 @@
 // @flow
 
 import { absurd } from '../typetools';
+
 import { type ExtInteger, RegularInt, InfInt, NegInfInt } from './ExtInteger';
 
 class PrecBase {
