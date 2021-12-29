@@ -1,6 +1,7 @@
 // @flow
 
 import { type RealEvalResult } from '../RealEvalResult';
+import { type ZeroTestResult } from '../ZeroTestResult';
 import { type Precision } from '../Precision';
 import { type Size } from '../Size';
 
@@ -15,4 +16,12 @@ export interface RealEvaluator {
   // to a precision that's 1 less than the actual size.
   // maxSize() >= exactValue.size()
   maxSize(): Size;
+
+  // Test the zeroness of the represented value up to the given
+  // precision plus a configurable value.
+  // Result also includes the sign and size
+  // of the result if confirmed to be non-zero.
+  // And if it is zero, whether it is guaranteed zero
+  // or just can't be proven not to be zero.
+  testZeroness(prec: Precision): ZeroTestResult;
 }

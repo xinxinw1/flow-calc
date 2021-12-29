@@ -2,6 +2,7 @@
 
 import RealNum from '../RealNum';
 import { RealRegularResult } from '../RealEvalResult';
+import { type ZeroTestResult } from '../ZeroTestResult';
 import { type Precision } from '../Precision';
 import { type RealEvaluator } from './RealEvaluator';
 
@@ -27,5 +28,15 @@ export function checkEvaluatorSeq(
         );
       }
     }
+  }
+}
+
+export function checkZeronessSeq(
+  evaluator: RealEvaluator,
+  seq: Array<[Precision, ZeroTestResult]>,
+) {
+  for (const [prec, expRes] of seq) {
+    const res = evaluator.testZeroness(prec);
+    expect(res).toObjEqual(expRes);
   }
 }
