@@ -17,19 +17,19 @@ export class RegularInt {
     return ExtIntegers.equals(this, other);
   }
 
-  le(other: ExtInteger): boolean {
+  le(other: number | ExtInteger): boolean {
     return ExtIntegers.le(this, other);
   }
 
-  gt(other: ExtInteger): boolean {
+  gt(other: number | ExtInteger): boolean {
     return ExtIntegers.gt(this, other);
   }
 
-  ge(other: ExtInteger): boolean {
+  ge(other: number | ExtInteger): boolean {
     return ExtIntegers.ge(this, other);
   }
 
-  lt(other: ExtInteger): boolean {
+  lt(other: number | ExtInteger): boolean {
     return ExtIntegers.lt(this, other);
   }
 
@@ -47,19 +47,19 @@ export class InfInt {
     return ExtIntegers.equals(this, other);
   }
 
-  le(other: ExtInteger): boolean {
+  le(other: number | ExtInteger): boolean {
     return ExtIntegers.le(this, other);
   }
 
-  gt(other: ExtInteger): boolean {
+  gt(other: number | ExtInteger): boolean {
     return ExtIntegers.gt(this, other);
   }
 
-  ge(other: ExtInteger): boolean {
+  ge(other: number | ExtInteger): boolean {
     return ExtIntegers.ge(this, other);
   }
 
-  lt(other: ExtInteger): boolean {
+  lt(other: number | ExtInteger): boolean {
     return ExtIntegers.lt(this, other);
   }
 
@@ -77,19 +77,19 @@ export class NegInfInt {
     return ExtIntegers.equals(this, other);
   }
 
-  le(other: ExtInteger): boolean {
+  le(other: number | ExtInteger): boolean {
     return ExtIntegers.le(this, other);
   }
 
-  gt(other: ExtInteger): boolean {
+  gt(other: number | ExtInteger): boolean {
     return ExtIntegers.gt(this, other);
   }
 
-  ge(other: ExtInteger): boolean {
+  ge(other: number | ExtInteger): boolean {
     return ExtIntegers.ge(this, other);
   }
 
-  lt(other: ExtInteger): boolean {
+  lt(other: number | ExtInteger): boolean {
     return ExtIntegers.lt(this, other);
   }
 
@@ -117,10 +117,12 @@ class ExtIntegers {
     }
   }
 
-  static le(a: ExtInteger, b: ExtInteger): boolean {
-    if (a instanceof RegularInt) {
-      if (b instanceof RegularInt) {
-        return a.n <= b.n;
+  static le(a: number | ExtInteger, b: number | ExtInteger): boolean {
+    if (typeof a === 'number' || a instanceof RegularInt) {
+      if (typeof b === 'number' || b instanceof RegularInt) {
+        const an = typeof a === 'number' ? a : a.n;
+        const bn = typeof b === 'number' ? b : b.n;
+        return an <= bn;
       } else if (b instanceof InfInt) {
         return true;
       } else if (b instanceof NegInfInt) {
@@ -137,15 +139,15 @@ class ExtIntegers {
     }
   }
 
-  static gt(a: ExtInteger, b: ExtInteger): boolean {
+  static gt(a: number | ExtInteger, b: number | ExtInteger): boolean {
     return !ExtIntegers.le(a, b);
   }
 
-  static ge(a: ExtInteger, b: ExtInteger): boolean {
+  static ge(a: number | ExtInteger, b: number | ExtInteger): boolean {
     return ExtIntegers.le(b, a);
   }
 
-  static lt(a: ExtInteger, b: ExtInteger): boolean {
+  static lt(a: number | ExtInteger, b: number | ExtInteger): boolean {
     return !ExtIntegers.ge(a, b);
   }
 
