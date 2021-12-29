@@ -58,6 +58,17 @@ export default class AddEvaluator extends GeneratorEvaluator {
     return RealNum.zero;
   }
 
+  // Need maxSize(a+b) >= (a+b).size()
+  // (a+b).size() <= log(|a+b|) + 1
+  // <= log(|a|+|b|) + 1
+  // <= log(2*max(|a|, |b|)) + 1
+  // = log(max(|a|, |b|)) + log(2) + 1
+  // = max(log(|a|), log(|b|)) + log(2) + 1
+  // < max(a.size(), b.size()) + log(2) + 1
+  // Since log(2) ~= 0.301 and sizes must be integers,
+  // (a+b).size() <= max(a.size(), b.size()) + 1
+  // <= max(maxSize(a), maxSize(b)) + 1
+  // Choose maxSize(a*b) = max(maxSize(a), maxSize(b)) + 1
   maxSize(): Size {
     return this.aEval.maxSize().max(this.bEval.maxSize()).add(1);
   }

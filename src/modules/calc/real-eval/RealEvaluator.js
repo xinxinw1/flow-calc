@@ -10,7 +10,9 @@ export interface RealEvaluator {
   // If there is a value, result.value.prec() must be <= the given prec
   eval(prec: Precision): RealEvalResult;
 
-  // return max size that the final full precision number can be
-  // the evaluated size can be temporarily higher by 1 due to rounding
+  // Return max size that the final full precision number can be
+  // The evaluated size can be temporarily higher by 1 when rounding
+  // to a precision that's 1 less than the actual size.
+  // maxSize() >= exactValue.size()
   maxSize(): Size;
 }

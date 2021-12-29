@@ -79,6 +79,14 @@ export default class MultEvaluator extends GeneratorEvaluator {
     return RealNum.zero;
   }
 
+  // Need maxSize(a*b) >= (a*b).size()
+  // (a*b).size() <= log(|a*b|) + 1
+  // = log(|a|) + log(|b|) + 1
+  // < a.size() + b.size() + 1
+  // Since sizes are integers,
+  // (a*b).size() <= a.size() + b.size()
+  // <= maxSize(a) + maxSize(b)
+  // Choose maxSize(a*b) = maxSize(a) + maxSize(b)
   maxSize(): Size {
     return this.aEval.maxSize().add(this.bEval.maxSize());
   }
